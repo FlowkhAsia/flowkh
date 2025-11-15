@@ -6,6 +6,7 @@ const themeColors = {
   green: '#1db954',
   purple: '#9b59b6',
   cyan: '#00acc1',
+  yellow: '#f5c518',
 };
 
 type Theme = keyof typeof themeColors;

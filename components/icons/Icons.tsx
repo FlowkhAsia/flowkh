@@ -54,35 +54,84 @@ export const ChevronDownIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) 
     </svg>
 );
 
-export const KisskhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 226.857 40" preserveAspectRatio="xMidYMid meet" focusable="false">
-        <g id="Group_48" data-name="Group 48" transform="translate(-560.653 310.696)">
-            <path className="fill-[var(--brand-color)]" id="Path_16" data-name="Path 16" d="M1209.024-269.236h-59.486a6.292,6.292,0,0,1-5.878-8.536l10.285-26.935a6.292,6.292,0,0,1,5.878-4.047h59.486a6.292,6.292,0,0,1,5.878,8.536L1214.9-273.284A6.291,6.291,0,0,1,1209.024-269.236Z" transform="translate(-438.096 -1.46)"></path>
-            <g id="Group_32" data-name="Group 32" transform="translate(560.653 -310.696)">
-                <path id="Path_17" data-name="Path 17" d="M560.858-272.2l14.944-37a2.176,2.176,0,0,1,2.056-1.5h8.778q1.5,0,.833,1.5l-3.222,7.944,11.5-8.611a3.76,3.76,0,0,1,2.278-.833h10.722q2.111,0,.056,1.556l-29.944,22.167a1.772,1.772,0,0,0-.722.944L572.525-272.2a2.177,2.177,0,0,1-2.056,1.5h-8.778Q560.191-270.7,560.858-272.2Z" transform="translate(-560.653 310.696)" fill="#fff"></path>
-            </g>
-            <g id="Group_33" data-name="Group 33" transform="translate(580.118 -292.974)">
-                <path id="Path_18" data-name="Path 18" d="M640.376-232.462l8.5-6.333a1.908,1.908,0,0,1,1.056-.444q.61,0,.778.722l3.5,19.944q.277,1.612-1.611,1.611H642.32a1.225,1.225,0,0,1-1.389-1.111l-1.778-12.278Q638.987-231.406,640.376-232.462Z" transform="translate(-639.136 239.24)" fill="#fff"></path>
-            </g>
-            <path id="Path_19" data-name="Path 19" d="M722.3-309.2a2.176,2.176,0,0,1,2.056-1.5h8.777q1.5,0,.834,1.5l-14.945,37a2.177,2.177,0,0,1-2.056,1.5h-8.778q-1.5,0-.833-1.5Z" transform="translate(-110.161)" fill="#fff"></path>
-            <g id="ss" transform="translate(615.084 -310.696)" style={{isolation: 'isolate'}}>
-                <g id="Group_37" data-name="Group 37" transform="translate(0 0)">
-                    <g id="Group_36" data-name="Group 36" style={{isolation: 'isolate'}}>
-                        <g id="Group_34" data-name="Group 34">
-                            <path id="Path_20" data-name="Path 20" d="M783.552-280.5a2.6,2.6,0,0,1,2.49-1.712H806.9a2.2,2.2,0,0,0,2.179-1.478q.468-1.4-1.011-1.4H795.615q-5.448,0-7.471-3.813t.078-9.105q2.724-6.847,6.732-9.767t11.012-2.918H829.39q1.711,0,1.011,1.712l-3.268,8.094a2.454,2.454,0,0,1-2.412,1.713H804.486a1.871,1.871,0,0,0-1.945,1.245q-.545,1.246.934,1.245h12.451q5.524,0,7.471,3.969t-.233,9.261q-2.8,7.082-6.771,9.922T805.42-270.7H781.374q-1.712,0-1.09-1.712Z" transform="translate(-780.118 310.696)" fill="#fff"></path>
-                        </g>
-                        <g id="Group_35" data-name="Group 35" transform="translate(44.436)">
-                            <path id="Path_21" data-name="Path 21" d="M962.718-280.5a2.6,2.6,0,0,1,2.491-1.712h20.856a2.2,2.2,0,0,0,2.179-1.478q.467-1.4-1.012-1.4H974.78q-5.448,0-7.471-3.813t.078-9.105q2.723-6.847,6.732-9.767T985.13-310.7h23.424q1.711,0,1.012,1.712l-3.268,8.094a2.455,2.455,0,0,1-2.413,1.713H983.652a1.871,1.871,0,0,0-1.945,1.245q-.546,1.246.934,1.245h12.451q5.525,0,7.471,3.969t-.234,9.261q-2.8,7.082-6.77,9.922T984.586-270.7H960.539q-1.712,0-1.089-1.712Z" transform="translate(-959.283 310.696)" fill="#fff"></path>
-                        </g>
-                    </g>
-                </g>
-            </g>
-            <g id="Group_38" data-name="Group 38" transform="translate(716.555 -303.836)" style={{isolation: 'isolate'}}>
-                <path id="Path_22" data-name="Path 22" d="M1189.388-257.278l10-24.754a1.456,1.456,0,0,1,1.375-1h5.872q1,0,.557,1l-2.156,5.315,7.694-5.761a2.515,2.515,0,0,1,1.524-.558h7.173q1.412,0,.037,1.041l-20.034,14.83a1.187,1.187,0,0,0-.483.632l-3.754,9.255a1.457,1.457,0,0,1-1.375,1h-5.873Q1188.942-256.275,1189.388-257.278Zm13.715-9.367,5.687-4.237a1.276,1.276,0,0,1,.706-.3q.409,0,.52.483l2.341,13.344q.186,1.078-1.078,1.078H1204.4a.82.82,0,0,1-.929-.743l-1.19-8.214Q1202.174-265.938,1203.1-266.645Z" transform="translate(-1189.251 283.036)" fill="#202020"></path>
-                <path id="Path_23" data-name="Path 23" d="M1287.4-257.278l10-24.754a1.456,1.456,0,0,1,1.375-1h5.873q1,0,.558,1l-10,24.754a1.457,1.457,0,0,1-1.375,1h-5.873Q1286.953-256.275,1287.4-257.278Zm13.6-10.073,2.044-5.055a1.369,1.369,0,0,1,1.375-.966h6.653a.527.527,0,0,0,.52-.372l3.345-8.288a1.456,1.456,0,0,1,1.375-1h5.836q1.04,0,.595,1l-10,24.754a1.479,1.479,0,0,1-1.412,1H1305.5q-1,0-.558-1l3.568-8.735q.148-.371-.223-.372H1301.6Q1300.63-266-0-1287.4-257.278l10-24.754a1.456,1.456,0,0,1,1.375-1h5.873q1,0,.558,1l-10,24.754a1.457,1.457,0,0,1-1.375,1h-5.873Q1286.953-256.275,1287.4-257.278Zm13.6-10.073,2.044-5.055a1.369,1.369,0,0,1,1.375-.966h6.653a.527.527,0,0,0,.52-.372l3.345-8.288a1.456,1.456,0,0,1,1.375-1h5.836q1.04,0,.595,1l-10,24.754a1.479,1.479,0,0,1-1.412,1H1305.5q-1,0-.558-1l3.568-8.735q.148-.371-.223-.372H1301.6Q1300.63-266" fill="#202020"></path>
-            </g>
+export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 280 75" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <style>{`
+      @keyframes snowfall {
+        0% { transform: translateY(-10px); opacity: 1; }
+        100% { transform: translateY(75px); opacity: 0; }
+      }
+      @keyframes glow {
+        0%, 100% { filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 6px var(--brand-color)); }
+        50% { filter: drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px var(--brand-color)); }
+      }
+      .logo-text {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        font-size: 60px;
+        fill: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      }
+      .snowflake-group {
+        animation: glow 3s ease-in-out infinite;
+      }
+      .snow {
+        fill: #fff;
+        animation-name: snowfall;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        opacity: 0;
+      }
+      .snow.s1 { animation-duration: 5s; animation-delay: 0s; }
+      .snow.s2 { animation-duration: 6s; animation-delay: 1.2s; }
+      .snow.s3 { animation-duration: 4.5s; animation-delay: 2.5s; }
+      .snow.s4 { animation-duration: 7s; animation-delay: 3.8s; }
+      .snow.s5 { animation-duration: 5.5s; animation-delay: 0.5s; }
+    `}</style>
+    
+    <defs>
+      <clipPath id="logo-clip">
+        <rect x="0" y="0" width="280" height="75" />
+      </clipPath>
+      <g id="snowflake-arm">
+        <path d="M0,0 V-18 M-5,-12 L0,-18 L5,-12 M-4,-6 L0,-6" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/>
+      </g>
+    </defs>
+    
+    <g clipPath="url(#logo-clip)">
+        {/* Snowfall background */}
+        <circle className="snow s1" cx="30" cy="0" r="2" />
+        <circle className="snow s2" cx="90" cy="0" r="1.5" />
+        <circle className="snow s3" cx="160" cy="0" r="2" />
+        <circle className="snow s4" cx="220" cy="0" r="1" />
+        <circle className="snow s5" cx="260" cy="0" r="1.5" />
+
+        <text className="logo-text" x="5" y="60">F</text>
+        <text className="logo-text" x="45" y="60">L</text>
+        
+        {/* Snowflake for O */}
+        <g className="snowflake-group" transform="translate(105 32)">
+            <use href="#snowflake-arm" />
+            <use href="#snowflake-arm" transform="rotate(60)" />
+            <use href="#snowflake-arm" transform="rotate(120)" />
+            <use href="#snowflake-arm" transform="rotate(180)" />
+            <use href="#snowflake-arm" transform="rotate(240)" />
+            <use href="#snowflake-arm" transform="rotate(300)" />
         </g>
-    </svg>
+        
+        <text className="logo-text" x="130" y="60">W</text>
+        <text className="logo-text" x="180" y="60">K</text>
+        <text className="logo-text" x="225" y="60">H</text>
+
+        {/* Santa Hat on the F */}
+        <g transform="translate(4, 3)">
+            <path d="M0,12 C5,5 25,5 30,12" fill="#E50914"/>
+            <path d="M0,12 L15,0 L30,12" fill="#E50914"/>
+            <rect x="-3" y="12" width="36" height="7" fill="#fff" rx="3" />
+            <circle cx="29" cy="-3" r="7" fill="#fff" />
+        </g>
+    </g>
+  </svg>
 );
 
 export const BookmarkPlusIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -159,7 +208,7 @@ export const MenuIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   
 export const PaletteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 12.75l-4.5-4.5m4.5 4.5l-4.5 4.5m4.5-4.5l4.5 4.5m-4.5-4.5l4.5-4.5m-8.25 8.25L3 16.5m1.5-1.5l4.5-4.5m0 0l4.5 4.5m-4.5-4.5L3 12m1.5-1.5l4.5 4.5m0 0l4.5-4.5m-4.5 4.5L7.5 12m6-6L21 12m-6-6l-4.5 4.5M12 3l-4.5 4.5m0 0l4.5 4.5m-4.5-4.5L3 12m9-9l4.5 4.5M12 3l4.5 4.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 12.75l-4.5-4.5m4.5 4.5l-4.5 4.5m4.5-4.5l4.5 4.5m-4.5-4.5l4.5-4.5m-8.25 8.25L3 16.5m1.5-1.5l4.5-4.5m0 0l4.5 4.5m-4.5-4.5L3 12m1.5-1.5l4.5 4.5m0 0l4.5-4.5m-4.5-4.5L7.5 12m6-6L21 12m-6-6l-4.5 4.5M12 3l-4.5 4.5m0 0l4.5 4.5m-4.5-4.5L3 12m9-9l4.5 4.5M12 3l4.5 4.5" />
     </svg>
 );
   
@@ -196,5 +245,12 @@ export const MinusIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export const TelegramIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
       <path d="M21.8,3.2C21.4,3,21,3,20.6,3.2L3.8,10.2C3.1,10.5,3.1,11.5,3.8,11.8L8,13.4L9.6,18.2C9.8,18.9,10.8,19.2,11.3,18.7L13.2,17L17,19.8C17.6,20.1,18.2,19.8,18.4,19.2L21.9,4.2C22.2,3.8,22.1,3.4,21.8,3.2ZM9.8,13.2L18.4,6.2L12,14.2L9.8,13.2ZM12.8,16.2L12.2,14.8L14.4,12.8L16.2,14.2L12.8,16.2Z" />
+    </svg>
+);
+
+export const TuneIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor">
+      <path d="M0 0h24v24H0V0z" fill="none"/>
+      <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
     </svg>
 );
