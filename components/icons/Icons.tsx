@@ -92,6 +92,9 @@ export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
       .snow.s3 { animation-duration: 4.5s; animation-delay: 2.5s; }
       .snow.s4 { animation-duration: 7s; animation-delay: 3.8s; }
       .snow.s5 { animation-duration: 5.5s; animation-delay: 0.5s; }
+      .snow.s6 { animation-duration: 6.5s; animation-delay: 1.8s; }
+      .snow.s7 { animation-duration: 4s; animation-delay: 3.2s; }
+      .snow.s8 { animation-duration: 7.5s; animation-delay: 4.5s; }
     `}</style>
     
     <defs>
@@ -105,11 +108,14 @@ export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
     
     <g clipPath="url(#logo-clip)">
         {/* Snowfall background */}
-        <circle className="snow s1" cx="30" cy="0" r="2" />
-        <circle className="snow s2" cx="90" cy="0" r="1.5" />
-        <circle className="snow s3" cx="160" cy="0" r="2" />
-        <circle className="snow s4" cx="220" cy="0" r="1" />
-        <circle className="snow s5" cx="260" cy="0" r="1.5" />
+        <circle className="snow s1" cx="30" cy="0" r="3" />
+        <circle className="snow s2" cx="90" cy="0" r="2.5" />
+        <circle className="snow s3" cx="160" cy="0" r="3.5" />
+        <circle className="snow s4" cx="220" cy="0" r="2" />
+        <circle className="snow s5" cx="260" cy="0" r="3" />
+        <circle className="snow s6" cx="60" cy="0" r="2.5" />
+        <circle className="snow s7" cx="190" cy="0" r="3" />
+        <circle className="snow s8" cx="290" cy="0" r="2" />
         
         {/* Shadow Layers */}
         <text className="logo-text-shadow" x="7" y="62">F</text>
