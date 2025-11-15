@@ -1,0 +1,5 @@
+{
+  "name": "flowkh",
+  "description": "A modern streaming app interface built with React and Tailwind CSS, featuring a dynamic UI for browsing movies and TV shows.",
+  "requestFramePermissions": []
+}
