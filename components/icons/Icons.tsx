@@ -55,7 +55,7 @@ export const ChevronDownIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) 
 );
 
 export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg viewBox="0 0 280 75" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg viewBox="0 0 320 75" xmlns="http://www.w3.org/2000/svg" {...props}>
     <style>{`
       @keyframes snowfall {
         0% { transform: translateY(-10px); opacity: 1; }
@@ -65,12 +65,17 @@ export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
         0%, 100% { filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 6px var(--brand-color)); }
         50% { filter: drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px var(--brand-color)); }
       }
-      .logo-text {
+      .logo-text, .logo-text-shadow {
         font-family: 'Montserrat', sans-serif;
         font-weight: 900;
         font-size: 60px;
+      }
+      .logo-text {
         fill: #fff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      }
+      .logo-text-shadow {
+        fill: #202020;
+        opacity: 0.8;
       }
       .snowflake-group {
         animation: glow 3s ease-in-out infinite;
@@ -91,7 +96,7 @@ export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
     
     <defs>
       <clipPath id="logo-clip">
-        <rect x="0" y="0" width="280" height="75" />
+        <rect x="0" y="0" width="320" height="75" />
       </clipPath>
       <g id="snowflake-arm">
         <path d="M0,0 V-18 M-5,-12 L0,-18 L5,-12 M-4,-6 L0,-6" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/>
@@ -105,7 +110,15 @@ export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
         <circle className="snow s3" cx="160" cy="0" r="2" />
         <circle className="snow s4" cx="220" cy="0" r="1" />
         <circle className="snow s5" cx="260" cy="0" r="1.5" />
+        
+        {/* Shadow Layers */}
+        <text className="logo-text-shadow" x="7" y="62">F</text>
+        <text className="logo-text-shadow" x="47" y="62">L</text>
+        <text className="logo-text-shadow" x="132" y="62">W</text>
+        <text className="logo-text-shadow" x="206" y="62">K</text>
+        <text className="logo-text-shadow" x="255" y="62">H</text>
 
+        {/* Main Text Layers */}
         <text className="logo-text" x="5" y="60">F</text>
         <text className="logo-text" x="45" y="60">L</text>
         
@@ -120,16 +133,8 @@ export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
         </g>
         
         <text className="logo-text" x="130" y="60">W</text>
-        <text className="logo-text" x="180" y="60">K</text>
-        <text className="logo-text" x="225" y="60">H</text>
-
-        {/* Santa Hat on the F */}
-        <g transform="translate(4, 3)">
-            <path d="M0,12 C5,5 25,5 30,12" fill="#E50914"/>
-            <path d="M0,12 L15,0 L30,12" fill="#E50914"/>
-            <rect x="-3" y="12" width="36" height="7" fill="#fff" rx="3" />
-            <circle cx="29" cy="-3" r="7" fill="#fff" />
-        </g>
+        <text className="logo-text" x="204" y="60" style={{ fill: 'var(--brand-color)' }}>K</text>
+        <text className="logo-text" x="253" y="60" style={{ fill: 'var(--brand-color)' }}>H</text>
     </g>
   </svg>
 );
