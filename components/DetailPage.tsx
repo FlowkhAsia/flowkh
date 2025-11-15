@@ -150,7 +150,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         setDetails(details);
         setCast(cast);
         setSimilar(similar);
-        document.title = `${details.title} | kisskh`;
+        document.title = `${details.title} | flowkh`;
 
         setCurrentPlayingInfo(prev => ({
             ...prev,

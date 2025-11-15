@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://flowkh.cam/sitemap.xml
+Sitemap: https://flowkh.pages.dev/sitemap.xml

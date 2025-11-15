@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" alt="GHBanner" src="https://flowkh.cam/og-image.jpg" />
+<img width="1200" alt="GHBanner" src="https://flowkh.pages.dev/og-image.jpg" />
 </div>
 
 # flowkh - A Modern Streaming App Interface

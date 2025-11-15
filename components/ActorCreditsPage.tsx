@@ -32,7 +32,7 @@ const ActorCreditsPage: React.FC<ActorCreditsPageProps> = ({ actorId, onSelectMo
         setActorDetails(fetchedActor);
         setCredits(fetchedCredits);
         setBackdropUrl(fetchedBackdrop);
-        document.title = `${fetchedActor.name} | kisskh`;
+        document.title = `${fetchedActor.name} | flowkh`;
       } catch (err) {
         setError("Failed to load actor's credits. Please try again.");
         console.error(err);
