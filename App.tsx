@@ -496,16 +496,22 @@ const App: React.FC = () => {
                   onToggleMyList={handleToggleMyList} 
                 />
               )}
-              {filteredGenres.map((genre) => (
-                <MovieRow 
-                  key={`${genre.key}-${activeFilter}`}
-                  title={genre.title} 
-                  movies={genre.movies} 
-                  onSeeAll={() => handleSeeAllClick(genre)} 
-                  onSelectMovie={handleSelectMovie} 
-                  myList={myList} 
-                  onToggleMyList={handleToggleMyList} 
-                />
+              {filteredGenres.map((genre, index) => (
+                <React.Fragment key={`${genre.key}-${activeFilter}`}>
+                  <MovieRow 
+                    title={genre.title} 
+                    movies={genre.movies} 
+                    onSeeAll={() => handleSeeAllClick(genre)} 
+                    onSelectMovie={handleSelectMovie} 
+                    myList={myList} 
+                    onToggleMyList={handleToggleMyList} 
+                  />
+                  {index === 0 && (
+                    <Suspense fallback={<div className="h-[250px] w-[300px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
+                      <AdsterraBanner />
+                    </Suspense>
+                  )}
+                </React.Fragment>
               ))}
             </section>
           </main>
