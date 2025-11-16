@@ -71,7 +71,7 @@ type TmdbDetailResponse = TmdbMovieResult & {
 };
 
 
-const TMDB_BASE_URL = 'https://kisskh-asian.pages.dev/tmdb';
+const TMDB_BASE_URL = '/tmdb';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 
 const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [

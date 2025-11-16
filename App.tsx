@@ -21,7 +21,7 @@ const PrivacyPolicyPage = lazy(() => import('./components/PrivacyPolicyPage'));
 const TermsOfServicePage = lazy(() => import('./components/TermsOfServicePage'));
 const FAQPage = lazy(() => import('./components/FAQPage'));
 const NotFoundPage = lazy(() => import('./components/NotFoundPage'));
-const AdsterraLeaderboard = lazy(() => import('./components/AdsterraLeaderboard'));
+const AdsterraBanner = lazy(() => import('./components/AdsterraBanner'));
 
 const useLocation = () => {
   const [location, setLocation] = useState({
@@ -206,7 +206,7 @@ const App: React.FC = () => {
 
   // SEO: DYNAMIC PAGE TITLES
   useEffect(() => {
-    const baseTitle = 'kisskh - Watch Movies, TV Shows & Dramas Online Free';
+    const baseTitle = 'flowkh - Watch Movies, TV Shows & Dramas Online Free';
     let pageTitle: string;
     
     const pathParts = location.pathname.split('/').filter(Boolean);
@@ -235,7 +235,7 @@ const App: React.FC = () => {
 
   // SEO: DYNAMIC CANONICAL URL
   useEffect(() => {
-    const canonicalUrl = `https://kisskh.cam${location.pathname === '/' ? '' : location.pathname}`;
+    const canonicalUrl = `https://flowkh.pages.dev${location.pathname === '/' ? '' : location.pathname}`;
 
     let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
 
@@ -496,22 +496,16 @@ const App: React.FC = () => {
                   onToggleMyList={handleToggleMyList} 
                 />
               )}
-              {filteredGenres.map((genre, index) => (
-                <React.Fragment key={`${genre.key}-${activeFilter}`}>
-                  <MovieRow 
-                    title={genre.title} 
-                    movies={genre.movies} 
-                    onSeeAll={() => handleSeeAllClick(genre)} 
-                    onSelectMovie={handleSelectMovie} 
-                    myList={myList} 
-                    onToggleMyList={handleToggleMyList} 
-                  />
-                  {index === 0 && (
-                    <Suspense fallback={<div className="h-[90px] w-full max-w-[728px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
-                      <AdsterraLeaderboard />
-                    </Suspense>
-                  )}
-                </React.Fragment>
+              {filteredGenres.map((genre) => (
+                <MovieRow 
+                  key={`${genre.key}-${activeFilter}`}
+                  title={genre.title} 
+                  movies={genre.movies} 
+                  onSeeAll={() => handleSeeAllClick(genre)} 
+                  onSelectMovie={handleSelectMovie} 
+                  myList={myList} 
+                  onToggleMyList={handleToggleMyList} 
+                />
               ))}
             </section>
           </main>
