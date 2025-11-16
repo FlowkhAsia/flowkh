@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FlowkhLogoIcon, SearchIcon, MenuIcon, CloseIcon, TuneIcon } from './icons/Icons';
+import { KisskhLogoIcon, SearchIcon, MenuIcon, CloseIcon, PaletteIcon } from './icons/Icons';
 import ThemeSwitcher from './ThemeSwitcher';
 
 type FilterType = 'all' | 'movie' | 'tv' | 'discover' | 'my-list';
@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({
       <header className={`fixed top-0 z-40 flex w-full items-center justify-between p-4 md:px-16 transition-colors duration-300 ${isScrolled ? 'bg-[#141414]/90 backdrop-blur-sm' : 'bg-transparent'}`}>
         <div className="flex items-center space-x-4 md:space-x-8">
           <a href="/" onClick={(e) => handleNavClick(e, '/')}>
-            <FlowkhLogoIcon className="h-9 w-auto cursor-pointer" />
+            <KisskhLogoIcon className="h-7 w-auto cursor-pointer" />
           </a>
 
           <div className="hidden lg:flex items-center space-x-1">
@@ -131,7 +131,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           <div ref={themeSwitcherRef} className="relative">
             <button onClick={() => setShowThemeSwitcher(s => !s)} aria-label="Change theme">
-                <TuneIcon className="h-6 w-6 cursor-pointer" />
+                <PaletteIcon className="h-6 w-6 cursor-pointer" />
             </button>
             {showThemeSwitcher && <ThemeSwitcher />}
           </div>

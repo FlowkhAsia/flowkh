@@ -6,7 +6,6 @@ const themeColors = {
   green: '#1db954',
   purple: '#9b59b6',
   cyan: '#00acc1',
-  yellow: '#f5c518',
 };
 
 type Theme = keyof typeof themeColors;
@@ -49,19 +48,19 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('flowkh-theme') as Theme) || 'cyan';
+      return (localStorage.getItem('kisskh-theme') as Theme) || 'cyan';
     }
     return 'cyan';
   });
 
   useEffect(() => {
-    const currentTheme = localStorage.getItem('flowkh-theme') as Theme || 'cyan';
+    const currentTheme = localStorage.getItem('kisskh-theme') as Theme || 'cyan';
     updateFavicon(themeColors[currentTheme]);
   }, []);
 
   const setTheme = (newTheme: Theme) => {
     try {
-      localStorage.setItem('flowkh-theme', newTheme);
+      localStorage.setItem('kisskh-theme', newTheme);
       document.documentElement.setAttribute('data-theme', newTheme);
       updateFavicon(themeColors[newTheme]);
       setThemeState(newTheme);

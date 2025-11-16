@@ -3,7 +3,7 @@ import { FacebookIcon, TwitterIcon, PlusIcon, MinusIcon, TelegramIcon } from './
 
 const FACEBOOK_URL = (import.meta as any).env.VITE_FACEBOOK_URL || 'https://facebook.com/';
 const TWITTER_URL = (import.meta as any).env.VITE_TWITTER_URL || 'https://twitter.com/';
-const TELEGRAM_URL = (import.meta as any).env.VITE_TELEGRAM_URL || 'https://t.me/flowkhcam';
+const TELEGRAM_URL = (import.meta as any).env.VITE_TELEGRAM_URL || 'https://t.me/kisskhcam';
 
 const FAQItem: React.FC<{ question: string; children: React.ReactNode }> = ({ question, children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,12 +48,12 @@ const FAQPage: React.FC = () => {
         <h1 className="text-4xl font-bold mb-10 text-white text-center">Frequently Asked Questions</h1>
         
         <div className="border-t border-zinc-700/50">
-            <FAQItem question="What is flowkh?">
-                <p>flowkh is a modern, user-friendly interface designed to help you discover and browse movies and TV shows. It uses a third-party service to provide detailed information about a vast library of content.</p>
+            <FAQItem question="What is kisskh?">
+                <p>kisskh is a modern, user-friendly interface designed to help you discover and browse movies and TV shows. It uses a third-party service to provide detailed information about a vast library of content.</p>
             </FAQItem>
 
-            <FAQItem question="Is flowkh free to use?">
-                <p>Yes, flowkh is completely free to use. It's a project created to demonstrate a modern web application and serve as a discovery tool for entertainment.</p>
+            <FAQItem question="Is kisskh free to use?">
+                <p>Yes, kisskh is completely free to use. It's a project created to demonstrate a modern web application and serve as a discovery tool for entertainment.</p>
             </FAQItem>
             
             <FAQItem question="Where does the content come from?">
@@ -61,11 +61,11 @@ const FAQPage: React.FC = () => {
                 <p>The video content itself is not hosted by us. We use embedded players that link to third-party, publicly available streaming services. We are simply an index for this content.</p>
             </FAQItem>
 
-            <FAQItem question="Is flowkh legal?">
-                <p>flowkh itself is legal as we do not host any of the video content. Our service functions as a search engine or index, providing links to content that is already available on the internet. However, the responsibility for ensuring that you have the right to view the content from the third-party providers lies with you, the user.</p>
+            <FAQItem question="Is kisskh legal?">
+                <p>kisskh itself is legal as we do not host any of the video content. Our service functions as a search engine or index, providing links to content that is already available on the internet. However, the responsibility for ensuring that you have the right to view the content from the third-party providers lies with you, the user.</p>
             </FAQItem>
 
-            <FAQItem question="Do I need an account to use flowkh?">
+            <FAQItem question="Do I need an account to use kisskh?">
                 <p>No, you do not need to create an account. You can browse and discover content freely. Features like "My List" are saved directly to your browser's local storage for convenience, without requiring any personal information.</p>
             </FAQItem>
 

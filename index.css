@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-color: #E50914;
+  --brand-color-dark: #c40812;
+}
+[data-theme="blue"] {
+  --brand-color: #0071eb;
+  --brand-color-dark: #005fcc;
+}
+[data-theme="green"] {
+  --brand-color: #1db954;
+  --brand-color-dark: #19a349;
+}
+[data-theme="purple"] {
+  --brand-color: #9b59b6;
+  --brand-color-dark: #8e44ad;
+}
+[data-theme="cyan"] {
+  --brand-color: #00acc1;
+  --brand-color-dark: #0097a7;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent; /* Removes blue highlight on tap */
+}
+/* For Webkit-based browsers (Chrome, Safari) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+@layer utilities {
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0,0,0,0.6);
+  }
+}
+
+@keyframes fadeInCinematic {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-cinematic {
+  animation: fadeInCinematic 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes fade-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-scale-in {
+    animation: fade-scale-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes fastFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fast-fade-in {
+  animation: fastFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fade-in-down {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-down {
+  animation: fade-in-down 0.3s ease-out forwards;
+}
+
+.font-bebas {
+  font-family: 'Bebas Neue', cursive;
+}
+
+/* Custom Scrollbar for dropdowns */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1f1f1f;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 10px;
+  border: 2px solid #1f1f1f;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #777;
+}
+
+/* Custom Scrollbar for Episodes */
+.episodes-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.episodes-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.episodes-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--brand-color);
+  border-radius: 6px;
+}
+.episodes-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--brand-color-dark);
+}
