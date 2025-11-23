@@ -68,6 +68,7 @@ export const FlowkhLogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
       .logo-text, .logo-text-shadow {
         font-family: 'Montserrat', sans-serif;
         font-weight: 900;
+        font-style: italic;
         font-size: 60px;
       }
       .logo-text {
