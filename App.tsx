@@ -239,10 +239,30 @@ const App: React.FC = () => {
     canonicalLink.href = canonicalUrl;
 
     // Google Analytics Pageview Tracking
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('config', 'G-99QF0008KS', {
-          page_path: location.pathname + location.search
-        });
+    const gaId = (import.meta as any).env.VITE_PUBLIC_GOOGLE_ANALYTICS_ID;
+    if (gaId) {
+       // Initialize if not present
+       if (!document.getElementById('ga-script')) {
+           const script = document.createElement('script');
+           script.id = 'ga-script';
+           script.async = true;
+           script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+           document.head.appendChild(script);
+
+           (window as any).dataLayer = (window as any).dataLayer || [];
+           function gtag(...args: any[]) { (window as any).dataLayer.push(args); }
+           (window as any).gtag = gtag;
+           
+           gtag('js', new Date());
+           // Set send_page_view to false on init to prevent duplication with the explicit config call below
+           gtag('config', gaId, { send_page_view: false });
+       }
+
+       if (typeof window !== 'undefined' && (window as any).gtag) {
+           (window as any).gtag('config', gaId, {
+             page_path: location.pathname + location.search
+           });
+       }
     }
 
   }, [location.pathname, location.search]);
