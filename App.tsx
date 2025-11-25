@@ -235,7 +235,7 @@ const App: React.FC = () => {
 
   // SEO: DYNAMIC CANONICAL URL
   useEffect(() => {
-    const canonicalUrl = `https://flowkh.pages.dev${location.pathname === '/' ? '' : location.pathname}`;
+    const canonicalUrl = `https://flowkh.com${location.pathname === '/' ? '' : location.pathname}`;
 
     let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
 

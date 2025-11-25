@@ -58,7 +58,7 @@ const TermsOfServicePage: React.FC = () => {
         </p>
 
         <h2 className="text-2xl font-bold mt-8 mb-4 text-white">8. CONTACT US</h2>
-        <p className="mb-4">If you have any questions about these Terms, please contact us at: <a href="mailto:admin@flowkh.pages.dev" className="text-[var(--brand-color)] hover:underline">admin@flowkh.pages.dev</a></p>
+        <p className="mb-4">If you have any questions about these Terms, please contact us at: <a href="mailto:admin@flowkh.com" className="text-[var(--brand-color)] hover:underline">admin@flowkh.com</a></p>
       </div>
     </div>
   );
