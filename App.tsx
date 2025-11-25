@@ -207,7 +207,7 @@ const App: React.FC = () => {
   // SEO & ANALYTICS
   useEffect(() => {
     // Dynamic Page Titles
-    const baseTitle = 'flowkh - Watch Movies, TV Shows & Dramas Online Free';
+    const baseTitle = 'flowkh - Movies and TV Series — All in One Flow';
     let pageTitle: string;
     
     const pathParts = location.pathname.split('/').filter(Boolean);
@@ -495,7 +495,7 @@ const App: React.FC = () => {
     if (['/', '/movies', '/tv-shows'].includes(location.pathname)) {
         const activeFilter = getActiveFilter();
         const pageH1 = location.pathname === '/' 
-            ? 'Discover and Watch Movies, TV Shows & Dramas' 
+            ? 'Movies and TV Series — All in One Flow' 
             : location.pathname === '/movies' 
             ? 'Explore All Movies' 
             : 'Explore All TV Shows';
