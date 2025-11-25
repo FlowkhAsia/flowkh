@@ -7,7 +7,7 @@ const Favicon = ({ color = "#00acc1", ...props }: React.SVGProps<SVGSVGElement> 
     {...props}
   >
     <rect width="64" height="64" rx="16" fill={color} />
-    <path d="M24 18 L46 32 L24 46 Z" fill="#ffffff" stroke="#ffffff" strokeWidth="4" strokeLinejoin="round" />
+    <text x="32" y="52" fontFamily="Montserrat, sans-serif" fontWeight="900" fontStyle="italic" fontSize="48" fill="#ffffff" textAnchor="middle">F</text>
   </svg>
 );
 export default Favicon;

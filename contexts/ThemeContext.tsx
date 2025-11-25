@@ -19,7 +19,7 @@ interface ThemeContextType {
 const faviconTemplate = (color: string) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="16" fill="${color}"/>
-  <path d="M24 18 L46 32 L24 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+  <text x="32" y="52" font-family="Montserrat, sans-serif" font-weight="900" font-style="italic" font-size="48" fill="#ffffff" text-anchor="middle">F</text>
 </svg>
 `.trim().replace(/\n\s*/g, '');
 

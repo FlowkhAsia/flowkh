@@ -204,50 +204,48 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleOpenSearch]);
 
-  // SEO: DYNAMIC PAGE TITLES
+  // SEO & ANALYTICS
   useEffect(() => {
+    // Dynamic Page Titles
     const baseTitle = 'flowkh - Watch Movies, TV Shows & Dramas Online Free';
     let pageTitle: string;
     
     const pathParts = location.pathname.split('/').filter(Boolean);
-    
     const isDynamicPath = (pathParts.length >= 2 && ['tv', 'movie', 'person', 'category'].includes(pathParts[0]));
 
-    if (isDynamicPath) {
-        // Title is set by the child component after fetching data.
-        return; 
+    if (!isDynamicPath) {
+        switch (location.pathname) {
+          case '/': pageTitle = baseTitle; break;
+          case '/movies': pageTitle = `Movies | ${baseTitle}`; break;
+          case '/tv-shows': pageTitle = `TV Shows | ${baseTitle}`; break;
+          case '/discover': pageTitle = `Discover | ${baseTitle}`; break;
+          case '/my-list': pageTitle = `My List | ${baseTitle}`; break;
+          case '/privacy-policy': pageTitle = `Privacy Policy | ${baseTitle}`; break;
+          case '/terms-of-service': pageTitle = `Terms of Service | ${baseTitle}`; break;
+          case '/faq': pageTitle = `FAQ | ${baseTitle}`; break;
+          default: pageTitle = `404 - Page Not Found | ${baseTitle}`;
+        }
+        document.title = pageTitle;
     }
 
-    switch (location.pathname) {
-      case '/': pageTitle = baseTitle; break;
-      case '/movies': pageTitle = `Movies | ${baseTitle}`; break;
-      case '/tv-shows': pageTitle = `TV Shows | ${baseTitle}`; break;
-      case '/discover': pageTitle = `Discover | ${baseTitle}`; break;
-      case '/my-list': pageTitle = `My List | ${baseTitle}`; break;
-      case '/privacy-policy': pageTitle = `Privacy Policy | ${baseTitle}`; break;
-      case '/terms-of-service': pageTitle = `Terms of Service | ${baseTitle}`; break;
-      case '/faq': pageTitle = `FAQ | ${baseTitle}`; break;
-      default:
-        pageTitle = `404 - Page Not Found | ${baseTitle}`;
-    }
-    document.title = pageTitle;
-  }, [location.pathname]);
-
-  // SEO: DYNAMIC CANONICAL URL
-  useEffect(() => {
+    // Dynamic Canonical URL
     const canonicalUrl = `https://flowkh.com${location.pathname === '/' ? '' : location.pathname}`;
-
     let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
       canonicalLink.rel = 'canonical';
       document.head.appendChild(canonicalLink);
     }
-    
     canonicalLink.href = canonicalUrl;
 
-  }, [location.pathname]);
+    // Google Analytics Pageview Tracking
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('config', 'G-99QF0008KS', {
+          page_path: location.pathname + location.search
+        });
+    }
+
+  }, [location.pathname, location.search]);
 
   const getActiveFilter = () => {
     switch (location.pathname) {
