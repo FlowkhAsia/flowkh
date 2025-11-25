@@ -247,8 +247,9 @@ const App: React.FC = () => {
     canonicalLink.href = canonicalUrl;
 
     // Google Analytics Page View Tracking
-    if (typeof window.gtag === 'function') {
-      window.gtag('config', 'G-99QF0008KS', {
+    const gaId = (import.meta as any).env.VITE_PUBLIC_GOOGLE_ANALYTICS_ID;
+    if (typeof window.gtag === 'function' && gaId) {
+      window.gtag('config', gaId, {
         page_path: location.pathname + location.search
       });
     }

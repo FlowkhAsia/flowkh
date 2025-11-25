@@ -36,8 +36,8 @@
     <meta name="msvalidate.01" content="E6A3CADF62AC9AF06D46366028E58C08" />
     <script>
       // Google Analytics
-      const GA_MEASUREMENT_ID = 'G-99QF0008KS';
-      if (GA_MEASUREMENT_ID) {
+      const GA_MEASUREMENT_ID = '%VITE_PUBLIC_GOOGLE_ANALYTICS_ID%';
+      if (GA_MEASUREMENT_ID && !GA_MEASUREMENT_ID.startsWith('%')) {
         const script = document.createElement('script');
         script.async = true;
         script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
