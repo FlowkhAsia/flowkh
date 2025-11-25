@@ -33,7 +33,22 @@
     <meta name="apple-mobile-web-app-title" content="flowkh">
 
     <!-- Search Engine Verification & Analytics -->
-    <meta name="msvalidate.01" content="E6A3CADF62AC9AF06D46366028E58C08" />
+    <meta name="msvalidate.01" content="4B5C4479A89E5C96F724F41D34E73076" />
+    <script>
+      // Google Analytics
+      const GA_MEASUREMENT_ID = 'G-99QF0008KS';
+      if (GA_MEASUREMENT_ID) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID);
+      }
+    </script>
     
     <!-- JSON-LD Structured Data for Rich Snippets -->
     <script type="application/ld+json">
