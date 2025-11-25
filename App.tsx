@@ -23,6 +23,14 @@ const FAQPage = lazy(() => import('./components/FAQPage'));
 const NotFoundPage = lazy(() => import('./components/NotFoundPage'));
 const AdsterraBanner = lazy(() => import('./components/AdsterraBanner'));
 
+// Add Window interface augmentation for Google Analytics
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+    dataLayer: any[];
+  }
+}
+
 const useLocation = () => {
   const [location, setLocation] = useState({
     pathname: (window.location.pathname.replace(/\/$/, '') || '/'),
@@ -237,6 +245,13 @@ const App: React.FC = () => {
       document.head.appendChild(canonicalLink);
     }
     canonicalLink.href = canonicalUrl;
+
+    // Google Analytics Page View Tracking
+    if (typeof window.gtag === 'function') {
+      window.gtag('config', 'G-99QF0008KS', {
+        page_path: location.pathname + location.search
+      });
+    }
 
   }, [location.pathname, location.search]);
 
