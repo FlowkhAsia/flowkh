@@ -96,7 +96,7 @@ const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv
   { key: 'anime_latest', title: 'Latest Episode', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&with_keywords=210024&language=en-US&air_date.lte=__TODAY__&air_date.gte=__DATE_7_DAYS_AGO__&sort_by=popularity.desc`, type: 'tv' },
   { key: 'anime_top_airing', title: 'Top Airing', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&with_keywords=210024&language=en-US&air_date.lte=__TODAY__&air_date.gte=__DATE_90_DAYS_AGO__&sort_by=vote_average.desc&vote_count.gte=50`, type: 'tv' },
   { key: 'anime_movies', title: 'Movie Anime', url: `${TMDB_BASE_URL}/discover/movie?with_genres=16&with_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'movie' },
-  { key: 'anime_western', title: 'Western Anime', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&without_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'anime_western', title: 'Animation', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&without_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'tv' },
 ];
 
 let movieGenresMap: Map<number, string> = new Map();
