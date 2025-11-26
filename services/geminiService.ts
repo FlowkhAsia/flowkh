@@ -96,7 +96,7 @@ const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv
   { key: 'anime_latest', title: 'Latest Episode', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&with_keywords=210024&language=en-US&air_date.lte=__TODAY__&air_date.gte=__DATE_7_DAYS_AGO__&sort_by=popularity.desc`, type: 'tv' },
   { key: 'anime_top_airing', title: 'Top Airing', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&with_keywords=210024&language=en-US&air_date.lte=__TODAY__&air_date.gte=__DATE_90_DAYS_AGO__&sort_by=vote_average.desc&vote_count.gte=50`, type: 'tv' },
   { key: 'anime_movies', title: 'Movie Anime', url: `${TMDB_BASE_URL}/discover/movie?with_genres=16&with_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'movie' },
-  { key: 'anime_western', title: 'Animation', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&without_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'anime_animation', title: 'Animation', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&without_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'tv' },
 ];
 
 let movieGenresMap: Map<number, string> = new Map();
@@ -161,7 +161,7 @@ const mapResultsToMovies = (results: any[], forcedMediaType?: 'movie' | 'tv'): M
 export const fetchMoviesData = async (view: 'home' | 'movies' | 'tv' | 'anime'): Promise<Genre[]> => {
   const movieKeys = ['trending_movies', 'popular_movies', 'now_playing_movies', 'upcoming_movies', 'top_rated_movies'];
   const tvKeys = ['trending_tv', 'k_drama', 'c_drama', 'anime', 'on_the_air_tv', 'top_rated_tv'];
-  const animeKeys = ['anime_trending', 'anime_latest', 'anime_top_airing', 'anime_movies', 'anime_western'];
+  const animeKeys = ['anime_trending', 'anime_latest', 'anime_top_airing', 'anime_movies', 'anime_animation'];
   // For home, it also needs top_rated_tv for the merged 'Top Rated' category later.
   const homeKeys = ['trending_today', 'k_drama', 'c_drama', 'anime', 'popular_movies', 'top_rated_movies', 'top_rated_tv'];
 
