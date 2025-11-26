@@ -91,6 +91,11 @@ const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv
   { key: 'now_playing_movies', title: 'Now Playing Movies', url: `${TMDB_BASE_URL}/movie/now_playing?language=en-US`, type: 'movie' },
   { key: 'upcoming_movies', title: 'Upcoming Movies', url: `${TMDB_BASE_URL}/movie/upcoming?language=en-US`, type: 'movie' },
   { key: 'top_rated_movies', title: 'Top Rated Movies', url: `${TMDB_BASE_URL}/movie/top_rated?language=en-US`, type: 'movie' },
+  // Anime Page Specific
+  { key: 'anime_trending', title: 'Trending', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&with_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'anime_latest', title: 'Latest Episode', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&with_keywords=210024&language=en-US&air_date.lte=__TODAY__&air_date.gte=__DATE_7_DAYS_AGO__&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'anime_top_airing', title: 'Top Airing', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&with_keywords=210024&language=en-US&air_date.lte=__TODAY__&air_date.gte=__DATE_90_DAYS_AGO__&sort_by=vote_average.desc&vote_count.gte=50`, type: 'tv' },
+  { key: 'anime_western', title: 'Western Anime', url: `${TMDB_BASE_URL}/discover/tv?with_genres=16&without_keywords=210024&language=en-US&sort_by=popularity.desc`, type: 'tv' },
 ];
 
 let movieGenresMap: Map<number, string> = new Map();
@@ -152,9 +157,10 @@ const mapResultsToMovies = (results: any[], forcedMediaType?: 'movie' | 'tv'): M
     });
 };
 
-export const fetchMoviesData = async (view: 'home' | 'movies' | 'tv'): Promise<Genre[]> => {
+export const fetchMoviesData = async (view: 'home' | 'movies' | 'tv' | 'anime'): Promise<Genre[]> => {
   const movieKeys = ['trending_movies', 'popular_movies', 'now_playing_movies', 'upcoming_movies', 'top_rated_movies'];
   const tvKeys = ['trending_tv', 'k_drama', 'c_drama', 'anime', 'on_the_air_tv', 'top_rated_tv'];
+  const animeKeys = ['anime_trending', 'anime_latest', 'anime_top_airing', 'anime_western'];
   // For home, it also needs top_rated_tv for the merged 'Top Rated' category later.
   const homeKeys = ['trending_today', 'k_drama', 'c_drama', 'anime', 'popular_movies', 'top_rated_movies', 'top_rated_tv'];
 
@@ -162,6 +168,7 @@ export const fetchMoviesData = async (view: 'home' | 'movies' | 'tv'): Promise<G
   if (view === 'home') keysToFetch = homeKeys;
   else if (view === 'movies') keysToFetch = movieKeys;
   else if (view === 'tv') keysToFetch = tvKeys;
+  else if (view === 'anime') keysToFetch = animeKeys;
   
   const endpointsToFetch = endpoints.filter(ep => keysToFetch.includes(ep.key));
 
@@ -174,11 +181,15 @@ export const fetchMoviesData = async (view: 'home' | 'movies' | 'tv'): Promise<G
         return date.toISOString().split('T')[0];
     };
     const thirtyDaysAgo = getDateNDaysAgo(30);
+    const sevenDaysAgo = getDateNDaysAgo(7);
+    const ninetyDaysAgo = getDateNDaysAgo(90);
     const today = new Date().toISOString().split('T')[0];
 
     const responses = await Promise.all(endpointsToFetch.map(ep => {
       const url = ep.url
         .replace(/__DATE_30_DAYS_AGO__/g, thirtyDaysAgo)
+        .replace(/__DATE_7_DAYS_AGO__/g, sevenDaysAgo)
+        .replace(/__DATE_90_DAYS_AGO__/g, ninetyDaysAgo)
         .replace(/__TODAY__/g, today);
       return fetch(url);
     }));
@@ -229,10 +240,14 @@ export const fetchCategoryPageData = async (categoryKey: string, page: number): 
           return date.toISOString().split('T')[0];
       };
       const thirtyDaysAgo = getDateNDaysAgo(30);
+      const sevenDaysAgo = getDateNDaysAgo(7);
+      const ninetyDaysAgo = getDateNDaysAgo(90);
       const today = new Date().toISOString().split('T')[0];
       
       url = `${endpoint.url}&page=${page}`
         .replace(/__DATE_30_DAYS_AGO__/g, thirtyDaysAgo)
+        .replace(/__DATE_7_DAYS_AGO__/g, sevenDaysAgo)
+        .replace(/__DATE_90_DAYS_AGO__/g, ninetyDaysAgo)
         .replace(/__TODAY__/g, today);
     }
 

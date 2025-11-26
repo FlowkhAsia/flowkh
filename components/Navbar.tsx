@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FlowkhLogoIcon, SearchIcon, MenuIcon, CloseIcon, TuneIcon } from './icons/Icons';
 import ThemeSwitcher from './ThemeSwitcher';
 
-type FilterType = 'all' | 'movie' | 'tv' | 'discover' | 'my-list';
+type FilterType = 'all' | 'movie' | 'tv' | 'discover' | 'my-list' | 'anime';
 
 interface NavbarProps {
   location: { pathname: string; search: string };
@@ -50,6 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({
         case 'all': return '/';
         case 'tv': return '/tv-shows';
         case 'movie': return '/movies';
+        case 'anime': return '/anime';
         case 'discover': return '/discover';
         case 'my-list': return '/my-list';
         default: return '/';
@@ -61,6 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({
           case '/': return 'all';
           case '/tv-shows': return 'tv';
           case '/movies': return 'movie';
+          case '/anime': return 'anime';
           case '/discover': return 'discover';
           case '/my-list': return 'my-list';
           default: return 'all'; // Default or consider a different state for non-nav paths
@@ -73,6 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({
     { label: 'Home', filter: 'all' as FilterType },
     { label: 'TV Shows', filter: 'tv' as FilterType },
     { label: 'Movies', filter: 'movie' as FilterType },
+    { label: 'Anime', filter: 'anime' as FilterType },
     { label: 'Discover', filter: 'discover' as FilterType },
     { label: 'My List', filter: 'my-list' as FilterType },
   ];

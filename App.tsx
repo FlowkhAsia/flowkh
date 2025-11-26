@@ -166,7 +166,7 @@ const App: React.FC = () => {
     if (storedList) setMyList(JSON.parse(storedList));
   }, []);
 
-  const loadMovies = useCallback(async (view: 'home' | 'movies' | 'tv') => {
+  const loadMovies = useCallback(async (view: 'home' | 'movies' | 'tv' | 'anime') => {
     try {
       setLoading(true);
       setError(null);
@@ -182,10 +182,10 @@ const App: React.FC = () => {
 
   useEffect(() => { 
     const path = location.pathname;
-    const mainBrowsePaths = ['/', '/movies', '/tv-shows'];
+    const mainBrowsePaths = ['/', '/movies', '/tv-shows', '/anime'];
     
     if (mainBrowsePaths.includes(path)) {
-      const view = path === '/movies' ? 'movies' : path === '/tv-shows' ? 'tv' : 'home';
+      const view = path === '/movies' ? 'movies' : path === '/tv-shows' ? 'tv' : path === '/anime' ? 'anime' : 'home';
       loadMovies(view);
     } else {
       // For all other pages (DetailPage, Discover, My List, 404, etc.),
@@ -226,6 +226,7 @@ const App: React.FC = () => {
           case '/': pageTitle = baseTitle; break;
           case '/movies': pageTitle = `Movies | ${baseTitle}`; break;
           case '/tv-shows': pageTitle = `TV Shows | ${baseTitle}`; break;
+          case '/anime': pageTitle = `Anime | ${baseTitle}`; break;
           case '/discover': pageTitle = `Discover | ${baseTitle}`; break;
           case '/my-list': pageTitle = `My List | ${baseTitle}`; break;
           case '/privacy-policy': pageTitle = `Privacy Policy | ${baseTitle}`; break;
@@ -260,6 +261,7 @@ const App: React.FC = () => {
     switch (location.pathname) {
       case '/movies': return 'movie';
       case '/tv-shows': return 'tv';
+      case '/anime': return 'anime';
       default: return 'all';
     }
   };
@@ -279,13 +281,14 @@ const App: React.FC = () => {
         previousPreloadLink.remove();
     }
 
-    const shouldShowHero = ['/', '/movies', '/tv-shows'].includes(location.pathname);
+    const shouldShowHero = ['/', '/movies', '/tv-shows', '/anime'].includes(location.pathname);
 
     if (genres.length > 0 && shouldShowHero) {
       const activeFilter = getActiveFilter();
       let heroKey = 'trending_today';
       if (activeFilter === 'tv') heroKey = 'trending_tv';
       else if (activeFilter === 'movie') heroKey = 'trending_movies';
+      else if (activeFilter === 'anime') heroKey = 'anime_trending';
       
       const heroGenre = genres.find(g => g.key === heroKey);
       const topTen = (heroGenre?.movies || []).slice(0, 10);
@@ -355,10 +358,12 @@ const App: React.FC = () => {
     const activeFilter = getActiveFilter();
     const movieKeys = ['trending_movies', 'popular_movies', 'now_playing_movies', 'upcoming_movies', 'top_rated_movies'];
     const tvKeys = ['trending_tv', 'k_drama', 'c_drama', 'anime', 'on_the_air_tv', 'top_rated_tv'];
+    const animeKeys = ['anime_trending', 'anime_latest', 'anime_top_airing', 'anime_western'];
     const homeKeys = ['trending_today', 'k_drama', 'c_drama', 'anime', 'popular_movies', 'top_rated_movies'];
 
     if (activeFilter === 'movie') return genres.filter(g => movieKeys.includes(g.key));
     if (activeFilter === 'tv') return genres.filter(g => tvKeys.includes(g.key));
+    if (activeFilter === 'anime') return genres.filter(g => animeKeys.includes(g.key));
     if (activeFilter === 'all') {
         let homeGenres = genres
             .filter(g => homeKeys.includes(g.key))
@@ -481,13 +486,15 @@ const App: React.FC = () => {
       return <FAQPage />;
     }
 
-    if (['/', '/movies', '/tv-shows'].includes(location.pathname)) {
+    if (['/', '/movies', '/tv-shows', '/anime'].includes(location.pathname)) {
         const activeFilter = getActiveFilter();
         const pageH1 = location.pathname === '/' 
             ? 'Movies and TV Series — All in One Flow' 
             : location.pathname === '/movies' 
             ? 'Explore All Movies' 
-            : 'Explore All TV Shows';
+            : location.pathname === '/tv-shows'
+            ? 'Explore All TV Shows'
+            : 'Explore Anime';
             
         return (
           <main>
