@@ -71,7 +71,7 @@ type TmdbDetailResponse = TmdbMovieResult & {
 };
 
 
-const TMDB_BASE_URL = '/tmdb';
+const TMDB_BASE_URL = 'https://kisskh-asian.pages.dev/tmdb';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 
 const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
@@ -403,6 +403,7 @@ export const fetchDetailPageData = async (id: number, media_type: 'movie' | 'tv'
 
   const cast: Actor[] = (data.credits?.cast || [])
       .filter(Boolean)
+      .slice(0, 12)
       .map((actor: any): Actor => ({
           id: actor.id,
           name: actor.name,

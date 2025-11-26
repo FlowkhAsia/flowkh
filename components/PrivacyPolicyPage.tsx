@@ -4,11 +4,11 @@ const PrivacyPolicyPage: React.FC = () => {
   return (
     <div className="px-4 md:px-16 pt-28 pb-24 min-h-screen">
       <div className="max-w-4xl mx-auto text-gray-300 leading-relaxed">
-        <h1 className="text-4xl font-bold mb-6 text-white">Privacy Policy for flowkh</h1>
+        <h1 className="text-4xl font-bold mb-6 text-white">Privacy Policy for kisskh</h1>
         <p className="mb-4"><strong>Last Updated:</strong> July 26, 2024</p>
 
         <p className="mb-6">
-          Welcome to flowkh ("we," "us," or "our"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website (the "Service"). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.
+          Welcome to kisskh ("we," "us," or "our"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website (the "Service"). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.
         </p>
 
         <h2 className="text-2xl font-bold mt-8 mb-4 text-white">1. INFORMATION WE COLLECT</h2>
@@ -51,7 +51,7 @@ const PrivacyPolicyPage: React.FC = () => {
         </p>
 
         <h2 className="text-2xl font-bold mt-8 mb-4 text-white">7. CONTACT US</h2>
-        <p className="mb-4">If you have any questions about this Privacy Policy, please contact us at: <a href="mailto:admin@flowkh.com" className="text-[var(--brand-color)] hover:underline">admin@flowkh.com</a></p>
+        <p className="mb-4">If you have any questions about this Privacy Policy, please contact us at: <a href="mailto:admin@kisskh.cam" className="text-[var(--brand-color)] hover:underline">admin@kisskh.cam</a></p>
       </div>
     </div>
   );

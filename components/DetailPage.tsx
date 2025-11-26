@@ -150,7 +150,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         setDetails(details);
         setCast(cast);
         setSimilar(similar);
-        document.title = `${details.title} | flowkh`;
+        document.title = `${details.title} | kisskh`;
 
         setCurrentPlayingInfo(prev => ({
             ...prev,
@@ -261,11 +261,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
 
   const filteredEpisodes = useMemo(() => {
     if (!episodes) return [];
-    const query = episodeSearch.toLowerCase();
     return episodes.filter(ep => 
-        ep.name.toLowerCase().includes(query) ||
-        ep.overview.toLowerCase().includes(query) ||
-        ep.episode_number.toString().includes(query)
+        ep.name.toLowerCase().includes(episodeSearch.toLowerCase()) ||
+        ep.overview.toLowerCase().includes(episodeSearch.toLowerCase())
     );
   }, [episodes, episodeSearch]);
 
@@ -367,7 +365,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                     frameBorder="0"
                                     allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowFullScreen
-                                    referrerPolicy="origin"
                                     className="w-full h-full"
                                 ></iframe>
                             ) : (
@@ -559,7 +556,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"/>
                         <input
                             type="text"
-                            placeholder="Search by title, overview, or number..."
+                            placeholder="Search episode..."
                             value={episodeSearch}
                             onChange={(e) => setEpisodeSearch(e.target.value)}
                             className="w-full bg-[#1f1f1f] border-0 rounded-md focus:ring-2 focus:ring-[var(--brand-color)] text-white py-2.5 pl-10 pr-4"
@@ -722,7 +719,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 <button
                     aria-label="Scroll similar titles right"
                     onClick={() => scrollSimilar('right')}
-                    className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto"
+                    className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto"
                 >
                     <ChevronRightIcon className="w-full h-full" />
                 </button>
