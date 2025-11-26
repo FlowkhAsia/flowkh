@@ -184,7 +184,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
                 frameBorder="0"
                 allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
+                referrerPolicy="origin"
                 className="w-full h-full"
             ></iframe>
             ) : (
@@ -211,7 +211,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
                     </h2>
                 </div>
                 {/* Placeholder for right side of top bar to balance layout */}
-                <div className="w-24 pointer-events-auto"></div> 
+                <div className="w-24"></div> 
             </div>
         </div>
         

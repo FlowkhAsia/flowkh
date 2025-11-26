@@ -66,12 +66,13 @@ type TmdbDetailResponse = TmdbMovieResult & {
     images?: { logos?: { iso_639_1: string; file_path: string }[] };
     videos?: { results: { site: string; type: string; key: string }[] };
     credits?: { cast: any[] };
+    aggregate_credits?: { cast: any[] };
     similar?: { results: TmdbMovieResult[] };
     external_ids?: { imdb_id: string | null };
 };
 
 
-const TMDB_BASE_URL = 'https://kisskh-asian.pages.dev/tmdb';
+const TMDB_BASE_URL = '/tmdb';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 
 const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
@@ -350,12 +351,24 @@ export const fetchDiscoverResults = async (
 export const fetchDetailPageData = async (id: number, media_type: 'movie' | 'tv'): Promise<{ details: MovieDetail, cast: Actor[], similar: Movie[] }> => {
   await fetchAndCacheGenres();
   
-  const url = `${TMDB_BASE_URL}/${media_type}/${id}?language=en-US&append_to_response=credits,similar,videos,images,external_ids`;
-
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to fetch details for ${media_type} ID ${id}`);
+  // We fetch details and credits in parallel to ensure we get the full cast list, 
+  // especially for TV shows where aggregate_credits can be large and might be truncated in append_to_response.
   
-  const data = await response.json() as TmdbDetailResponse;
+  const detailsUrl = `${TMDB_BASE_URL}/${media_type}/${id}?language=en-US&append_to_response=similar,videos,images,external_ids`;
+  
+  // Use aggregate_credits for TV shows to get all actors (including guest stars)
+  // Use credits for movies
+  const creditsEndpoint = media_type === 'tv' ? 'aggregate_credits' : 'credits';
+  const creditsUrl = `${TMDB_BASE_URL}/${media_type}/${id}/${creditsEndpoint}?language=en-US`;
+
+  const [detailsRes, creditsRes] = await Promise.all([
+    fetch(detailsUrl),
+    fetch(creditsUrl)
+  ]);
+
+  if (!detailsRes.ok) throw new Error(`Failed to fetch details for ${media_type} ID ${id}`);
+  
+  const data = await detailsRes.json() as TmdbDetailResponse;
 
   // Process Logo
   const englishLogo = data.images?.logos?.find((logo: any) => logo.iso_639_1 === 'en');
@@ -401,15 +414,28 @@ export const fetchDetailPageData = async (id: number, media_type: 'movie' | 'tv'
     }));
   }
 
-  const cast: Actor[] = (data.credits?.cast || [])
+  let rawCast: any[] = [];
+  if (creditsRes.ok) {
+      const creditsData = await creditsRes.json();
+      rawCast = creditsData.cast || [];
+  }
+
+  const cast: Actor[] = (rawCast || [])
       .filter(Boolean)
-      .slice(0, 12)
-      .map((actor: any): Actor => ({
-          id: actor.id,
-          name: actor.name,
-          character: actor.character,
-          profilePath: actor.profile_path ? `${IMAGE_BASE_URL}/w185${actor.profile_path}` : null,
-      }));
+      .map((actor: any): Actor => {
+          let character = actor.character;
+          
+          if (media_type === 'tv' && actor.roles) {
+              character = actor.roles.map((r: any) => r.character).filter(Boolean).join(' / ');
+          }
+
+          return {
+            id: actor.id,
+            name: actor.name,
+            character: character || '',
+            profilePath: actor.profile_path ? `${IMAGE_BASE_URL}/w185${actor.profile_path}` : null,
+          }
+      });
 
   const similar: Movie[] = mapResultsToMovies(data.similar?.results || [], media_type);
 

@@ -20,7 +20,7 @@ const ProviderSection: React.FC<{ title: string; providers: WatchProvider[] | un
   // Example: `https://www.justwatch.com/us/provider/${provider.provider_name.toLowerCase().replace(/\s/g, '-')}`
   const generateAffiliateLink = (provider: WatchProvider) => {
     // Replace with your actual affiliate link logic.
-    return `https://www.justwatch.com/us?utm_source=kisskh&utm_medium=affiliate`;
+    return `https://www.justwatch.com/us?utm_source=flowkh&utm_medium=affiliate`;
   };
 
   return (

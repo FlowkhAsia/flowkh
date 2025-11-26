@@ -21,7 +21,15 @@ const PrivacyPolicyPage = lazy(() => import('./components/PrivacyPolicyPage'));
 const TermsOfServicePage = lazy(() => import('./components/TermsOfServicePage'));
 const FAQPage = lazy(() => import('./components/FAQPage'));
 const NotFoundPage = lazy(() => import('./components/NotFoundPage'));
-const AdsterraLeaderboard = lazy(() => import('./components/AdsterraLeaderboard'));
+const AdsterraBanner = lazy(() => import('./components/AdsterraBanner'));
+
+// Add Window interface augmentation for Google Analytics
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+    dataLayer: any[];
+  }
+}
 
 const useLocation = () => {
   const [location, setLocation] = useState({
@@ -204,50 +212,49 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleOpenSearch]);
 
-  // SEO: DYNAMIC PAGE TITLES
+  // SEO & ANALYTICS
   useEffect(() => {
-    const baseTitle = 'kisskh - Watch Movies, TV Shows & Dramas Online Free';
+    // Dynamic Page Titles
+    const baseTitle = 'flowkh - Movies and TV Series — All in One Flow';
     let pageTitle: string;
     
     const pathParts = location.pathname.split('/').filter(Boolean);
-    
     const isDynamicPath = (pathParts.length >= 2 && ['tv', 'movie', 'person', 'category'].includes(pathParts[0]));
 
-    if (isDynamicPath) {
-        // Title is set by the child component after fetching data.
-        return; 
+    if (!isDynamicPath) {
+        switch (location.pathname) {
+          case '/': pageTitle = baseTitle; break;
+          case '/movies': pageTitle = `Movies | ${baseTitle}`; break;
+          case '/tv-shows': pageTitle = `TV Shows | ${baseTitle}`; break;
+          case '/discover': pageTitle = `Discover | ${baseTitle}`; break;
+          case '/my-list': pageTitle = `My List | ${baseTitle}`; break;
+          case '/privacy-policy': pageTitle = `Privacy Policy | ${baseTitle}`; break;
+          case '/terms-of-service': pageTitle = `Terms of Service | ${baseTitle}`; break;
+          case '/faq': pageTitle = `FAQ | ${baseTitle}`; break;
+          default: pageTitle = `404 - Page Not Found | ${baseTitle}`;
+        }
+        document.title = pageTitle;
     }
 
-    switch (location.pathname) {
-      case '/': pageTitle = baseTitle; break;
-      case '/movies': pageTitle = `Movies | ${baseTitle}`; break;
-      case '/tv-shows': pageTitle = `TV Shows | ${baseTitle}`; break;
-      case '/discover': pageTitle = `Discover | ${baseTitle}`; break;
-      case '/my-list': pageTitle = `My List | ${baseTitle}`; break;
-      case '/privacy-policy': pageTitle = `Privacy Policy | ${baseTitle}`; break;
-      case '/terms-of-service': pageTitle = `Terms of Service | ${baseTitle}`; break;
-      case '/faq': pageTitle = `FAQ | ${baseTitle}`; break;
-      default:
-        pageTitle = `404 - Page Not Found | ${baseTitle}`;
-    }
-    document.title = pageTitle;
-  }, [location.pathname]);
-
-  // SEO: DYNAMIC CANONICAL URL
-  useEffect(() => {
-    const canonicalUrl = `https://kisskh.cam${location.pathname === '/' ? '' : location.pathname}`;
-
+    // Dynamic Canonical URL
+    const canonicalUrl = `https://flowkh.com${location.pathname === '/' ? '' : location.pathname}`;
     let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
       canonicalLink.rel = 'canonical';
       document.head.appendChild(canonicalLink);
     }
-    
     canonicalLink.href = canonicalUrl;
 
-  }, [location.pathname]);
+    // Google Analytics Page View Tracking
+    const gaId = (import.meta as any).env.VITE_PUBLIC_GOOGLE_ANALYTICS_ID;
+    if (typeof window.gtag === 'function' && gaId) {
+      window.gtag('config', gaId, {
+        page_path: location.pathname + location.search
+      });
+    }
+
+  }, [location.pathname, location.search]);
 
   const getActiveFilter = () => {
     switch (location.pathname) {
@@ -477,7 +484,7 @@ const App: React.FC = () => {
     if (['/', '/movies', '/tv-shows'].includes(location.pathname)) {
         const activeFilter = getActiveFilter();
         const pageH1 = location.pathname === '/' 
-            ? 'Discover and Watch Movies, TV Shows & Dramas' 
+            ? 'Movies and TV Series — All in One Flow' 
             : location.pathname === '/movies' 
             ? 'Explore All Movies' 
             : 'Explore All TV Shows';
@@ -507,8 +514,8 @@ const App: React.FC = () => {
                     onToggleMyList={handleToggleMyList} 
                   />
                   {index === 0 && (
-                    <Suspense fallback={<div className="h-[90px] w-full max-w-[728px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
-                      <AdsterraLeaderboard />
+                    <Suspense fallback={<div className="h-[250px] w-[300px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
+                      <AdsterraBanner />
                     </Suspense>
                   )}
                 </React.Fragment>
