@@ -332,7 +332,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     {isPlaying && (
       <button 
           onClick={handleClosePlayer}
-          className="fixed top-6 right-6 z-[60] p-2 text-white transition-transform hover:scale-110"
+          className="fixed top-6 right-6 z-[60] p-2 text-white bg-black/30 rounded-full transition-transform hover:scale-110"
           aria-label="Close player"
           style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))' }}
       >
@@ -348,9 +348,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 <img
                     src={details.backdropUrl.replace('/w780/', '/original/')}
                     alt=""
-                    className="w-full h-full object-cover opacity-40"
+                    className="w-full h-full object-cover opacity-20 blur-sm"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#230514] via-[#230514]/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#fff5f8] via-[#fff5f8]/80 to-transparent" />
             </div>
 
             {/* Player and Controls Layer */}
@@ -371,7 +371,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                     className="w-full h-full"
                                 ></iframe>
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-center">
+                                <div className="w-full h-full flex items-center justify-center text-center text-white">
                                     <div>
                                         <p className="text-lg">Loading player...</p>
                                         <p className="text-sm text-gray-400">This may take a moment.</p>
@@ -382,18 +382,18 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     </div>
                     {/* Server Selection Bar */}
                     <div className="w-full max-w-6xl mx-auto mt-4 px-4 md:px-16 pb-4">
-                        <div className="p-2 bg-[#2a0a1a]/80 rounded-lg backdrop-blur-sm border border-[#3d0f26]">
+                        <div className="p-2 bg-white rounded-lg backdrop-blur-sm border border-[#fce7f3] shadow-sm">
                             {/* Desktop: Button row */}
                             <div className="hidden md:flex flex-wrap items-center gap-2">
-                                <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
+                                <span className="text-sm font-semibold text-[#831843] mr-2 shrink-0">Servers:</span>
                                 {servers.map(({ name, displayName }) => (
                                     <button
                                         key={name}
                                         onClick={() => setSelectedServer(name)}
                                         className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
                                             selectedServer === name
-                                                ? 'bg-white text-black'
-                                                : 'bg-[#3d0f26] hover:bg-[#5a1436]'
+                                                ? 'bg-[#4a0424] text-white'
+                                                : 'bg-[#ffe4ef] text-[#4a0424] hover:bg-[#fecdd3]'
                                         }`}
                                     >
                                         {displayName}
@@ -403,12 +403,12 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
 
                             {/* Mobile: Dropdown */}
                             <div className="relative w-full md:hidden" ref={serverDropdownRef}>
-                                <div onClick={() => setIsServerDropdownOpen(!isServerDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#3d0f26] rounded-md cursor-pointer hover:bg-[#5a1436]">
-                                    <span className="font-semibold">Server: {servers.find(s => s.name === selectedServer)?.displayName}</span>
-                                    <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform ${isServerDropdownOpen ? 'rotate-180' : ''}`} />
+                                <div onClick={() => setIsServerDropdownOpen(!isServerDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#ffe4ef] rounded-md cursor-pointer hover:bg-[#fecdd3]">
+                                    <span className="font-semibold text-[#4a0424]">Server: {servers.find(s => s.name === selectedServer)?.displayName}</span>
+                                    <ChevronDownIcon className={`w-5 h-5 text-[#831843] transition-transform ${isServerDropdownOpen ? 'rotate-180' : ''}`} />
                                 </div>
                                 {isServerDropdownOpen && (
-                                    <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-[#3d0f26] rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-gray-700/50">
+                                    <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-white rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-[#fce7f3]">
                                         <ul className="py-1">
                                             {servers.map(({ name, displayName }) => {
                                                 const isSelected = selectedServer === name;
@@ -416,7 +416,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                                     <li
                                                         key={name}
                                                         onClick={() => { setSelectedServer(name); setIsServerDropdownOpen(false); }}
-                                                        className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-white/10 font-semibold' : 'hover:bg-white/5' }`}
+                                                        className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-[#ffe4ef] font-semibold text-[#4a0424]' : 'hover:bg-gray-50 text-[#831843]' }`}
                                                     >
                                                         <span>{displayName}</span>
                                                         {isSelected && <CheckIcon className="w-5 h-5" />}
@@ -442,8 +442,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     className="object-cover w-full h-full" 
                 />
                 {/* Gradient Overlays */}
-                <div className="absolute inset-0 bg-black/40" />
-                <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#230514] to-transparent" />
+                <div className="absolute inset-0 bg-white/30" />
+                <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#fff5f8] to-transparent" />
             </div>
 
             {/* Content Layer */}
@@ -456,61 +456,61 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         className="w-auto max-w-[60%] md:max-w-[50%] max-h-16 md:max-h-32 object-contain object-left drop-shadow-lg"
                         />
                     ) : (
-                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bebas tracking-wider text-shadow-lg">{details.title}</h1>
+                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bebas tracking-wider text-[#4a0424] drop-shadow-sm">{details.title}</h1>
                     )}
                     
-                    <div className="flex items-center flex-wrap gap-x-2 gap-y-2 text-xs md:text-sm text-gray-200">
-                        <div className="flex items-center gap-1.5 bg-black/40 border border-white/40 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium">
-                            <StarIcon className="w-4 h-4 text-yellow-400"/><span>{details.rating.toFixed(1)}</span>
+                    <div className="flex items-center flex-wrap gap-x-2 gap-y-2 text-xs md:text-sm text-[#4a0424]">
+                        <div className="flex items-center gap-1.5 bg-white/60 backdrop-blur-sm border border-[#831843]/30 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium">
+                            <StarIcon className="w-4 h-4 text-yellow-500"/><span>{details.rating.toFixed(1)}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 bg-black/40 border border-white/40 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium">
-                            <CalendarIcon className="w-4 h-4 opacity-80"/><span>{details.releaseYear}</span>
+                        <div className="flex items-center gap-1.5 bg-white/60 backdrop-blur-sm border border-[#831843]/30 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium">
+                            <CalendarIcon className="w-4 h-4 text-[#831843]"/><span>{details.releaseYear}</span>
                         </div>
                         {details.runtime > 0 && 
-                          <div className="flex items-center gap-1.5 bg-black/40 border border-white/40 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium">
-                            <ClockIcon className="w-4 h-4 opacity-80"/><span>{isTV ? `${details.runtime}m` : formatRuntime(details.runtime)}</span>
+                          <div className="flex items-center gap-1.5 bg-white/60 backdrop-blur-sm border border-[#831843]/30 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium">
+                            <ClockIcon className="w-4 h-4 text-[#831843]"/><span>{isTV ? `${details.runtime}m` : formatRuntime(details.runtime)}</span>
                           </div>
                         }
                         {details.genres.slice(0, 3).map(genre => (
-                            <div key={genre} className="bg-black/40 border border-white/40 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium">{genre}</div>
+                            <div key={genre} className="bg-white/60 backdrop-blur-sm border border-[#831843]/30 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium text-[#831843]">{genre}</div>
                         ))}
                     </div>
 
-                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-shadow-md max-w-xl line-clamp-2 md:line-clamp-3 text-gray-300">{details.description}</p>
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg max-w-xl line-clamp-2 md:line-clamp-3 text-[#4a0424] font-medium drop-shadow-sm">{details.description}</p>
                     
                     <div className="flex items-center space-x-3 pt-2 md:pt-4 flex-wrap gap-y-2">
-                        <button onClick={handlePlay} className="flex items-center gap-x-2 rounded-lg bg-white px-4 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base font-bold text-black transition hover:bg-gray-300">
-                            <PlayIcon className="h-5 sm:h-6 w-5 sm:w-6 text-black" /> Play
+                        <button onClick={handlePlay} className="flex items-center gap-x-2 rounded-lg bg-[#4a0424] px-4 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base font-bold text-white transition hover:bg-[#831843]">
+                            <PlayIcon className="h-5 sm:h-6 w-5 sm:w-6 text-white" /> Play
                         </button>
                         <button 
                             onClick={() => onToggleMyList(details)} 
-                            className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-black/40 backdrop-blur-sm border border-white/50 hover:bg-white/10 transition" 
+                            className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/60 backdrop-blur-sm border border-[#831843]/50 hover:bg-white transition text-[#4a0424]" 
                             aria-label={isAdded ? "Remove from My List" : "Add to My List"}
                             title={isAdded ? "Remove from My List" : "Add to My List"}
                         >
                             {isAdded ? <CheckIcon className="h-5 sm:h-6 w-5 sm:w-6"/> : <PlusIcon className="h-5 sm:h-6 w-5 sm:w-6"/>}
                         </button>
                         {details.trailerUrl && (
-                            <button onClick={() => setShowTrailer(true)} className="flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-black/40 backdrop-blur-sm border border-white/50 hover:bg-white/10 transition font-semibold">
+                            <button onClick={() => setShowTrailer(true)} className="flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-white/60 backdrop-blur-sm border border-[#831843]/50 hover:bg-white transition font-semibold text-[#4a0424]">
                                 <VideoCameraIcon className="w-5 sm:h-6 w-5 sm:w-6"/>
                                 Trailer
                             </button>
                         )}
                         {isTV ? (
-                            <button onClick={scrollToEpisodes} className="px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-black/40 backdrop-blur-sm border border-white/50 hover:bg-white/10 transition font-semibold">Episodes</button>
+                            <button onClick={scrollToEpisodes} className="px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-white/60 backdrop-blur-sm border border-[#831843]/50 hover:bg-white transition font-semibold text-[#4a0424]">Episodes</button>
                         ) : (
                              <a 
                                 href={`https://dl.vidsrc.vip/movie/${details.id}`} 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
-                                className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-black/40 backdrop-blur-sm border border-white/50 hover:bg-white/10 transition" 
+                                className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/60 backdrop-blur-sm border border-[#831843]/50 hover:bg-white transition text-[#4a0424]" 
                                 aria-label="Download"
                                 title="Download Movie"
                               >
                                 <DownloadIcon className="w-5 sm:h-6 w-5 sm:w-6"/>
                             </a>
                         )}
-                        <button onClick={scrollToSimilar} className="hidden sm:block px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-black/40 backdrop-blur-sm border border-white/50 hover:bg-white/10 transition font-semibold">Similar</button>
+                        <button onClick={scrollToSimilar} className="hidden sm:block px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-white/60 backdrop-blur-sm border border-[#831843]/50 hover:bg-white transition font-semibold text-[#4a0424]">Similar</button>
                     </div>
                 </div>
             </div>
@@ -523,19 +523,19 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             <section ref={episodesRef}>
                 <div className="flex items-center space-x-3 mb-6">
                     <div className="w-1.5 h-7 bg-[var(--brand-color)] rounded-full" />
-                    <h2 className="text-2xl font-bold">Episodes</h2>
+                    <h2 className="text-2xl font-bold text-[#4a0424]">Episodes</h2>
                 </div>
 
                 {/* Toolbar */}
-                <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-6 bg-[#2a0a1a] p-3 rounded-lg border border-gray-700/50">
+                <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-6 bg-white p-3 rounded-lg border border-[#fce7f3] shadow-sm">
                     {/* Season Selector */}
                     <div className="relative w-full" ref={seasonDropdownRef}>
-                        <div onClick={() => setIsSeasonDropdownOpen(!isSeasonDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#3d0f26] rounded-md cursor-pointer hover:bg-[#5a1436]">
-                            <span className="font-semibold">{selectedSeason.name}</span>
-                            <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
+                        <div onClick={() => setIsSeasonDropdownOpen(!isSeasonDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#ffe4ef] rounded-md cursor-pointer hover:bg-[#fecdd3]">
+                            <span className="font-semibold text-[#4a0424]">{selectedSeason.name}</span>
+                            <ChevronDownIcon className={`w-5 h-5 text-[#831843] transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
                         </div>
                         {isSeasonDropdownOpen && (
-                            <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-[#3d0f26] rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-gray-700/50">
+                            <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-white rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-[#fce7f3]">
                                 <ul className="py-1">
                                     {(details.seasons || []).filter(s => s.episode_count > 0).map(season => {
                                         const isSelected = selectedSeason.id === season.id;
@@ -543,7 +543,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                             <li
                                                 key={season.id}
                                                 onClick={() => { setSelectedSeason(season); setIsSeasonDropdownOpen(false); }}
-                                                className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-white/10 font-semibold' : 'hover:bg-white/5' }`}
+                                                className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-[#ffe4ef] font-semibold text-[#4a0424]' : 'hover:bg-gray-50 text-[#831843]' }`}
                                             >
                                                 <span>{season.name}</span>
                                                 {isSelected && <CheckIcon className="w-5 h-5" />}
@@ -556,13 +556,13 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     </div>
                     {/* Episode Search */}
                     <div className="relative w-full flex items-center">
-                        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"/>
+                        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#831843]/60 pointer-events-none"/>
                         <input
                             type="text"
                             placeholder="Search by title, overview, or number..."
                             value={episodeSearch}
                             onChange={(e) => setEpisodeSearch(e.target.value)}
-                            className="w-full bg-[#3d0f26] border-0 rounded-md focus:ring-2 focus:ring-[var(--brand-color)] text-white py-2.5 pl-10 pr-4"
+                            className="w-full bg-[#ffe4ef] border-0 rounded-md focus:ring-2 focus:ring-[var(--brand-color)] text-[#4a0424] py-2.5 pl-10 pr-4 placeholder-[#831843]/60"
                         />
                     </div>
                 </div>
@@ -594,37 +594,37 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                 <div 
                                     key={episode.id} 
                                     onClick={() => selectedSeason && isReleased && handleEpisodePlay(selectedSeason.season_number, episode)}
-                                    className={`flex items-center gap-4 bg-[#2a0a1a] p-2 rounded-lg group transition-all duration-200 ${isReleased ? 'cursor-pointer hover:bg-[#3d0f26]' : 'cursor-not-allowed opacity-70'} ${isPlayingEpisode ? 'bg-[var(--brand-color)]/30 border border-[var(--brand-color)]/80' : 'border border-transparent'}`}
+                                    className={`flex items-center gap-4 bg-white p-2 rounded-lg group transition-all duration-200 shadow-sm border ${isReleased ? 'cursor-pointer hover:bg-[#fff0f5] border-[#fce7f3]' : 'cursor-not-allowed opacity-70 border-transparent'} ${isPlayingEpisode ? 'bg-[var(--brand-color)]/10 border-[var(--brand-color)]/50' : ''}`}
                                 >
-                                    <div className="relative w-32 sm:w-40 md:w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-[#3d0f26]">
+                                    <div className="relative w-32 sm:w-40 md:w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-[#ffe4ef]">
                                         <img src={episode.still_path || details.backdropUrl} alt={episode.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async"/>
                                         {isReleased ? (
-                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 flex items-center justify-center transition-colors">
                                                 {isPlayingEpisode ? (
-                                                    <div className="flex items-center gap-2 text-white text-sm font-bold bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-md border border-white/30">
-                                                        <svg className="w-5 h-5 animate-pulse text-[var(--brand-color)]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 4.5V19.5L18 12L6 4.5Z"></path></svg>
+                                                    <div className="flex items-center gap-2 text-white text-sm font-bold bg-[#4a0424]/80 backdrop-blur-sm px-3 py-1.5 rounded-md border border-white/30">
+                                                        <svg className="w-5 h-5 animate-pulse text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 4.5V19.5L18 12L6 4.5Z"></path></svg>
                                                         <span>Playing</span>
                                                     </div>
                                                 ) : (
-                                                    <PlayIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                    <PlayIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" />
                                                 )}
                                             </div>
                                         ) : (
-                                            <div className="absolute top-2 right-2 bg-[#2a0a1a]/90 border border-zinc-600 text-zinc-300 text-[11px] font-semibold px-2 py-0.5 rounded-md shadow-lg backdrop-blur-sm">
+                                            <div className="absolute top-2 right-2 bg-white/90 border border-[#fce7f3] text-[#831843] text-[11px] font-semibold px-2 py-0.5 rounded-md shadow-sm backdrop-blur-sm">
                                                 Coming Soon
                                             </div>
                                         )}
-                                        <span className="absolute bottom-1 left-2 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none">{episode.episode_number}</span>
+                                        <span className="absolute bottom-1 left-2 bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none">{episode.episode_number}</span>
                                     </div>
                                     <div className="flex-1 min-w-0 pr-4">
                                         <div className="flex items-baseline justify-between">
-                                            <h3 className={`text-base font-bold truncate ${isPlayingEpisode ? 'text-[var(--brand-color)]' : 'text-white'}`}>{episode.name}</h3>
-                                            {episode.runtime && isReleased && <span className="text-sm text-gray-400 flex-shrink-0 ml-4">{episode.runtime}m</span>}
+                                            <h3 className={`text-base font-bold truncate ${isPlayingEpisode ? 'text-[var(--brand-color)]' : 'text-[#4a0424]'}`}>{episode.name}</h3>
+                                            {episode.runtime && isReleased && <span className="text-sm text-[#831843] flex-shrink-0 ml-4">{episode.runtime}m</span>}
                                         </div>
                                         {!isReleased && airDate && (
-                                            <p className="text-xs text-gray-400 mt-1">Releases on: {airDate}</p>
+                                            <p className="text-xs text-[#831843] mt-1">Releases on: {airDate}</p>
                                         )}
-                                        <p className="text-sm text-gray-400 mt-2 line-clamp-2">
+                                        <p className="text-sm text-[#5e1b35] mt-2 line-clamp-2">
                                             {episode.overview || 'No description available for this episode.'}
                                         </p>
                                     </div>
@@ -633,16 +633,16 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={(e) => e.stopPropagation()}
-                                        className="ml-auto flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#3d0f26] hover:bg-[#5a1436] transition-colors" 
+                                        className="ml-auto flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#ffe4ef] hover:bg-[#fecdd3] transition-colors" 
                                         aria-label={`Download episode ${episode.episode_number}`}
                                         title={`Download Episode ${episode.episode_number}`}
                                     >
-                                        <DownloadIcon className="w-6 h-6 text-gray-300"/>
+                                        <DownloadIcon className="w-6 h-6 text-[#831843]"/>
                                     </a>
                                 </div>
                             )
                         }) : (
-                            <div className="text-center text-gray-400 py-16">
+                            <div className="text-center text-gray-500 py-16">
                                 <p className="text-xl">No episodes found</p>
                                 <p className="text-sm mt-1">Try adjusting your search query.</p>
                             </div>
@@ -653,7 +653,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         )}
 
         {/* Ad Banner */}
-        <Suspense fallback={<div className="h-[250px] w-[300px] bg-[#2a0a1a] rounded-md mx-auto my-8 animate-pulse" />}>
+        <Suspense fallback={<div className="h-[250px] w-[300px] bg-[#ffe4ef] rounded-md mx-auto my-8 animate-pulse" />}>
           <AdsterraBanner />
         </Suspense>
 
@@ -662,15 +662,15 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             <section>
                 <div className="flex items-center space-x-3 mb-6">
                     <div className="w-1.5 h-7 bg-[var(--brand-color)] rounded-full" />
-                    <h2 className="text-2xl font-bold">Actors</h2>
+                    <h2 className="text-2xl font-bold text-[#4a0424]">Actors</h2>
                 </div>
                 <div className="group/row relative md:-ml-2">
                     <button
                         aria-label="Scroll actors left"
                         onClick={() => scrollActors('left')} 
-                        className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto"
+                        className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-[#4a0424] shadow-md hover:bg-white"
                     >
-                        <ChevronLeftIcon className="w-full h-full" />
+                        <ChevronLeftIcon className="w-full h-full p-1" />
                     </button>
                     <div ref={actorsRowRef} className="flex items-start space-x-2 sm:space-x-4 md:space-x-5 overflow-x-scroll scrollbar-hide md:p-2 overscroll-x-contain scroll-smooth">
                         {cast.map(actor => (
@@ -684,9 +684,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     <button
                         aria-label="Scroll actors right"
                         onClick={() => scrollActors('right')} 
-                        className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto"
+                        className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-[#4a0424] shadow-md hover:bg-white"
                     >
-                        <ChevronRightIcon className="w-full h-full" />
+                        <ChevronRightIcon className="w-full h-full p-1" />
                     </button>
                 </div>
             </section>
@@ -697,15 +697,15 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         <section ref={similarSectionRef}>
             <div className="flex items-center space-x-3 mb-6">
                 <div className="w-1.5 h-7 bg-[var(--brand-color)] rounded-full" />
-                <h2 className="text-2xl font-bold">You may like</h2>
+                <h2 className="text-2xl font-bold text-[#4a0424]">You may like</h2>
             </div>
             <div className="group/row relative md:-ml-2">
                  <button
                     aria-label="Scroll similar titles left"
                     onClick={() => scrollSimilar('left')}
-                    className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto"
+                    className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-[#4a0424] shadow-md hover:bg-white"
                 >
-                    <ChevronLeftIcon className="w-full h-full" />
+                    <ChevronLeftIcon className="w-full h-full p-1" />
                 </button>
                 <div ref={similarRowRef} className="flex items-start space-x-2 sm:space-x-4 md:space-x-5 overflow-x-scroll scrollbar-hide md:p-2 overscroll-x-contain scroll-smooth">
                     {similar.map((s_movie) => (
@@ -722,9 +722,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 <button
                     aria-label="Scroll similar titles right"
                     onClick={() => scrollSimilar('right')}
-                    className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto"
+                    className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-[#4a0424] shadow-md hover:bg-white"
                 >
-                    <ChevronRightIcon className="w-full h-full" />
+                    <ChevronRightIcon className="w-full h-full p-1" />
                 </button>
             </div>
         </section>

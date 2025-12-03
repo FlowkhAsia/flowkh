@@ -85,23 +85,23 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
       className={`fixed inset-0 z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-[#fff5f8]/80 backdrop-blur-sm" />
       <div
-        className={`relative w-full max-w-3xl mx-auto mt-[10vh] bg-[#2a0a1a]/95 rounded-xl shadow-2xl border border-zinc-700 transition-all duration-300 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`relative w-full max-w-3xl mx-auto mt-[10vh] bg-[#fff5f8] rounded-xl shadow-2xl border border-[#fce7f3] transition-all duration-300 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center p-4 border-b border-zinc-700/80">
-          <SearchIcon className="h-6 w-6 text-zinc-400 mr-3" />
+        <div className="flex items-center p-4 border-b border-[#fce7f3]">
+          <SearchIcon className="h-6 w-6 text-[#831843]/60 mr-3" />
           <input
             ref={inputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for movies and TV shows..."
-            className="w-full bg-transparent text-white placeholder-zinc-400 text-lg focus:outline-none"
+            className="w-full bg-transparent text-[#4a0424] placeholder-[#831843]/60 text-lg focus:outline-none"
           />
           {searchQuery && (
-            <button onClick={() => setSearchQuery('')} className="text-zinc-500 hover:text-white">
+            <button onClick={() => setSearchQuery('')} className="text-[#831843]/60 hover:text-[#4a0424]">
               <XCircleIcon className="h-6 w-6" />
             </button>
           )}
@@ -113,7 +113,7 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
               <div className="w-8 h-8 border-4 border-[var(--brand-color)] border-solid border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : debouncedSearchQuery && results.length === 0 ? (
-            <div className="text-center p-16 text-zinc-400">
+            <div className="text-center p-16 text-gray-500">
               <p>No results found for "{debouncedSearchQuery}"</p>
             </div>
           ) : results.length > 0 ? (
@@ -122,20 +122,20 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
                 <li
                   key={movie.id}
                   onClick={() => handleSelect(movie)}
-                  className="bg-[#3d0f26]/50 hover:bg-[#5a1436]/80 rounded-lg transition-colors cursor-pointer"
+                  className="bg-white hover:bg-[#ffe4ef] rounded-lg transition-colors cursor-pointer border border-transparent hover:border-[#fbcfe8] shadow-sm"
                 >
                   <div className="flex items-center p-3 gap-4">
                     <div className="w-16 flex-shrink-0">
-                        <div className="aspect-[2/3] bg-[#2a0a1a] rounded-md overflow-hidden">
+                        <div className="aspect-[2/3] bg-[#ffe4ef] rounded-md overflow-hidden">
                            <img src={movie.posterUrl} alt={movie.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                         </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-semibold truncate">{movie.title}</h3>
-                      <div className="flex items-center text-xs text-gray-400 mt-1.5 space-x-2">
+                      <h3 className="text-[#4a0424] font-semibold truncate">{movie.title}</h3>
+                      <div className="flex items-center text-xs text-[#831843] mt-1.5 space-x-2">
                         <span>{movie.releaseYear}</span>
-                        <div className="flex items-center gap-1 border border-white/20 rounded px-1 py-0.5 text-[10px] font-medium">
-                            <StarIcon className="w-2.5 h-2.5 text-yellow-400" />
+                        <div className="flex items-center gap-1 border border-[#831843]/20 rounded px-1 py-0.5 text-[10px] font-medium">
+                            <StarIcon className="w-2.5 h-2.5 text-yellow-500" />
                             <span>{movie.rating.toFixed(1)}</span>
                         </div>
                         <span className="uppercase text-[10px]">{movie.media_type}</span>
@@ -146,14 +146,14 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
               ))}
             </ul>
           ) : (
-             <div className="text-center p-16 text-zinc-500">
+             <div className="text-center p-16 text-gray-400">
                 <p>Find your next favorite show.</p>
              </div>
           )}
         </div>
 
-        <div className="p-3 border-t border-zinc-700/80 text-right text-xs text-zinc-500">
-            Press <kbd className="font-sans border border-zinc-600 bg-zinc-700/50 rounded-sm px-1.5 py-0.5">ESC</kbd> to close
+        <div className="p-3 border-t border-[#fce7f3] text-right text-xs text-[#831843]/70">
+            Press <kbd className="font-sans border border-[#fbcfe8] bg-[#ffe4ef] rounded-sm px-1.5 py-0.5 text-[#4a0424]">ESC</kbd> to close
         </div>
       </div>
     </div>

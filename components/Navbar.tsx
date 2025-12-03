@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className={`fixed top-0 z-40 flex w-full items-center justify-between p-4 md:px-16 transition-colors duration-300 ${isScrolled ? 'bg-[#230514]/90 backdrop-blur-sm' : 'bg-transparent'}`}>
+      <header className={`fixed top-0 z-40 flex w-full items-center justify-between p-4 md:px-16 transition-colors duration-300 ${isScrolled ? 'bg-[#fff5f8]/90 backdrop-blur-sm shadow-sm' : 'bg-transparent'}`}>
         <div className="flex items-center space-x-4 md:space-x-8">
           <a href="/" onClick={(e) => handleNavClick(e, '/')}>
             <FlowkhLogoIcon className="h-9 w-auto cursor-pointer" />
@@ -98,8 +98,8 @@ const Navbar: React.FC<NavbarProps> = ({
                   onClick={(e) => handleNavClick(e, path)}
                   className={`px-3 py-2 text-base transition-colors duration-200 rounded-md ${
                     activeFilter === item.filter
-                      ? 'font-bold text-white'
-                      : 'font-semibold text-neutral-400 hover:text-white'
+                      ? 'font-bold text-[#831843]'
+                      : 'font-semibold text-[#831843]/70 hover:text-[#831843]'
                   }`}
                 >
                   {item.label}
@@ -113,14 +113,14 @@ const Navbar: React.FC<NavbarProps> = ({
           {/* Desktop Search Bar Trigger */}
           <button 
             onClick={onOpenSearch}
-            className="hidden md:flex flex-1 max-w-sm items-center justify-between bg-black/50 px-4 py-2 rounded-lg border border-neutral-700 hover:border-neutral-600 focus-within:border-neutral-500 focus-within:bg-black/70 transition-all duration-300"
+            className="hidden md:flex flex-1 max-w-sm items-center justify-between bg-white/50 px-4 py-2 rounded-lg border border-[#fce7f3] hover:border-[#fbcfe8] focus-within:border-[#f9a8d4] focus-within:bg-white/80 transition-all duration-300"
             aria-label="Open search"
           >
             <div className="flex items-center flex-1">
-              <SearchIcon className="h-5 w-5 text-gray-400" />
-              <span className="text-gray-400 text-sm px-2">Search...</span>
+              <SearchIcon className="h-5 w-5 text-[#831843]/60" />
+              <span className="text-[#831843]/60 text-sm px-2">Search...</span>
             </div>
-            <div className="bg-neutral-800/80 text-gray-300 text-xs font-mono rounded-md px-2 py-1 border border-neutral-700">
+            <div className="bg-white/60 text-[#831843]/70 text-xs font-mono rounded-md px-2 py-1 border border-[#fce7f3]">
               CTRL+K
             </div>
           </button>
@@ -128,13 +128,13 @@ const Navbar: React.FC<NavbarProps> = ({
           {/* Mobile Search Icon */}
           <div className="flex items-center md:hidden">
             <button onClick={onOpenSearch} aria-label="Open search">
-              <SearchIcon className="h-6 w-6 cursor-pointer" />
+              <SearchIcon className="h-6 w-6 cursor-pointer text-[#4a0424]" />
             </button>
           </div>
 
           <div ref={themeSwitcherRef} className="relative">
             <button onClick={() => setShowThemeSwitcher(s => !s)} aria-label="Change theme">
-                <TuneIcon className="h-6 w-6 cursor-pointer" />
+                <TuneIcon className="h-6 w-6 cursor-pointer text-[#4a0424]" />
             </button>
             {showThemeSwitcher && <ThemeSwitcher />}
           </div>
@@ -146,7 +146,7 @@ const Navbar: React.FC<NavbarProps> = ({
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
             >
-              <MenuIcon className="h-6 w-6" />
+              <MenuIcon className="h-6 w-6 text-[#4a0424]" />
             </button>
           </div>
         </div>
@@ -156,13 +156,13 @@ const Navbar: React.FC<NavbarProps> = ({
       <div
         id="mobile-menu"
         className={`
-        fixed inset-0 z-40 bg-black/90 backdrop-blur-sm lg:hidden
+        fixed inset-0 z-40 bg-[#fff5f8]/95 backdrop-blur-sm lg:hidden
         transition-opacity duration-300 ease-in-out
         ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
       `}>
         <div className="flex justify-end p-4 pt-[calc(1rem+env(safe-area-inset-top))] pr-[calc(1rem+env(safe-area-inset-right))]">
           <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu">
-            <CloseIcon className="h-8 w-8" />
+            <CloseIcon className="h-8 w-8 text-[#4a0424]" />
           </button>
         </div>
         <div className="flex flex-col items-center justify-center h-full -mt-16">
@@ -175,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     href={path}
                     onClick={(e) => handleNavClick(e, path)}
                     className={`text-2xl font-semibold transition-colors duration-200 ${
-                      activeFilter === item.filter ? 'text-white' : 'text-gray-400'
+                      activeFilter === item.filter ? 'text-[#831843]' : 'text-[#831843]/60'
                     }`}
                   >
                     {item.label}

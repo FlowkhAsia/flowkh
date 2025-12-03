@@ -95,38 +95,38 @@ const ActorCreditsPage: React.FC<ActorCreditsPageProps> = ({ actorId, onSelectMo
   const needsTruncation = actorDetails.biography && actorDetails.biography.length > 350;
 
   return (
-    <div className="pb-24 min-h-screen animate-fade-in-cinematic">
+    <div className="pb-24 min-h-screen animate-fade-in-cinematic bg-[#fff5f8]">
         {/* Hero Section */}
         <div className="relative pt-24 pb-12 md:pb-20 px-4 md:px-16 overflow-hidden">
             {/* Backdrop Image */}
             {backdropUrl && (
                 <div className="absolute inset-0">
                     <img src={backdropUrl} alt="" className="w-full h-full object-cover opacity-20 blur-sm" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#230514] via-[#230514]/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#fff5f8] via-[#fff5f8]/80 to-transparent" />
                 </div>
             )}
-            {!backdropUrl && <div className="absolute inset-0 bg-gradient-to-t from-[#230514] to-[#2a0a1a]" />}
+            {!backdropUrl && <div className="absolute inset-0 bg-gradient-to-t from-[#fff5f8] to-[#fce7f3]" />}
 
 
             {/* Content */}
             <div className="relative z-10 flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start">
                 <div className="w-48 md:w-56 flex-shrink-0">
-                    <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-[#3d0f26] shadow-2xl">
+                    <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-[#ffe4ef] shadow-2xl">
                         {actorDetails.profilePath ? (
                             <img src={actorDetails.profilePath} alt={actorDetails.name} className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                                <UserCircleIcon className="w-24 h-24 text-zinc-600"/>
+                                <UserCircleIcon className="w-24 h-24 text-[#f9a8d4]"/>
                             </div>
                         )}
                     </div>
                 </div>
 
                 <div className="flex-1 text-center md:text-left">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-4">{actorDetails.name}</h1>
+                    <h1 className="text-4xl md:text-6xl font-bold mb-4 text-[#4a0424]">{actorDetails.name}</h1>
                     
                     {actorDetails.birthday && (
-                        <div className="flex items-center justify-center md:justify-start gap-2 text-gray-400 mb-4">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-[#831843] mb-4">
                             <CalendarIcon className="w-5 h-5"/>
                             <span>Born {formatDate(actorDetails.birthday)}</span>
                             {actorDetails.place_of_birth && <span>in {actorDetails.place_of_birth}</span>}
@@ -135,14 +135,14 @@ const ActorCreditsPage: React.FC<ActorCreditsPageProps> = ({ actorId, onSelectMo
                     
                     <div className="relative max-w-3xl mx-auto md:mx-0">
                         <p 
-                            className={`text-gray-300 leading-relaxed transition-all duration-300 ease-in-out text-sm md:text-base ${needsTruncation && !isBioExpanded ? 'line-clamp-6' : ''}`}
+                            className={`text-[#5e1b35] leading-relaxed transition-all duration-300 ease-in-out text-sm md:text-base ${needsTruncation && !isBioExpanded ? 'line-clamp-6' : ''}`}
                         >
                             {actorDetails.biography || "No biography available."}
                         </p>
                         {needsTruncation && (
                             <button 
                                 onClick={() => setIsBioExpanded(!isBioExpanded)}
-                                className="text-white font-semibold mt-2 hover:underline"
+                                className="text-[#831843] font-semibold mt-2 hover:underline"
                             >
                                 {isBioExpanded ? 'Show Less' : 'Show More'}
                             </button>
@@ -156,7 +156,7 @@ const ActorCreditsPage: React.FC<ActorCreditsPageProps> = ({ actorId, onSelectMo
         <div className="px-4 md:px-16">
             <div className="flex items-center space-x-3 mb-6">
                 <div className="w-1.5 h-7 bg-[var(--brand-color)] rounded-full" />
-                <h2 className="text-2xl font-bold">Known For</h2>
+                <h2 className="text-2xl font-bold text-[#4a0424]">Known For</h2>
             </div>
 
             {credits.length > 0 ? (
@@ -179,7 +179,7 @@ const ActorCreditsPage: React.FC<ActorCreditsPageProps> = ({ actorId, onSelectMo
                     )}
                 </>
             ) : (
-                <p className="text-gray-400">No credits found.</p>
+                <p className="text-gray-500">No credits found.</p>
             )}
         </div>
     </div>

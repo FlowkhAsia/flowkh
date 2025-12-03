@@ -31,14 +31,14 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, myList, onToggleMyLi
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-3">
           <div className="w-1.5 h-7 bg-[var(--brand-color)] rounded-full" />
-          <h2 className="cursor-pointer text-lg font-bold text-white transition duration-200 md:text-2xl">
+          <h2 className="cursor-pointer text-lg font-bold text-[#4a0424] transition duration-200 md:text-2xl">
             {title}
           </h2>
         </div>
         {onSeeAll && (
           <button
             onClick={onSeeAll}
-            className="text-sm font-semibold text-neutral-400 hover:text-white transition-colors duration-200"
+            className="text-sm font-semibold text-[#831843] hover:text-[#4a0424] transition-colors duration-200"
           >
             See All &gt;
           </button>
@@ -49,9 +49,9 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, myList, onToggleMyLi
         <button
             onClick={() => handleClick('left')}
             aria-label="Scroll left"
-            className="absolute top-0 bottom-0 left-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:lg:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100"
+            className="absolute top-0 bottom-0 left-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:lg:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 bg-white/70 rounded-full text-[#4a0424] shadow-md hover:bg-white"
         >
-            <ChevronLeftIcon className="w-full h-full" />
+            <ChevronLeftIcon className="w-full h-full p-1" />
         </button>
         <div ref={rowRef} className="flex items-center space-x-2 md:space-x-4 overflow-x-scroll scrollbar-hide md:p-2 overscroll-x-contain snap-x snap-mandatory scroll-smooth">
           {movies.map((movie) => (
@@ -68,9 +68,9 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, myList, onToggleMyLi
         <button
             onClick={() => handleClick('right')}
             aria-label="Scroll right"
-            className="absolute top-0 bottom-0 right-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:lg:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100"
+            className="absolute top-0 bottom-0 right-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:lg:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 bg-white/70 rounded-full text-[#4a0424] shadow-md hover:bg-white"
         >
-            <ChevronRightIcon className="w-full h-full" />
+            <ChevronRightIcon className="w-full h-full p-1" />
         </button>
       </div>
     </div>

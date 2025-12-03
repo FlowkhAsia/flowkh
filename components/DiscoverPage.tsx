@@ -370,26 +370,26 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
           <div className="relative" ref={dropdownRef}>
               <div
                   onClick={() => setIsOpen(!isOpen)}
-                  className={`flex items-center justify-between w-full p-3 bg-[#2d2d2d] rounded-lg cursor-pointer h-[60px] transition-all duration-200 hover:bg-[#3f3f3f] ${isOpen ? 'ring-2 ring-white/50' : 'ring-0 ring-transparent'}`}
+                  className={`flex items-center justify-between w-full p-3 bg-white border border-[#fce7f3] rounded-lg cursor-pointer h-[60px] transition-all duration-200 hover:bg-[#ffe4ef] shadow-sm ${isOpen ? 'ring-2 ring-[var(--brand-color)]/30' : ''}`}
               >
                   <div>
-                      <p className="text-xs text-gray-400">{label}</p>
-                      <span className="font-semibold">{selectedLabel}</span>
+                      <p className="text-xs text-[#831843]">{label}</p>
+                      <span className="font-semibold text-[#4a0424]">{selectedLabel}</span>
                   </div>
-                  <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDownIcon className={`w-5 h-5 text-[#831843] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
               </div>
               {isOpen && (
-                   <div className="absolute top-full mt-2 w-full bg-[#1f1f1f] rounded-lg shadow-lg z-20 animate-fade-scale-in flex flex-col">
+                   <div className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-lg z-20 animate-fade-scale-in flex flex-col border border-[#fce7f3]">
                       {searchable && (
-                          <div className="p-2 border-b border-white/10">
+                          <div className="p-2 border-b border-[#fce7f3]">
                               <div className="relative">
-                                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#831843]/60" />
                                   <input
                                       type="text"
                                       value={searchTerm}
                                       onChange={(e) => setSearchTerm(e.target.value)}
                                       placeholder={`Search ${label}...`}
-                                      className="w-full bg-[#2d2d2d] border-0 rounded-md focus:ring-1 focus:ring-white/50 text-white py-2 pl-9 pr-3 text-sm"
+                                      className="w-full bg-[#ffe4ef] border-0 rounded-md focus:ring-1 focus:ring-[var(--brand-color)]/30 text-[#4a0424] py-2 pl-9 pr-3 text-sm"
                                       onClick={(e) => e.stopPropagation()}
                                   />
                               </div>
@@ -411,12 +411,12 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                                       }}
                                       className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${
                                           isSelected 
-                                              ? 'bg-white/10 text-white font-semibold' 
-                                              : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                                              ? 'bg-[#ffe4ef] text-[#4a0424] font-semibold' 
+                                              : 'text-[#831843] hover:bg-[#ffe4ef]/50 hover:text-[#4a0424]'
                                       }`}
                                   >
                                       <span>{option.label}</span>
-                                      {isSelected && <CheckIcon className="w-5 h-5 text-white" />}
+                                      {isSelected && <CheckIcon className="w-5 h-5 text-[var(--brand-color)]" />}
                                   </li>
                               );
                           }) : (
@@ -467,7 +467,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
       />
        <button
           onClick={handleResetFilters}
-          className="w-full h-[60px] bg-[#2d2d2d] text-white rounded-lg hover:bg-[#3f3f3f] transition-colors font-semibold flex items-center justify-center"
+          className="w-full h-[60px] bg-white border border-[#fce7f3] text-[#831843] rounded-lg hover:bg-[#ffe4ef] transition-colors font-semibold flex items-center justify-center shadow-sm"
       >
           Reset Filters
       </button>
@@ -478,7 +478,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
     <div className="px-4 md:px-16 pt-28 pb-24 min-h-screen">
         <div className="flex items-center space-x-3 mb-8">
             <div className="w-1.5 h-7 bg-[var(--brand-color)] rounded-full" />
-            <h1 className="text-lg md:text-2xl font-bold">Discover</h1>
+            <h1 className="text-lg md:text-2xl font-bold text-[#4a0424]">Discover</h1>
         </div>
         
         {/* Streaming Platforms Bar */}
@@ -487,9 +487,9 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                  <button
                     aria-label="Scroll providers left"
                     onClick={() => scrollProviders('left')}
-                    className="hidden md:block absolute top-0 bottom-0 -left-4 z-40 my-auto h-9 w-9 cursor-pointer text-white opacity-0 transition hover:scale-125 group-hover/row:opacity-100"
+                    className="hidden md:block absolute top-0 bottom-0 -left-4 z-40 my-auto h-9 w-9 cursor-pointer text-[#4a0424] opacity-0 transition hover:scale-125 group-hover/row:opacity-100 bg-white/80 rounded-full shadow-md"
                 >
-                    <ChevronLeftIcon className="w-full h-full" />
+                    <ChevronLeftIcon className="w-full h-full p-1" />
                 </button>
                 <div ref={networksRowRef} className="flex items-center space-x-4 overflow-x-auto scrollbar-hide pb-4 scroll-smooth">
                     {networksConfig.map((network) => {
@@ -502,13 +502,13 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                                 key={network.name}
                                 title={isDisabled ? `${network.name} (TV only - Select TV or "Movies & TV Shows" to enable)` : network.name}
                                 onClick={() => !isDisabled && handleFilterChange('network', isSelected ? null : network.name)}
-                                className={`group flex-shrink-0 w-44 h-28 bg-white rounded-lg flex items-center justify-center p-4 transition-all duration-300 ease-in-out ${
+                                className={`group flex-shrink-0 w-44 h-28 bg-white rounded-lg flex items-center justify-center p-4 transition-all duration-300 ease-in-out border border-[#fce7f3] ${
                                     isDisabled
                                         ? 'opacity-50 grayscale cursor-not-allowed'
                                         : 'cursor-pointer hover:shadow-xl hover:-translate-y-1'
                                 } ${
                                     isSelected 
-                                        ? 'scale-105 shadow-2xl'
+                                        ? 'scale-105 shadow-2xl border-[var(--brand-color)]/30 ring-2 ring-[var(--brand-color)]/10'
                                         : (filters.selectedNetwork ? 'opacity-60 grayscale hover:opacity-100 hover:grayscale-0' : '')
                                 }`}
                             >
@@ -526,9 +526,9 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                  <button
                     aria-label="Scroll providers right"
                     onClick={() => scrollProviders('right')}
-                    className="hidden md:block absolute top-0 bottom-0 -right-4 z-40 my-auto h-9 w-9 cursor-pointer text-white opacity-0 transition hover:scale-125 group-hover/row:opacity-100"
+                    className="hidden md:block absolute top-0 bottom-0 -right-4 z-40 my-auto h-9 w-9 cursor-pointer text-[#4a0424] opacity-0 transition hover:scale-125 group-hover/row:opacity-100 bg-white/80 rounded-full shadow-md"
                 >
-                    <ChevronRightIcon className="w-full h-full" />
+                    <ChevronRightIcon className="w-full h-full p-1" />
                 </button>
             </div>
         </div>
@@ -542,7 +542,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
         <div className="lg:hidden mb-8">
             <button
                 onClick={() => setIsFilterModalOpen(true)}
-                className="w-full h-[50px] bg-[#2d2d2d] text-white rounded-lg hover:bg-[#3f3f3f] transition-colors font-semibold flex items-center justify-center gap-2"
+                className="w-full h-[50px] bg-white border border-[#fce7f3] text-[#4a0424] rounded-lg hover:bg-[#ffe4ef] transition-colors font-semibold flex items-center justify-center gap-2 shadow-sm"
             >
                 <FilterIcon className="w-5 h-5" />
                 <span>Filters</span>
@@ -552,16 +552,16 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
         {/* Mobile Filter Modal */}
         {isFilterModalOpen && (
             <div 
-                className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center animate-fade-scale-in"
+                className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center animate-fade-scale-in"
                 onClick={() => setIsFilterModalOpen(false)}
             >
                 <div 
-                    className="bg-[#1f1f1f] rounded-xl shadow-2xl w-full max-w-md m-4 border border-zinc-700 flex flex-col"
+                    className="bg-[#fff5f8] rounded-xl shadow-2xl w-full max-w-md m-4 border border-[#fce7f3] flex flex-col"
                     onClick={e => e.stopPropagation()}
                 >
-                    <div className="flex items-center justify-between p-4 border-b border-zinc-700 flex-shrink-0">
-                        <h2 className="text-xl font-bold">Filters</h2>
-                        <button onClick={() => setIsFilterModalOpen(false)} className="text-zinc-400 hover:text-white">
+                    <div className="flex items-center justify-between p-4 border-b border-[#fce7f3] flex-shrink-0">
+                        <h2 className="text-xl font-bold text-[#4a0424]">Filters</h2>
+                        <button onClick={() => setIsFilterModalOpen(false)} className="text-[#831843] hover:text-[#4a0424]">
                             <CloseIcon className="w-6 h-6" />
                         </button>
                     </div>
@@ -570,7 +570,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                             {renderFilterControls()}
                         </div>
                     </div>
-                    <div className="p-4 border-t border-zinc-700 flex-shrink-0">
+                    <div className="p-4 border-t border-[#fce7f3] flex-shrink-0">
                         <button
                             onClick={() => setIsFilterModalOpen(false)}
                             className="w-full h-[50px] bg-[var(--brand-color)] text-white rounded-lg hover:bg-[var(--brand-color-dark)] transition-colors font-bold"
@@ -603,8 +603,8 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                   </div>
                 ) : (
                     <div className="text-center py-16">
-                        <p className="text-xl text-gray-400">No results found for your filters.</p>
-                        <p className="text-gray-500">Try adjusting your selection.</p>
+                        <p className="text-xl text-gray-500">No results found for your filters.</p>
+                        <p className="text-gray-400">Try adjusting your selection.</p>
                     </div>
                 )}
                 

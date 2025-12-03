@@ -9,20 +9,20 @@ const FAQItem: React.FC<{ question: string; children: React.ReactNode }> = ({ qu
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-zinc-700/50">
+    <div className="border-b border-[#fce7f3]">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex justify-between items-center text-left py-6"
         aria-expanded={isOpen}
         aria-controls={`faq-answer-${question.replace(/\s+/g, '-')}`}
       >
-        <h3 className="text-lg md:text-xl font-semibold text-white transition-colors">
+        <h3 className="text-lg md:text-xl font-semibold text-[#4a0424] transition-colors">
           {question}
         </h3>
         {isOpen ? (
-          <MinusIcon className="w-7 h-7 text-gray-400 flex-shrink-0" />
+          <MinusIcon className="w-7 h-7 text-[#831843] flex-shrink-0" />
         ) : (
-          <PlusIcon className="w-7 h-7 text-gray-400 flex-shrink-0" />
+          <PlusIcon className="w-7 h-7 text-[#831843] flex-shrink-0" />
         )}
       </button>
       <div
@@ -32,7 +32,7 @@ const FAQItem: React.FC<{ question: string; children: React.ReactNode }> = ({ qu
         }`}
       >
         <div className="overflow-hidden">
-            <div className="space-y-3 text-gray-300 pb-6 pr-8">
+            <div className="space-y-3 text-[#5e1b35] pb-6 pr-8">
                 {children}
             </div>
         </div>
@@ -45,9 +45,9 @@ const FAQPage: React.FC = () => {
   return (
     <div className="px-4 md:px-16 pt-28 pb-24 min-h-screen">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-10 text-white text-center">Frequently Asked Questions</h1>
+        <h1 className="text-4xl font-bold mb-10 text-[#4a0424] text-center">Frequently Asked Questions</h1>
         
-        <div className="border-t border-zinc-700/50">
+        <div className="border-t border-[#fce7f3]">
             <FAQItem question="What is flowkh?">
                 <p>flowkh is a modern, user-friendly interface designed to help you discover and browse movies and TV shows. It uses a third-party service to provide detailed information about a vast library of content.</p>
             </FAQItem>
@@ -75,17 +75,17 @@ const FAQPage: React.FC = () => {
         </div>
         
         <div className="text-center mt-16 pt-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Find us on</h2>
+            <h2 className="text-2xl font-bold text-[#4a0424] mb-4">Find us on</h2>
             <div className="flex items-center justify-center space-x-6">
-                <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#831843] hover:text-[#4a0424] transition-colors">
                     <FacebookIcon className="w-8 h-8"/>
                     <span className="font-semibold">Facebook</span>
                 </a>
-                <a href={TWITTER_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                <a href={TWITTER_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#831843] hover:text-[#4a0424] transition-colors">
                     <TwitterIcon className="w-7 h-7"/>
                     <span className="font-semibold">Twitter (X)</span>
                 </a>
-                <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#831843] hover:text-[#4a0424] transition-colors">
                     <TelegramIcon className="w-7 h-7"/>
                     <span className="font-semibold">Telegram</span>
                 </a>
