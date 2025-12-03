@@ -102,16 +102,16 @@ const ActorCreditsPage: React.FC<ActorCreditsPageProps> = ({ actorId, onSelectMo
             {backdropUrl && (
                 <div className="absolute inset-0">
                     <img src={backdropUrl} alt="" className="w-full h-full object-cover opacity-20 blur-sm" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#230514] via-[#230514]/80 to-transparent" />
                 </div>
             )}
-            {!backdropUrl && <div className="absolute inset-0 bg-gradient-to-t from-[#141414] to-[#1f1f1f]" />}
+            {!backdropUrl && <div className="absolute inset-0 bg-gradient-to-t from-[#230514] to-[#2a0a1a]" />}
 
 
             {/* Content */}
             <div className="relative z-10 flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start">
                 <div className="w-48 md:w-56 flex-shrink-0">
-                    <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-zinc-800 shadow-2xl">
+                    <div className="aspect-[2/3] rounded-2xl overflow-hidden bg-[#3d0f26] shadow-2xl">
                         {actorDetails.profilePath ? (
                             <img src={actorDetails.profilePath} alt={actorDetails.name} className="w-full h-full object-cover" />
                         ) : (

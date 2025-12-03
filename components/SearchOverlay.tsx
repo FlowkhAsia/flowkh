@@ -87,7 +87,7 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
     >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div
-        className={`relative w-full max-w-3xl mx-auto mt-[10vh] bg-zinc-900/95 rounded-xl shadow-2xl border border-zinc-700 transition-all duration-300 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`relative w-full max-w-3xl mx-auto mt-[10vh] bg-[#2a0a1a]/95 rounded-xl shadow-2xl border border-zinc-700 transition-all duration-300 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center p-4 border-b border-zinc-700/80">
@@ -122,11 +122,11 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
                 <li
                   key={movie.id}
                   onClick={() => handleSelect(movie)}
-                  className="bg-zinc-800/50 hover:bg-zinc-700/80 rounded-lg transition-colors cursor-pointer"
+                  className="bg-[#3d0f26]/50 hover:bg-[#5a1436]/80 rounded-lg transition-colors cursor-pointer"
                 >
                   <div className="flex items-center p-3 gap-4">
                     <div className="w-16 flex-shrink-0">
-                        <div className="aspect-[2/3] bg-zinc-700 rounded-md overflow-hidden">
+                        <div className="aspect-[2/3] bg-[#2a0a1a] rounded-md overflow-hidden">
                            <img src={movie.posterUrl} alt={movie.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                         </div>
                     </div>

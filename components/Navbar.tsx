@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className={`fixed top-0 z-40 flex w-full items-center justify-between p-4 md:px-16 transition-colors duration-300 ${isScrolled ? 'bg-[#141414]/90 backdrop-blur-sm' : 'bg-transparent'}`}>
+      <header className={`fixed top-0 z-40 flex w-full items-center justify-between p-4 md:px-16 transition-colors duration-300 ${isScrolled ? 'bg-[#230514]/90 backdrop-blur-sm' : 'bg-transparent'}`}>
         <div className="flex items-center space-x-4 md:space-x-8">
           <a href="/" onClick={(e) => handleNavClick(e, '/')}>
             <FlowkhLogoIcon className="h-9 w-auto cursor-pointer" />

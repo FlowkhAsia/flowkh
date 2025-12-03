@@ -350,7 +350,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     alt=""
                     className="w-full h-full object-cover opacity-40"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#230514] via-[#230514]/80 to-transparent" />
             </div>
 
             {/* Player and Controls Layer */}
@@ -382,7 +382,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     </div>
                     {/* Server Selection Bar */}
                     <div className="w-full max-w-6xl mx-auto mt-4 px-4 md:px-16 pb-4">
-                        <div className="p-2 bg-black/30 rounded-lg backdrop-blur-sm">
+                        <div className="p-2 bg-[#2a0a1a]/80 rounded-lg backdrop-blur-sm border border-[#3d0f26]">
                             {/* Desktop: Button row */}
                             <div className="hidden md:flex flex-wrap items-center gap-2">
                                 <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
@@ -393,7 +393,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                         className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
                                             selectedServer === name
                                                 ? 'bg-white text-black'
-                                                : 'bg-zinc-700/80 hover:bg-zinc-600'
+                                                : 'bg-[#3d0f26] hover:bg-[#5a1436]'
                                         }`}
                                     >
                                         {displayName}
@@ -403,12 +403,12 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
 
                             {/* Mobile: Dropdown */}
                             <div className="relative w-full md:hidden" ref={serverDropdownRef}>
-                                <div onClick={() => setIsServerDropdownOpen(!isServerDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#1f1f1f] rounded-md cursor-pointer hover:bg-[#333]">
+                                <div onClick={() => setIsServerDropdownOpen(!isServerDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#3d0f26] rounded-md cursor-pointer hover:bg-[#5a1436]">
                                     <span className="font-semibold">Server: {servers.find(s => s.name === selectedServer)?.displayName}</span>
                                     <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform ${isServerDropdownOpen ? 'rotate-180' : ''}`} />
                                 </div>
                                 {isServerDropdownOpen && (
-                                    <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-[#1f1f1f] rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-gray-700/50">
+                                    <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-[#3d0f26] rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-gray-700/50">
                                         <ul className="py-1">
                                             {servers.map(({ name, displayName }) => {
                                                 const isSelected = selectedServer === name;
@@ -443,7 +443,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 />
                 {/* Gradient Overlays */}
                 <div className="absolute inset-0 bg-black/40" />
-                <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#141414] to-transparent" />
+                <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#230514] to-transparent" />
             </div>
 
             {/* Content Layer */}
@@ -527,15 +527,15 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 </div>
 
                 {/* Toolbar */}
-                <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-6 bg-[#2c2c2c] p-3 rounded-lg border border-gray-700/50">
+                <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-6 bg-[#2a0a1a] p-3 rounded-lg border border-gray-700/50">
                     {/* Season Selector */}
                     <div className="relative w-full" ref={seasonDropdownRef}>
-                        <div onClick={() => setIsSeasonDropdownOpen(!isSeasonDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#1f1f1f] rounded-md cursor-pointer hover:bg-[#333]">
+                        <div onClick={() => setIsSeasonDropdownOpen(!isSeasonDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-[#3d0f26] rounded-md cursor-pointer hover:bg-[#5a1436]">
                             <span className="font-semibold">{selectedSeason.name}</span>
                             <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
                         </div>
                         {isSeasonDropdownOpen && (
-                            <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-[#1f1f1f] rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-gray-700/50">
+                            <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-[#3d0f26] rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-gray-700/50">
                                 <ul className="py-1">
                                     {(details.seasons || []).filter(s => s.episode_count > 0).map(season => {
                                         const isSelected = selectedSeason.id === season.id;
@@ -562,7 +562,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                             placeholder="Search by title, overview, or number..."
                             value={episodeSearch}
                             onChange={(e) => setEpisodeSearch(e.target.value)}
-                            className="w-full bg-[#1f1f1f] border-0 rounded-md focus:ring-2 focus:ring-[var(--brand-color)] text-white py-2.5 pl-10 pr-4"
+                            className="w-full bg-[#3d0f26] border-0 rounded-md focus:ring-2 focus:ring-[var(--brand-color)] text-white py-2.5 pl-10 pr-4"
                         />
                     </div>
                 </div>
@@ -594,9 +594,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                 <div 
                                     key={episode.id} 
                                     onClick={() => selectedSeason && isReleased && handleEpisodePlay(selectedSeason.season_number, episode)}
-                                    className={`flex items-center gap-4 bg-[#2a2a2a] p-2 rounded-lg group transition-all duration-200 ${isReleased ? 'cursor-pointer hover:bg-[#383838]' : 'cursor-not-allowed opacity-70'} ${isPlayingEpisode ? 'bg-[var(--brand-color)]/30 border border-[var(--brand-color)]/80' : 'border border-transparent'}`}
+                                    className={`flex items-center gap-4 bg-[#2a0a1a] p-2 rounded-lg group transition-all duration-200 ${isReleased ? 'cursor-pointer hover:bg-[#3d0f26]' : 'cursor-not-allowed opacity-70'} ${isPlayingEpisode ? 'bg-[var(--brand-color)]/30 border border-[var(--brand-color)]/80' : 'border border-transparent'}`}
                                 >
-                                    <div className="relative w-32 sm:w-40 md:w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-zinc-800">
+                                    <div className="relative w-32 sm:w-40 md:w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-[#3d0f26]">
                                         <img src={episode.still_path || details.backdropUrl} alt={episode.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async"/>
                                         {isReleased ? (
                                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -610,7 +610,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                                 )}
                                             </div>
                                         ) : (
-                                            <div className="absolute top-2 right-2 bg-zinc-800/90 border border-zinc-600 text-zinc-300 text-[11px] font-semibold px-2 py-0.5 rounded-md shadow-lg backdrop-blur-sm">
+                                            <div className="absolute top-2 right-2 bg-[#2a0a1a]/90 border border-zinc-600 text-zinc-300 text-[11px] font-semibold px-2 py-0.5 rounded-md shadow-lg backdrop-blur-sm">
                                                 Coming Soon
                                             </div>
                                         )}
@@ -633,7 +633,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={(e) => e.stopPropagation()}
-                                        className="ml-auto flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#2d2d2d] hover:bg-[#3f3f3f] transition-colors" 
+                                        className="ml-auto flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#3d0f26] hover:bg-[#5a1436] transition-colors" 
                                         aria-label={`Download episode ${episode.episode_number}`}
                                         title={`Download Episode ${episode.episode_number}`}
                                     >
@@ -653,7 +653,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         )}
 
         {/* Ad Banner */}
-        <Suspense fallback={<div className="h-[250px] w-[300px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
+        <Suspense fallback={<div className="h-[250px] w-[300px] bg-[#2a0a1a] rounded-md mx-auto my-8 animate-pulse" />}>
           <AdsterraBanner />
         </Suspense>
 

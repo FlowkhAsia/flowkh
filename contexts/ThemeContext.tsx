@@ -1,6 +1,7 @@
 import React, { createContext, useState, ReactNode, useContext, useEffect } from 'react';
 
 const themeColors = {
+  pink: '#FF69B4',
   red: '#E50914',
   blue: '#0071eb',
   green: '#1db954',
@@ -37,13 +38,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('flowkh-theme') as Theme) || 'cyan';
+      return (localStorage.getItem('flowkh-theme') as Theme) || 'pink';
     }
-    return 'cyan';
+    return 'pink';
   });
 
   useEffect(() => {
-    const currentTheme = localStorage.getItem('flowkh-theme') as Theme || 'cyan';
+    const currentTheme = localStorage.getItem('flowkh-theme') as Theme || 'pink';
     updateFavicon(themeColors[currentTheme]);
   }, []);
 
