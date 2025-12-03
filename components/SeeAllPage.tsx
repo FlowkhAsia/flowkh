@@ -83,7 +83,7 @@ const SeeAllPage: React.FC<SeeAllPageProps> = ({ categoryKey, categoryTitle, onS
 
   return (
     <div className="px-4 md:px-16 pt-28 pb-24 min-h-screen">
-      <h1 className="text-4xl font-bold mb-8 text-[#4a0424]">{categoryTitle}</h1>
+      <h1 className="text-4xl font-bold mb-8 text-white">{categoryTitle}</h1>
 
       {isLoading ? (
         <div className="flex justify-center items-center p-4 min-h-[40vh]">
@@ -106,7 +106,7 @@ const SeeAllPage: React.FC<SeeAllPageProps> = ({ categoryKey, categoryTitle, onS
             </div>
           ) : (
             <div className="text-center py-16">
-              <p className="text-xl text-gray-400">No content found in this category.</p>
+              <p className="text-xl text-gray-500">No content found in this category.</p>
             </div>
           )}
 

@@ -50,8 +50,8 @@ const Hero: React.FC<HeroProps> = ({ movies, onSelectMovie, onPlayMovie }) => {
         </div>
         
         {/* Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#fff5f8] via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#230514] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#230514]/70 to-transparent" />
 
         {/* Content */}
         <div className="absolute bottom-0 left-0 right-0 z-10">
@@ -64,21 +64,21 @@ const Hero: React.FC<HeroProps> = ({ movies, onSelectMovie, onPlayMovie }) => {
                       className="max-h-12 sm:max-h-16 md:max-h-28 max-w-full object-contain object-left drop-shadow-lg" 
                   />
                 ) : (
-                  <h2 className="text-4xl md:text-6xl font-bebas tracking-wider text-[#4a0424] drop-shadow-sm">{currentMovie.title}</h2>
+                  <h2 className="text-4xl md:text-6xl font-bebas tracking-wider text-white drop-shadow-sm">{currentMovie.title}</h2>
                 )}
 
-                <p className="text-sm md:text-base text-[#5e1b35] line-clamp-3 drop-shadow-sm font-medium">{currentMovie.description}</p>
+                <p className="text-sm md:text-base text-gray-200 line-clamp-3 drop-shadow-sm font-medium">{currentMovie.description}</p>
                 
                 <div className="flex items-center space-x-3 pt-2 md:pt-4">
                   <button 
                       onClick={handlePlay} 
-                      className="flex items-center gap-x-2 rounded-lg bg-[#4a0424] px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base font-bold text-white transition hover:bg-[#831843]"
+                      className="flex items-center gap-x-2 rounded-lg bg-white px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base font-bold text-black transition hover:bg-gray-200"
                   >
-                      <PlayIcon className="h-5 md:h-6 w-5 md:h-6 text-white" /> Play
+                      <PlayIcon className="h-5 md:h-6 w-5 md:h-6 text-black" /> Play
                   </button>
                   <button 
                       onClick={() => onSelectMovie(currentMovie)} 
-                      className="flex items-center gap-x-2 rounded-lg bg-white/40 backdrop-blur-sm border border-[#831843]/50 px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base font-bold text-[#4a0424] transition hover:bg-white/60"
+                      className="flex items-center gap-x-2 rounded-lg bg-gray-500/40 backdrop-blur-sm border border-white/50 px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base font-bold text-white transition hover:bg-gray-500/60"
                   >
                       <InfoIcon className="h-5 md:h-6 w-5 md:h-6" /> See More
                   </button>
