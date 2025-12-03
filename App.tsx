@@ -188,9 +188,6 @@ const App: React.FC = () => {
       const view = path === '/movies' ? 'movies' : path === '/tv-shows' ? 'tv' : path === '/anime' ? 'anime' : 'home';
       loadMovies(view);
     } else {
-      // For all other pages (DetailPage, Discover, My List, 404, etc.),
-      // we don't need the main genre loading. These components handle their own loading state.
-      // So, we turn off the main app loader to prevent the skeleton screen from persisting.
       setLoading(false);
     }
   }, [location.pathname, loadMovies]);
@@ -214,6 +211,25 @@ const App: React.FC = () => {
 
   // SEO & ANALYTICS
   useEffect(() => {
+    // Google Analytics Initialization
+    const gaId = (import.meta as any).env.VITE_PUBLIC_GOOGLE_ANALYTICS_ID;
+    
+    // Inject GA script if not present
+    if (gaId && typeof window.gtag === 'undefined') {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer.push(arguments);}
+        // @ts-ignore
+        gtag('js', new Date());
+        // @ts-ignore
+        gtag('config', gaId);
+        window.gtag = gtag;
+    }
+
     // Dynamic Page Titles
     const baseTitle = 'flowkh - Movies and TV Series — All in One Flow';
     let pageTitle: string;
@@ -248,7 +264,6 @@ const App: React.FC = () => {
     canonicalLink.href = canonicalUrl;
 
     // Google Analytics Page View Tracking
-    const gaId = (import.meta as any).env.VITE_PUBLIC_GOOGLE_ANALYTICS_ID;
     if (typeof window.gtag === 'function' && gaId) {
       window.gtag('config', gaId, {
         page_path: location.pathname + location.search
@@ -343,8 +358,6 @@ const App: React.FC = () => {
   }, [navigate]);
 
   const handleBack = () => {
-    // If there's no previous page in the session history (e.g., direct link),
-    // navigate to home instead of leaving the site.
     if (window.history.length <= 2) {
       navigate('/');
     } else {
@@ -549,15 +562,18 @@ const App: React.FC = () => {
             </div>
         ) : (
             <>
-                <Suspense fallback={<SuspenseLoader />}>
-                   <SearchOverlay 
-                    isOpen={isSearchOpen} 
-                    onClose={handleCloseSearch}
-                    onSelectMovie={handleSelectMovie} 
-                    myList={myList}
-                    onToggleMyList={handleToggleMyList}
-                   />
-                </Suspense>
+                {/* Conditionally render SearchOverlay to prevent layout shift during lazy load */}
+                {isSearchOpen && (
+                  <Suspense fallback={null}>
+                     <SearchOverlay 
+                      isOpen={isSearchOpen} 
+                      onClose={handleCloseSearch}
+                      onSelectMovie={handleSelectMovie} 
+                      myList={myList}
+                      onToggleMyList={handleToggleMyList}
+                     />
+                  </Suspense>
+                )}
                 
                 {isDetailPageActive ? (
                   <button 

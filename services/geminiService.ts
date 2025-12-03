@@ -186,32 +186,42 @@ export const fetchMoviesData = async (view: 'home' | 'movies' | 'tv' | 'anime'):
     const ninetyDaysAgo = getDateNDaysAgo(90);
     const today = new Date().toISOString().split('T')[0];
 
-    const responses = await Promise.all(endpointsToFetch.map(ep => {
+    // Use Promise.allSettled to ensure that one failed request doesn't break the entire page
+    const results = await Promise.allSettled(endpointsToFetch.map(ep => {
       const url = ep.url
         .replace(/__DATE_30_DAYS_AGO__/g, thirtyDaysAgo)
         .replace(/__DATE_7_DAYS_AGO__/g, sevenDaysAgo)
         .replace(/__DATE_90_DAYS_AGO__/g, ninetyDaysAgo)
         .replace(/__TODAY__/g, today);
-      return fetch(url);
+      return fetch(url).then(async res => {
+          if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+          return res.json() as Promise<{ results: TmdbMovieResult[] }>;
+      });
     }));
 
-    responses.forEach((res, index) => {
-      if (!res.ok) throw new Error(`TMDB request for ${endpointsToFetch[index].key} failed: ${res.status} ${res.statusText}`);
-    });
+    const genres: Genre[] = [];
     
-    const jsonData = await Promise.all(responses.map(res => res.json())) as { results: TmdbMovieResult[] }[];
-    
-    const genres = endpointsToFetch.map((endpoint, index) => {
-      return {
-        key: endpoint.key,
-        title: endpoint.title,
-        movies: mapResultsToMovies(jsonData[index].results, endpoint.type),
-      };
+    results.forEach((result, index) => {
+        const endpoint = endpointsToFetch[index];
+        if (result.status === 'fulfilled') {
+            const data = result.value;
+            const movies = mapResultsToMovies(data.results, endpoint.type);
+            if (movies.length > 0) {
+                genres.push({
+                    key: endpoint.key,
+                    title: endpoint.title,
+                    movies: movies,
+                });
+            }
+        } else {
+            console.error(`Failed to fetch data for ${endpoint.key}:`, result.reason);
+            // We continue without this genre instead of crashing the whole app
+        }
     });
 
-    return genres.filter(genre => genre.movies.length > 0);
+    return genres;
   } catch (error) {
-    console.error("Error fetching movie data from TMDB API:", error);
+    console.error("Critical error in fetchMoviesData:", error);
     throw new Error("Failed to fetch movie data.");
   }
 };
