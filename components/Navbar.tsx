@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className={`fixed top-0 z-40 flex w-full items-center justify-between p-4 md:px-16 transition-colors duration-300 ${isScrolled ? 'bg-[#230514]/90 backdrop-blur-sm shadow-sm' : 'bg-transparent'}`}>
+      <header className={`fixed top-0 z-40 flex w-full items-center justify-between p-4 md:px-16 transition-colors duration-300 ${isScrolled ? 'bg-[#141414]/90 backdrop-blur-sm shadow-sm' : 'bg-transparent'}`}>
         <div className="flex items-center space-x-4 md:space-x-8">
           <a href="/" onClick={(e) => handleNavClick(e, '/')}>
             <FlowkhLogoIcon className="h-9 w-auto cursor-pointer" />
@@ -99,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   className={`px-3 py-2 text-base transition-colors duration-200 rounded-md ${
                     activeFilter === item.filter
                       ? 'font-bold text-white'
-                      : 'font-semibold text-pink-50/70 hover:text-white'
+                      : 'font-semibold text-gray-300 hover:text-white'
                   }`}
                 >
                   {item.label}
@@ -113,14 +113,14 @@ const Navbar: React.FC<NavbarProps> = ({
           {/* Desktop Search Bar Trigger */}
           <button 
             onClick={onOpenSearch}
-            className="hidden md:flex flex-1 max-w-sm items-center justify-between bg-[#3d0f26]/60 px-4 py-2 rounded-lg border border-[#501332] hover:border-pink-500/50 focus-within:border-pink-500/50 focus-within:bg-[#3d0f26] transition-all duration-300"
+            className="hidden md:flex flex-1 max-w-sm items-center justify-between bg-zinc-800/60 px-4 py-2 rounded-lg border border-transparent hover:border-white/20 focus-within:border-white/20 focus-within:bg-zinc-800 transition-all duration-300"
             aria-label="Open search"
           >
             <div className="flex items-center flex-1">
               <SearchIcon className="h-5 w-5 text-gray-400" />
               <span className="text-gray-400 text-sm px-2">Search...</span>
             </div>
-            <div className="bg-[#501332] text-pink-100/70 text-xs font-mono rounded-md px-2 py-1 border border-[#6d1a45]">
+            <div className="bg-zinc-700 text-gray-300 text-xs font-mono rounded-md px-2 py-1 border border-zinc-600">
               CTRL+K
             </div>
           </button>
@@ -156,7 +156,7 @@ const Navbar: React.FC<NavbarProps> = ({
       <div
         id="mobile-menu"
         className={`
-        fixed inset-0 z-40 bg-[#230514]/95 backdrop-blur-sm lg:hidden
+        fixed inset-0 z-40 bg-[#141414]/95 backdrop-blur-sm lg:hidden
         transition-opacity duration-300 ease-in-out
         ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
       `}>

@@ -85,12 +85,12 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
       className={`fixed inset-0 z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-[#230514]/80 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-[#141414]/95 backdrop-blur-sm" />
       <div
-        className={`relative w-full max-w-3xl mx-auto mt-[10vh] bg-[#2a0a1a] rounded-xl shadow-2xl border border-[#501332] transition-all duration-300 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`relative w-full max-w-3xl mx-auto mt-[10vh] bg-zinc-900 rounded-xl shadow-2xl border border-zinc-800 transition-all duration-300 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center p-4 border-b border-[#501332]">
+        <div className="flex items-center p-4 border-b border-zinc-800">
           <SearchIcon className="h-6 w-6 text-gray-400 mr-3" />
           <input
             ref={inputRef}
@@ -122,16 +122,16 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
                 <li
                   key={movie.id}
                   onClick={() => handleSelect(movie)}
-                  className="bg-[#3d0f26] hover:bg-[#501332] rounded-lg transition-colors cursor-pointer border border-transparent hover:border-[#6d1a45] shadow-sm"
+                  className="bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-zinc-600 shadow-sm"
                 >
                   <div className="flex items-center p-3 gap-4">
                     <div className="w-16 flex-shrink-0">
-                        <div className="aspect-[2/3] bg-[#2a0a1a] rounded-md overflow-hidden">
+                        <div className="aspect-[2/3] bg-zinc-900 rounded-md overflow-hidden">
                            <img src={movie.posterUrl} alt={movie.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                         </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-pink-50 font-semibold truncate">{movie.title}</h3>
+                      <h3 className="text-white font-semibold truncate">{movie.title}</h3>
                       <div className="flex items-center text-xs text-gray-400 mt-1.5 space-x-2">
                         <span>{movie.releaseYear}</span>
                         <div className="flex items-center gap-1 border border-white/20 rounded px-1 py-0.5 text-[10px] font-medium">
@@ -152,8 +152,8 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSelect
           )}
         </div>
 
-        <div className="p-3 border-t border-[#501332] text-right text-xs text-gray-400">
-            Press <kbd className="font-sans border border-[#6d1a45] bg-[#3d0f26] rounded-sm px-1.5 py-0.5 text-gray-300">ESC</kbd> to close
+        <div className="p-3 border-t border-zinc-800 text-right text-xs text-gray-400">
+            Press <kbd className="font-sans border border-zinc-700 bg-zinc-800 rounded-sm px-1.5 py-0.5 text-gray-300">ESC</kbd> to close
         </div>
       </div>
     </div>

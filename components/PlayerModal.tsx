@@ -216,18 +216,18 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
         </div>
         
         {/* Sidebar */}
-        <div className="flex-1 w-full lg:w-[350px] lg:flex-none bg-[#2a0a1a] flex flex-col border-t lg:border-t-0 lg:border-l border-zinc-700">
+        <div className="flex-1 w-full lg:w-[350px] lg:flex-none bg-zinc-900 flex flex-col border-t lg:border-t-0 lg:border-l border-zinc-700">
             <div className="p-4 border-b border-zinc-700">
                 <div className="relative" ref={serverDropdownRef}>
                     <button
                         onClick={() => setIsServerDropdownOpen(!isServerDropdownOpen)}
-                        className="w-full flex items-center justify-between px-4 py-3 bg-[#3d0f26] rounded-md text-white font-semibold hover:bg-[#5a1436] transition-colors"
+                        className="w-full flex items-center justify-between px-4 py-3 bg-zinc-800 rounded-md text-white font-semibold hover:bg-zinc-700 transition-colors"
                     >
                         <span>Server: {servers.find(s => s.name === selectedServer)?.displayName || selectedServer}</span>
                         <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform ${isServerDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
                     {isServerDropdownOpen && (
-                        <div className="absolute top-full right-0 mt-2 w-full bg-[#3d0f26] rounded-md shadow-lg z-40 animate-fade-scale-in border border-zinc-700 max-h-60 overflow-y-auto custom-scrollbar">
+                        <div className="absolute top-full right-0 mt-2 w-full bg-zinc-800 rounded-md shadow-lg z-40 animate-fade-scale-in border border-zinc-700 max-h-60 overflow-y-auto custom-scrollbar">
                             <ul>
                                 {servers.map(({ name, displayName }) => {
                                     const isSelected = selectedServer === name;
@@ -259,18 +259,18 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
                 <>
                 <div className="p-4 border-b border-zinc-700">
                     {isLoadingSeasons ? (
-                        <div className="w-full h-[48px] bg-[#3d0f26]/50 rounded-md animate-pulse"></div>
+                        <div className="w-full h-[48px] bg-zinc-800 rounded-md animate-pulse"></div>
                     ) : seasons.length > 0 ? (
                         <div className="relative" ref={seasonDropdownRef}>
                             <button
                                 onClick={() => setIsSeasonDropdownOpen(!isSeasonDropdownOpen)}
-                                className="w-full flex items-center justify-between px-4 py-3 bg-[#3d0f26] rounded-md text-white font-semibold hover:bg-[#5a1436] transition-colors"
+                                className="w-full flex items-center justify-between px-4 py-3 bg-zinc-800 rounded-md text-white font-semibold hover:bg-zinc-700 transition-colors"
                             >
                                 <span>{seasons.find(s => s.season_number === selectedSeasonNumber)?.name || `Season ${selectedSeasonNumber}`}</span>
                                 <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
                             </button>
                             {isSeasonDropdownOpen && (
-                                <div className="absolute top-full right-0 mt-2 w-full bg-[#3d0f26] rounded-md shadow-lg z-30 animate-fade-scale-in border border-zinc-700 max-h-60 overflow-y-auto custom-scrollbar">
+                                <div className="absolute top-full right-0 mt-2 w-full bg-zinc-800 rounded-md shadow-lg z-30 animate-fade-scale-in border border-zinc-700 max-h-60 overflow-y-auto custom-scrollbar">
                                     <ul>
                                         {seasons.map((season) => (
                                             <li key={season.id}>
@@ -306,7 +306,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
                                 <li key={ep.id}>
                                     <button 
                                         onClick={() => handleEpisodeClick(ep)}
-                                        className={`w-full text-left p-3 rounded-md transition-colors text-sm font-semibold border border-transparent ${currentContent.episode === ep.episode_number ? 'bg-[var(--brand-color)] text-white' : 'bg-[#3d0f26] hover:bg-[#5a1436] text-zinc-300 border-zinc-700'}`}
+                                        className={`w-full text-left p-3 rounded-md transition-colors text-sm font-semibold border border-transparent ${currentContent.episode === ep.episode_number ? 'bg-[var(--brand-color)] text-white' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'}`}
                                     >
                                         Episode {ep.episode_number}
                                     </button>

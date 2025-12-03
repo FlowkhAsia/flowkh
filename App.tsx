@@ -72,15 +72,15 @@ const useLocation = () => {
 // --- SKELETON LOADING COMPONENTS ---
 
 const MovieCardSkeleton: React.FC = () => (
-    <div className="w-32 sm:w-36 md:w-40 lg:w-44 flex-shrink-0 aspect-[2/3] bg-[#3d0f26] rounded-md animate-pulse" />
+    <div className="w-32 sm:w-36 md:w-40 lg:w-44 flex-shrink-0 aspect-[2/3] bg-zinc-800 rounded-md animate-pulse" />
 );
 
 const MovieRowSkeleton: React.FC = () => (
     <div className="space-y-2 md:space-y-3">
         {/* Title skeleton */}
         <div className="flex items-center space-x-3">
-            <div className="w-1.s h-7 bg-[#501332] rounded-full animate-pulse" />
-            <div className="h-7 w-48 bg-[#3d0f26] rounded-md animate-pulse" />
+            <div className="w-1.s h-7 bg-zinc-700 rounded-full animate-pulse" />
+            <div className="h-7 w-48 bg-zinc-800 rounded-md animate-pulse" />
         </div>
         {/* Cards skeleton */}
         <div className="flex items-center space-x-2 md:space-x-4 overflow-hidden md:p-2">
@@ -90,17 +90,17 @@ const MovieRowSkeleton: React.FC = () => (
 );
 
 const HeroSkeleton: React.FC = () => (
-    <div className="relative h-[70vh] md:h-screen w-full bg-[#3d0f26] animate-pulse">
+    <div className="relative h-[70vh] md:h-screen w-full bg-zinc-800 animate-pulse">
         <div className="absolute bottom-0 left-0 px-4 md:px-16 pb-20 md:pb-0 z-10 w-full flex flex-col justify-end md:justify-center h-full">
             <div className="max-w-xl space-y-5">
-                <div className="w-2/3 md:w-1/2 max-w-lg h-20 md:h-28 bg-[#501332] rounded-lg" />
+                <div className="w-2/3 md:w-1/2 max-w-lg h-20 md:h-28 bg-zinc-700 rounded-lg" />
                 <div className="space-y-2">
-                    <div className="h-4 w-full max-w-md bg-[#501332] rounded-md" />
-                    <div className="h-4 w-3/4 max-w-sm bg-[#501332] rounded-md" />
+                    <div className="h-4 w-full max-w-md bg-zinc-700 rounded-md" />
+                    <div className="h-4 w-3/4 max-w-sm bg-zinc-700 rounded-md" />
                 </div>
                 <div className="flex items-center space-x-3 pt-4">
-                    <div className="h-12 w-32 bg-[#501332] rounded-lg" />
-                    <div className="h-12 w-32 bg-[#501332] rounded-lg" />
+                    <div className="h-12 w-32 bg-zinc-700 rounded-lg" />
+                    <div className="h-12 w-32 bg-zinc-700 rounded-lg" />
                 </div>
             </div>
         </div>
@@ -108,18 +108,18 @@ const HeroSkeleton: React.FC = () => (
 );
 
 const NavbarSkeleton: React.FC = () => (
-    <header className="fixed top-0 z-50 flex w-full items-center justify-between p-4 px-4 md:px-16 bg-[#230514]">
+    <header className="fixed top-0 z-50 flex w-full items-center justify-between p-4 px-4 md:px-16 bg-[#141414]">
          <div className="flex items-center space-x-4 md:space-x-8">
-            <div className="h-7 w-24 bg-[#3d0f26] rounded-md animate-pulse" />
+            <div className="h-7 w-24 bg-zinc-800 rounded-md animate-pulse" />
             <div className="hidden lg:flex items-center space-x-4">
-                <div className="h-10 w-20 bg-[#3d0f26] rounded-lg animate-pulse" />
-                <div className="h-10 w-24 bg-[#3d0f26] rounded-lg animate-pulse" />
-                <div className="h-10 w-20 bg-[#3d0f26] rounded-lg animate-pulse" />
+                <div className="h-10 w-20 bg-zinc-800 rounded-lg animate-pulse" />
+                <div className="h-10 w-24 bg-zinc-800 rounded-lg animate-pulse" />
+                <div className="h-10 w-20 bg-zinc-800 rounded-lg animate-pulse" />
             </div>
         </div>
         <div className="flex items-center justify-end flex-1 space-x-4 md:space-x-6">
-            <div className="hidden md:block h-10 w-full max-w-sm bg-[#3d0f26] rounded-lg animate-pulse" />
-            <div className="h-8 w-8 bg-[#3d0f26] rounded-full animate-pulse" />
+            <div className="hidden md:block h-10 w-full max-w-sm bg-zinc-800 rounded-lg animate-pulse" />
+            <div className="h-8 w-8 bg-zinc-800 rounded-full animate-pulse" />
         </div>
     </header>
 );
@@ -534,7 +534,7 @@ const App: React.FC = () => {
                     onToggleMyList={handleToggleMyList} 
                   />
                   {index === 0 && (
-                    <Suspense fallback={<div className="h-[250px] w-[300px] bg-[#3d0f26] rounded-md mx-auto my-8 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-[250px] w-[300px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
                       <AdsterraBanner />
                     </Suspense>
                   )}
@@ -550,7 +550,7 @@ const App: React.FC = () => {
   };
   
   return (
-    <div className="relative bg-[#230514] min-h-screen text-pink-50 overflow-x-hidden">
+    <div className="relative bg-[#141414] min-h-screen text-white overflow-x-hidden">
         {loading ? (
             <SkeletonScreen />
         ) : error ? (

@@ -370,7 +370,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
           <div className="relative" ref={dropdownRef}>
               <div
                   onClick={() => setIsOpen(!isOpen)}
-                  className={`flex items-center justify-between w-full p-3 bg-[#3d0f26] border border-[#501332] rounded-lg cursor-pointer h-[60px] transition-all duration-200 hover:bg-[#6d1a45] shadow-sm ${isOpen ? 'ring-2 ring-[var(--brand-color)]' : ''}`}
+                  className={`flex items-center justify-between w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg cursor-pointer h-[60px] transition-all duration-200 hover:bg-zinc-700 shadow-sm ${isOpen ? 'ring-2 ring-[var(--brand-color)]' : ''}`}
               >
                   <div>
                       <p className="text-xs text-gray-400">{label}</p>
@@ -379,9 +379,9 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                   <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
               </div>
               {isOpen && (
-                   <div className="absolute top-full mt-2 w-full bg-[#3d0f26] rounded-lg shadow-lg z-20 animate-fade-scale-in flex flex-col border border-[#501332]">
+                   <div className="absolute top-full mt-2 w-full bg-zinc-800 rounded-lg shadow-lg z-20 animate-fade-scale-in flex flex-col border border-zinc-700">
                       {searchable && (
-                          <div className="p-2 border-b border-[#501332]">
+                          <div className="p-2 border-b border-zinc-700">
                               <div className="relative">
                                   <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                   <input
@@ -389,7 +389,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                                       value={searchTerm}
                                       onChange={(e) => setSearchTerm(e.target.value)}
                                       placeholder={`Search ${label}...`}
-                                      className="w-full bg-[#501332] border-0 rounded-md focus:ring-1 focus:ring-[var(--brand-color)] text-white py-2 pl-9 pr-3 text-sm placeholder-gray-500"
+                                      className="w-full bg-zinc-700 border-0 rounded-md focus:ring-1 focus:ring-[var(--brand-color)] text-white py-2 pl-9 pr-3 text-sm placeholder-gray-500"
                                       onClick={(e) => e.stopPropagation()}
                                   />
                               </div>
@@ -411,8 +411,8 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                                       }}
                                       className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${
                                           isSelected 
-                                              ? 'bg-[#501332] text-white font-semibold' 
-                                              : 'text-gray-300 hover:bg-[#501332]/50 hover:text-white'
+                                              ? 'bg-zinc-700 text-white font-semibold' 
+                                              : 'text-gray-300 hover:bg-zinc-700/50 hover:text-white'
                                       }`}
                                   >
                                       <span>{option.label}</span>
@@ -467,7 +467,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
       />
        <button
           onClick={handleResetFilters}
-          className="w-full h-[60px] bg-[#3d0f26] border border-[#501332] text-white rounded-lg hover:bg-[#6d1a45] transition-colors font-semibold flex items-center justify-center shadow-sm"
+          className="w-full h-[60px] bg-zinc-800 border border-zinc-700 text-white rounded-lg hover:bg-zinc-700 transition-colors font-semibold flex items-center justify-center shadow-sm"
       >
           Reset Filters
       </button>
@@ -502,10 +502,10 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                                 key={network.name}
                                 title={isDisabled ? `${network.name} (TV only - Select TV or "Movies & TV Shows" to enable)` : network.name}
                                 onClick={() => !isDisabled && handleFilterChange('network', isSelected ? null : network.name)}
-                                className={`group flex-shrink-0 w-44 h-28 bg-[#3d0f26] rounded-lg flex items-center justify-center p-4 transition-all duration-300 ease-in-out border border-[#501332] ${
+                                className={`group flex-shrink-0 w-44 h-28 bg-zinc-800 rounded-lg flex items-center justify-center p-4 transition-all duration-300 ease-in-out border border-zinc-700 ${
                                     isDisabled
                                         ? 'opacity-50 grayscale cursor-not-allowed'
-                                        : 'cursor-pointer hover:bg-[#6d1a45] hover:shadow-xl hover:-translate-y-1'
+                                        : 'cursor-pointer hover:bg-zinc-700 hover:shadow-xl hover:-translate-y-1'
                                 } ${
                                     isSelected 
                                         ? 'scale-105 shadow-2xl border-[var(--brand-color)] ring-2 ring-[var(--brand-color)]/20'
@@ -542,7 +542,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
         <div className="lg:hidden mb-8">
             <button
                 onClick={() => setIsFilterModalOpen(true)}
-                className="w-full h-[50px] bg-[#3d0f26] border border-[#501332] text-white rounded-lg hover:bg-[#6d1a45] transition-colors font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full h-[50px] bg-zinc-800 border border-zinc-700 text-white rounded-lg hover:bg-zinc-700 transition-colors font-semibold flex items-center justify-center gap-2 shadow-sm"
             >
                 <FilterIcon className="w-5 h-5" />
                 <span>Filters</span>
@@ -556,10 +556,10 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                 onClick={() => setIsFilterModalOpen(false)}
             >
                 <div 
-                    className="bg-[#230514] rounded-xl shadow-2xl w-full max-w-md m-4 border border-[#501332] flex flex-col"
+                    className="bg-[#141414] rounded-xl shadow-2xl w-full max-w-md m-4 border border-zinc-700 flex flex-col"
                     onClick={e => e.stopPropagation()}
                 >
-                    <div className="flex items-center justify-between p-4 border-b border-[#501332] flex-shrink-0">
+                    <div className="flex items-center justify-between p-4 border-b border-zinc-700 flex-shrink-0">
                         <h2 className="text-xl font-bold text-white">Filters</h2>
                         <button onClick={() => setIsFilterModalOpen(false)} className="text-gray-400 hover:text-white">
                             <CloseIcon className="w-6 h-6" />
@@ -570,7 +570,7 @@ const DiscoverPage: React.FC<DiscoverPageProps> = ({ onSelectMovie, myList, onTo
                             {renderFilterControls()}
                         </div>
                     </div>
-                    <div className="p-4 border-t border-[#501332] flex-shrink-0">
+                    <div className="p-4 border-t border-zinc-700 flex-shrink-0">
                         <button
                             onClick={() => setIsFilterModalOpen(false)}
                             className="w-full h-[50px] bg-[var(--brand-color)] text-white rounded-lg hover:bg-[var(--brand-color-dark)] transition-colors font-bold"

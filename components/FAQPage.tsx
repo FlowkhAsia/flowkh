@@ -9,7 +9,7 @@ const FAQItem: React.FC<{ question: string; children: React.ReactNode }> = ({ qu
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-[#501332]">
+    <div className="border-b border-zinc-800">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex justify-between items-center text-left py-6"
@@ -47,7 +47,7 @@ const FAQPage: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-10 text-white text-center">Frequently Asked Questions</h1>
         
-        <div className="border-t border-[#501332]">
+        <div className="border-t border-zinc-800">
             <FAQItem question="What is flowkh?">
                 <p>flowkh is a modern, user-friendly interface designed to help you discover and browse movies and TV shows. It uses a third-party service to provide detailed information about a vast library of content.</p>
             </FAQItem>

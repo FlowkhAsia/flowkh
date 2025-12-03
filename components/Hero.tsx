@@ -50,8 +50,8 @@ const Hero: React.FC<HeroProps> = ({ movies, onSelectMovie, onPlayMovie }) => {
         </div>
         
         {/* Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#230514] via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#230514]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/70 to-transparent" />
 
         {/* Content */}
         <div className="absolute bottom-0 left-0 right-0 z-10">

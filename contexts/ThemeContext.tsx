@@ -38,13 +38,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('flowkh-theme') as Theme) || 'pink';
+      return (localStorage.getItem('flowkh-theme') as Theme) || 'cyan';
     }
-    return 'pink';
+    return 'cyan';
   });
 
   useEffect(() => {
-    const currentTheme = localStorage.getItem('flowkh-theme') as Theme || 'pink';
+    const currentTheme = localStorage.getItem('flowkh-theme') as Theme || 'cyan';
     updateFavicon(themeColors[currentTheme]);
   }, []);
 

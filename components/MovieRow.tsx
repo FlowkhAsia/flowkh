@@ -31,14 +31,14 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, myList, onToggleMyLi
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-3">
           <div className="w-1.5 h-7 bg-[var(--brand-color)] rounded-full" />
-          <h2 className="cursor-pointer text-lg font-bold text-pink-100 transition duration-200 md:text-2xl">
+          <h2 className="cursor-pointer text-lg font-bold text-white transition duration-200 md:text-2xl">
             {title}
           </h2>
         </div>
         {onSeeAll && (
           <button
             onClick={onSeeAll}
-            className="text-sm font-semibold text-pink-200/80 hover:text-white transition-colors duration-200"
+            className="text-sm font-semibold text-gray-300 hover:text-white transition-colors duration-200"
           >
             See All &gt;
           </button>

@@ -16,7 +16,7 @@ const ThemeSwitcher: React.FC = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="absolute top-14 right-0 bg-[#230514] border border-[#501332] rounded-xl p-4 shadow-lg w-56 animate-fade-in-down z-50">
+    <div className="absolute top-14 right-0 bg-zinc-900 border border-zinc-700 rounded-xl p-4 shadow-lg w-56 animate-fade-in-down z-50">
       <h4 className="text-sm font-semibold text-gray-400 mb-3 px-1">Accent Color</h4>
       <div className="grid grid-cols-4 gap-3 justify-items-center">
         {themes.map((t) => {
@@ -28,7 +28,7 @@ const ThemeSwitcher: React.FC = () => {
               className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ease-in-out transform hover:scale-110 focus:outline-none ring-1 ring-white/10"
               style={{
                 backgroundColor: t.color,
-                boxShadow: isSelected ? `0 0 0 2px #230514, 0 0 0 4px ${t.color}` : 'none',
+                boxShadow: isSelected ? `0 0 0 2px #18181b, 0 0 0 4px ${t.color}` : 'none',
               }}
               title={t.name.charAt(0).toUpperCase() + t.name.slice(1)}
               aria-label={`Switch to ${t.name} theme`}
