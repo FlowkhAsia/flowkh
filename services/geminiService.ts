@@ -82,7 +82,7 @@ const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv
   { key: 'trending_tv', title: 'Trending TV Shows', url: `${TMDB_BASE_URL}/trending/tv/week?language=en-US`, type: 'tv' },
   { key: 'k_drama', title: 'Popular K-Dramas', url: `${TMDB_BASE_URL}/discover/tv?with_origin_country=KR&with_genres=18&language=en-US&sort_by=popularity.desc&first_air_date.gte=2023-01-01&air_date.gte=__DATE_30_DAYS_AGO__&air_date.lte=__TODAY__`, type: 'tv' },
   { key: 'c_drama', title: 'Popular C-Dramas', url: `${TMDB_BASE_URL}/discover/tv?with_origin_country=CN&with_genres=18&language=en-US&sort_by=popularity.desc&first_air_date.gte=2023-01-01&air_date.gte=__DATE_30_DAYS_AGO__&air_date.lte=__TODAY__`, type: 'tv' },
-  { key: 'j_drama', title: 'Popular J-Dramas', url: `${TMDB_BASE_URL}/discover/tv?with_origin_country=JP&with_genres=18&language=en-US&sort_by=popularity.desc&first_air_date.gte=2023-01-01&air_date.gte=__DATE_30_DAYS_AGO__&air_date.lte=__TODAY__`, type: 'tv' },
+  { key: 'j_drama', title: 'Popular J-Dramas', url: `${TMDB_BASE_URL}/discover/tv?with_origin_country=JP&with_genres=18&without_genres=16&language=en-US&sort_by=popularity.desc&first_air_date.gte=2023-01-01&air_date.gte=__DATE_30_DAYS_AGO__&air_date.lte=__TODAY__`, type: 'tv' },
   { key: 'anime', title: 'Anime', url: `${TMDB_BASE_URL}/discover/tv?with_origin_country=JP&with_genres=16&language=en-US&sort_by=popularity.desc&first_air_date.gte=2023-01-01&air_date.gte=__DATE_30_DAYS_AGO__&air_date.lte=__TODAY__`, type: 'tv' },
   { key: 'on_the_air_tv', title: 'On The Air TV Shows', url: `${TMDB_BASE_URL}/tv/on_the_air?language=en-US`, type: 'tv' },
   { key: 'top_rated_tv', title: 'Top Rated TV Shows', url: `${TMDB_BASE_URL}/tv/top_rated?language=en-US`, type: 'tv' },
@@ -243,7 +243,7 @@ export const fetchCategoryPageData = async (categoryKey: string, page: number): 
     } else if (categoryKey === 'c_drama') {
       url = `${TMDB_BASE_URL}/discover/tv?with_origin_country=CN&with_genres=18&language=en-US&sort_by=first_air_date.desc&page=${page}`;
     } else if (categoryKey === 'j_drama') {
-      url = `${TMDB_BASE_URL}/discover/tv?with_origin_country=JP&with_genres=18&language=en-US&sort_by=first_air_date.desc&page=${page}`;
+      url = `${TMDB_BASE_URL}/discover/tv?with_origin_country=JP&with_genres=18&without_genres=16&language=en-US&sort_by=first_air_date.desc&page=${page}`;
     } else if (categoryKey === 'anime') {
       url = `${TMDB_BASE_URL}/discover/tv?with_origin_country=JP&with_genres=16&language=en-US&sort_by=first_air_date.desc&page=${page}`;
     } else {
