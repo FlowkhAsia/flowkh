@@ -370,9 +370,9 @@ const App: React.FC = () => {
   const filteredGenres = useMemo(() => {
     const activeFilter = getActiveFilter();
     const movieKeys = ['trending_movies', 'popular_movies', 'now_playing_movies', 'upcoming_movies', 'top_rated_movies'];
-    const tvKeys = ['trending_tv', 'k_drama', 'c_drama', 'anime', 'on_the_air_tv', 'top_rated_tv'];
+    const tvKeys = ['trending_tv', 'k_drama', 'c_drama', 'j_drama', 'anime', 'on_the_air_tv', 'top_rated_tv'];
     const animeKeys = ['anime_trending', 'anime_latest', 'anime_top_airing', 'anime_movies', 'anime_animation'];
-    const homeKeys = ['trending_today', 'k_drama', 'c_drama', 'anime', 'popular_movies', 'top_rated_movies'];
+    const homeKeys = ['trending_today', 'k_drama', 'c_drama', 'j_drama', 'anime', 'popular_movies', 'top_rated_movies'];
 
     if (activeFilter === 'movie') return genres.filter(g => movieKeys.includes(g.key));
     if (activeFilter === 'tv') return genres.filter(g => tvKeys.includes(g.key));
