@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { FacebookIcon, TwitterIcon, PlusIcon, MinusIcon, TelegramIcon } from './icons/Icons';
 
-const FACEBOOK_URL = (import.meta as any).env.VITE_FACEBOOK_URL || 'https://facebook.com/';
-const TWITTER_URL = (import.meta as any).env.VITE_TWITTER_URL || 'https://twitter.com/';
-const TELEGRAM_URL = (import.meta as any).env.VITE_TELEGRAM_URL || 'https://t.me/flowkhcam';
+const FACEBOOK_URL = (import.meta as any).env?.VITE_FACEBOOK_URL || 'https://facebook.com/';
+const TWITTER_URL = (import.meta as any).env?.VITE_TWITTER_URL || 'https://twitter.com/';
+const TELEGRAM_URL = (import.meta as any).env?.VITE_TELEGRAM_URL || 'https://t.me/flowkhcam';
 
 const FAQItem: React.FC<{ question: string; children: React.ReactNode }> = ({ question, children }) => {
   const [isOpen, setIsOpen] = useState(false);

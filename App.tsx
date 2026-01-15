@@ -211,7 +211,7 @@ const App: React.FC = () => {
   // SEO & ANALYTICS
   useEffect(() => {
     // Google Analytics Initialization
-    const gaId = (import.meta as any).env.VITE_PUBLIC_GOOGLE_ANALYTICS_ID;
+    const gaId = (import.meta as any).env?.VITE_PUBLIC_GOOGLE_ANALYTICS_ID;
     
     // Inject GA script if not present
     if (gaId && typeof window.gtag === 'undefined') {
