@@ -22,8 +22,6 @@ import {
 import MovieCard from './MovieCard';
 import ActorCard from './ActorCard';
 
-const AdsterraBanner = lazy(() => import('./AdsterraBanner'));
-
 interface DetailPageProps {
   movieId: number;
   mediaType: 'movie' | 'tv';
@@ -651,11 +649,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 )}
             </section>
         )}
-
-        {/* Ad Banner */}
-        <Suspense fallback={<div className="h-[250px] w-[300px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
-          <AdsterraBanner />
-        </Suspense>
 
         {/* Actors Section */}
         {cast.length > 0 && (

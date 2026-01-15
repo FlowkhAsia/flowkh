@@ -21,7 +21,6 @@ const PrivacyPolicyPage = lazy(() => import('./components/PrivacyPolicyPage'));
 const TermsOfServicePage = lazy(() => import('./components/TermsOfServicePage'));
 const FAQPage = lazy(() => import('./components/FAQPage'));
 const NotFoundPage = lazy(() => import('./components/NotFoundPage'));
-const AdsterraBanner = lazy(() => import('./components/AdsterraBanner'));
 
 // Add Window interface augmentation for Google Analytics
 declare global {
@@ -533,11 +532,6 @@ const App: React.FC = () => {
                     myList={myList} 
                     onToggleMyList={handleToggleMyList} 
                   />
-                  {index === 0 && (
-                    <Suspense fallback={<div className="h-[250px] w-[300px] bg-zinc-800 rounded-md mx-auto my-8 animate-pulse" />}>
-                      <AdsterraBanner />
-                    </Suspense>
-                  )}
                 </React.Fragment>
               ))}
             </section>
