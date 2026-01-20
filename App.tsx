@@ -5,7 +5,7 @@ import {
   fetchLogoUrl,
 } from './services/geminiService';
 import Navbar from './components/Navbar';
-import { ArrowLeftIcon } from './components/icons/Icons';
+import { ArrowLeftIcon, CloseIcon } from './components/icons/Icons';
 import Hero from './components/Hero';
 import MovieRow from './components/MovieRow';
 import BackToTopButton from './components/BackToTopButton';
@@ -167,7 +167,13 @@ const App: React.FC = () => {
 
   const loadMovies = useCallback(async (view: 'home' | 'movies' | 'tv' | 'anime') => {
     try {
-      setLoading(true);
+      // Only set global loading/skeleton if we have no genres cached
+      // This prevents the whole screen from flickering back to skeletons when navigating back from details
+      setGenres(prev => {
+        if (prev.length === 0) setLoading(true);
+        return prev;
+      });
+      
       setError(null);
       const movieData = await fetchMoviesData(view);
       setGenres(movieData);
@@ -187,6 +193,7 @@ const App: React.FC = () => {
       const view = path === '/movies' ? 'movies' : path === '/tv-shows' ? 'tv' : path === '/anime' ? 'anime' : 'home';
       loadMovies(view);
     } else {
+      // If we are not on a browse path (e.g. detail page), we don't need the global skeletons
       setLoading(false);
     }
   }, [location.pathname, loadMovies]);
@@ -571,12 +578,12 @@ const App: React.FC = () => {
                 
                 {isDetailPageActive ? (
                   <button 
-                      onClick={handleBackdropClick => handleBack()}
-                      className="fixed top-6 left-6 z-[60] p-2 text-white bg-black/20 rounded-full transition-transform hover:scale-110"
-                      aria-label="Go back"
+                      onClick={() => handleBack()}
+                      className="fixed top-6 right-6 z-[60] p-2 text-white bg-black/20 rounded-full transition-transform hover:scale-110"
+                      aria-label="Close"
                       style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))' }}
                   >
-                      <ArrowLeftIcon className="h-8 w-8 text-white" />
+                      <CloseIcon className="h-8 w-8 text-white" />
                   </button>
                 ) : (
                   <Navbar 
