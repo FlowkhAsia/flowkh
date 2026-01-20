@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy, useRef } from 'react';
 import { Actor, Genre, Movie } from './types';
 import { 
   fetchMoviesData, 
@@ -78,7 +78,7 @@ const MovieRowSkeleton: React.FC = () => (
     <div className="space-y-2 md:space-y-3">
         {/* Title skeleton */}
         <div className="flex items-center space-x-3">
-            <div className="w-1.s h-7 bg-zinc-700 rounded-full animate-pulse" />
+            <div className="w-1.5 h-7 bg-zinc-700 rounded-full animate-pulse" />
             <div className="h-7 w-48 bg-zinc-800 rounded-md animate-pulse" />
         </div>
         {/* Cards skeleton */}
@@ -152,6 +152,9 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [myList, setMyList] = useState<Movie[]>([]);
+  
+  // Cache to track which views have already been fetched to avoid flickering on back-navigation
+  const loadedViewsRef = useRef<Set<string>>(new Set());
 
   // Hero state
   const [heroMovies, setHeroMovies] = useState<Movie[]>([]);
@@ -166,24 +169,32 @@ const App: React.FC = () => {
   }, []);
 
   const loadMovies = useCallback(async (view: 'home' | 'movies' | 'tv' | 'anime') => {
+    // If this view is already loaded and we have data, skip fetching to avoid reload behavior
+    if (loadedViewsRef.current.has(view) && genres.length > 0) {
+        setLoading(false);
+        return;
+    }
+
     try {
-      // Only set global loading/skeleton if we have no genres cached
-      // This prevents the whole screen from flickering back to skeletons when navigating back from details
-      setGenres(prev => {
-        if (prev.length === 0) setLoading(true);
-        return prev;
-      });
-      
+      setLoading(true);
       setError(null);
       const movieData = await fetchMoviesData(view);
-      setGenres(movieData);
+      
+      setGenres(prev => {
+          // Merge logic: If it's a specific view, we might want to keep some global state
+          // but for this simple app structure, replacing is usually fine as long as 
+          // we don't clear it before the fetch.
+          return movieData;
+      });
+
+      loadedViewsRef.current.add(view);
     } catch (err) {
       setError('Failed to fetch movie data. Please try again later.');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [genres.length]);
 
   useEffect(() => { 
     const path = location.pathname;
@@ -193,7 +204,7 @@ const App: React.FC = () => {
       const view = path === '/movies' ? 'movies' : path === '/tv-shows' ? 'tv' : path === '/anime' ? 'anime' : 'home';
       loadMovies(view);
     } else {
-      // If we are not on a browse path (e.g. detail page), we don't need the global skeletons
+      // If we are on a detail page or other sub-page, we don't need the global skeletons
       setLoading(false);
     }
   }, [location.pathname, loadMovies]);
@@ -367,6 +378,8 @@ const App: React.FC = () => {
     if (window.history.length <= 2) {
       navigate('/');
     } else {
+      // Browsers handle state preservation and scroll restoration best with history.back()
+      // Now that we cache loaded views, this will be instant and "reload-free".
       window.history.back();
     }
   };
@@ -579,9 +592,9 @@ const App: React.FC = () => {
                 {isDetailPageActive ? (
                   <button 
                       onClick={() => handleBack()}
-                      className="fixed top-6 right-6 z-[60] p-2 text-white bg-black/20 rounded-full transition-transform hover:scale-110"
+                      className="fixed top-6 right-6 z-[60] p-2 text-white bg-black/40 rounded-full transition-all hover:scale-110 hover:bg-black/60 shadow-xl"
                       aria-label="Close"
-                      style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))' }}
+                      style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' }}
                   >
                       <CloseIcon className="h-8 w-8 text-white" />
                   </button>
