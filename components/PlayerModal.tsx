@@ -137,17 +137,17 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
             if (media_type === 'movie') return `https://vidstorm.ru/movie/${id}`;
             return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
         case 'VidSrcV2': // Alternate 1
-            if (media_type === 'movie') return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=true`;
-            return `https://vidsrc.cc/v2/embed/tv/${id}/${seasonNum}/${episodeNum}?autoPlay=true`;
+            if (media_type === 'movie') return `https://vidsrc.cc/v2/embed/movie/${id}`;
+            return `https://vidsrc.cc/v2/embed/tv/${id}/${seasonNum}/${episodeNum}`;
         case 'Videasy': // Alternate 2
-            if (media_type === 'movie') return `https://player.videasy.net/movie/${id}?autoplay=true`;
-            return `https://player.videasy.net/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
+            if (media_type === 'movie') return `https://player.videasy.net/movie/${id}`;
+            return `https://player.videasy.net/tv/${id}/${seasonNum}/${episodeNum}`;
         case 'VidSrcMe': // Alternate 3
             if (media_type === 'movie') return `https://vidsrcme.ru/embed/movie?tmdb=${id}`;
             return `https://vidsrcme.ru/embed/tv?tmdb=${id}&season=${seasonNum}&episode=${episodeNum}`;
         case 'VidPlus': // Alternate 4
-            if (media_type === 'movie') return `https://player.vidplus.to/embed/movie/${id}?autoplay=true`;
-            return `https://player.vidplus.to/embed/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
+            if (media_type === 'movie') return `https://player.vidplus.to/embed/movie/${id}`;
+            return `https://player.vidplus.to/embed/tv/${id}/${seasonNum}/${episodeNum}`;
         case 'MoviesAPI': // Alternate 5
             if (media_type === 'movie') return `https://moviesapi.club/movie/${id}`;
             return `https://moviesapi.club/tv/${id}-${seasonNum}-${episodeNum}`;
