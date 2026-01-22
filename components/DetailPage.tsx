@@ -17,7 +17,9 @@ import {
     CloseIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
-    ServerIcon
+    ServerIcon,
+    SpeakerWaveIcon,
+    SpeakerXMarkIcon
 } from './icons/Icons';
 import MovieCard from './MovieCard';
 import ActorCard from './ActorCard';
@@ -55,6 +57,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
 
   // Inline Trailer state
   const [showInlineTrailer, setShowInlineTrailer] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const trailerIframeRef = useRef<HTMLIFrameElement>(null);
 
   const handleClosePlayer = useCallback(() => {
     setIsPlaying(false);
@@ -194,6 +198,19 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         return () => clearTimeout(timer);
     }
   }, [autoPlay, loading, details, handlePlay]);
+
+  // Handle mute/unmute communication with YouTube iframe
+  const handleToggleMute = useCallback(() => {
+    const nextMuteState = !isMuted;
+    setIsMuted(nextMuteState);
+    if (trailerIframeRef.current) {
+      const command = nextMuteState ? 'mute' : 'unMute';
+      trailerIframeRef.current.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func: command, args: [] }),
+        '*'
+      );
+    }
+  }, [isMuted]);
 
   // Effect to close dropdowns on outside click
   useEffect(() => {
@@ -422,6 +439,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 {showInlineTrailer && details.trailerUrl ? (
                     <div className="relative w-full h-full scale-[1.3] pointer-events-none">
                          <iframe
+                            ref={trailerIframeRef}
                             src={`${details.trailerUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${details.trailerUrl.split('/').pop()?.split('?')[0]}&rel=0&iv_load_policy=3&enablejsapi=1`}
                             title="Trailer background"
                             frameBorder="0"
@@ -441,6 +459,17 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 {/* Gradient Overlays */}
                 <div className={`absolute inset-0 transition-colors duration-1000 ${showInlineTrailer ? 'bg-[#141414]/20' : 'bg-[#141414]/40'}`} />
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#141414] to-transparent z-10" />
+                
+                {/* Volume Toggle Button */}
+                {showInlineTrailer && (
+                  <button 
+                    onClick={handleToggleMute}
+                    className="absolute bottom-10 right-10 z-30 p-3 bg-black/40 backdrop-blur-md border border-white/20 rounded-full hover:bg-black/60 transition-all hover:scale-110 shadow-lg pointer-events-auto"
+                    aria-label={isMuted ? "Unmute Trailer" : "Mute Trailer"}
+                  >
+                    {isMuted ? <SpeakerXMarkIcon className="w-6 h-6 text-white" /> : <SpeakerWaveIcon className="w-6 h-6 text-white" />}
+                  </button>
+                )}
             </div>
 
             {/* Content Layer */}
@@ -679,7 +708,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     <button
                         aria-label="Scroll actors right"
                         onClick={() => scrollActors('right')} 
-                        className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-black shadow-md hover:bg-white"
+                        className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-black shadow-md hover:bg-white"
                     >
                         <ChevronRightIcon className="w-full h-full p-1" />
                     </button>
