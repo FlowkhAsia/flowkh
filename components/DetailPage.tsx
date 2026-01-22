@@ -53,10 +53,12 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   });
   const [selectedServer, setSelectedServer] = useState('VidStorm');
 
+  // Inline Trailer state
+  const [showInlineTrailer, setShowInlineTrailer] = useState(false);
+
   const handleClosePlayer = useCallback(() => {
     setIsPlaying(false);
     if (navigate) {
-        // This will remove query params like ?autoplay=true and also specific season/episode paths
         navigate(`/${mediaType}/${movieId}`, { replace: true });
     }
   }, [navigate, mediaType, movieId]);
@@ -76,9 +78,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   // Server dropdown state
   const [isServerDropdownOpen, setIsServerDropdownOpen] = useState(false);
   const serverDropdownRef = useRef<HTMLDivElement>(null);
-
-  // Trailer Modal state
-  const [showTrailer, setShowTrailer] = useState(false);
 
   // Fetch episodes when season changes
   useEffect(() => {
@@ -102,6 +101,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         title: `${details?.title || ''}: S${seasonNumber}E${episode.episode_number} - ${episode.name}`,
     });
     setIsPlaying(true);
+    setShowInlineTrailer(false); // Stop trailer when content starts
     navigate?.(`/tv/${movieId}/${seasonNumber}/${episode.episode_number}`, { replace: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [movieId, details?.title, navigate]);
@@ -109,7 +109,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   const handlePlay = useCallback(async () => {
     if (details?.media_type === 'tv' && selectedSeason) {
         let episodesToPlay = episodes;
-        // If episodes for the current season are not loaded, fetch them.
         if (episodesToPlay.length === 0) {
             setEpisodesLoading(true);
             episodesToPlay = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
@@ -125,7 +124,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             return;
         }
     }
-    // For movies
     setCurrentPlayingInfo({
         id: movieId,
         media_type: mediaType,
@@ -134,6 +132,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         episode: mediaType === 'tv' ? 1 : undefined,
     });
     setIsPlaying(true);
+    setShowInlineTrailer(false); // Stop trailer when content starts
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [details, selectedSeason, episodes, movieId, mediaType, handleEpisodePlay, autoPlay, initialEpisodeNumber]);
 
@@ -177,6 +176,16 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     loadDetails();
   }, [movieId, mediaType, autoPlay, initialSeasonNumber]);
 
+  // Autoplay trailer logic
+  useEffect(() => {
+    if (details?.trailerUrl && !isPlaying && !loading) {
+        const timer = setTimeout(() => {
+            setShowInlineTrailer(true);
+        }, 1500); // 1.5s delay before cinematic start
+        return () => clearTimeout(timer);
+    }
+  }, [details, isPlaying, loading]);
+
   useEffect(() => {
     if (autoPlay && !loading && details) {
         const timer = setTimeout(() => {
@@ -185,18 +194,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         return () => clearTimeout(timer);
     }
   }, [autoPlay, loading, details, handlePlay]);
-  
-  // Effect to lock body scroll when trailer modal is open
-  useEffect(() => {
-    if (showTrailer) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, [showTrailer]);
 
   // Effect to close dropdowns on outside click
   useEffect(() => {
@@ -212,7 +209,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   
-  // Player logic
   const servers = useMemo(() => [
     { name: 'VidStorm', displayName: 'Primary' },
     { name: 'VidSrcV2', displayName: 'Alternate 1' },
@@ -232,22 +228,22 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         case 'VidStorm':
             if (media_type === 'movie') return `https://vidstorm.ru/movie/${id}`;
             return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
-        case 'VidSrcV2': // Alternate 1
+        case 'VidSrcV2': 
             if (media_type === 'movie') return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=true`;
             return `https://vidsrc.cc/v2/embed/tv/${id}/${seasonNum}/${episodeNum}?autoPlay=true`;
-        case 'Videasy': // Alternate 2
+        case 'Videasy': 
             if (media_type === 'movie') return `https://player.videasy.net/movie/${id}?autoplay=true`;
             return `https://player.videasy.net/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
-        case 'VidSrcMe': // Alternate 3
+        case 'VidSrcMe': 
             if (media_type === 'movie') return `https://vidsrcme.ru/embed/movie?tmdb=${id}`;
             return `https://vidsrcme.ru/embed/tv?tmdb=${id}&season=${seasonNum}&episode=${episodeNum}`;
-        case 'VidPlus': // Alternate 4
+        case 'VidPlus': 
             if (media_type === 'movie') return `https://player.vidplus.to/embed/movie/${id}?autoplay=true`;
             return `https://player.vidplus.to/embed/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
-        case 'MoviesAPI': // Alternate 5
+        case 'MoviesAPI': 
             if (media_type === 'movie') return `https://moviesapi.club/movie/${id}`;
             return `https://moviesapi.club/tv/${id}-${seasonNum}-${episodeNum}`;
-        case 'VidLink': // Alternate 6
+        case 'VidLink': 
             if (media_type === 'movie') return `https://vidlink.pro/movie/${id}`;
             return `https://vidlink.pro/tv/${id}/${seasonNum}/${episodeNum}`;
         default:
@@ -278,10 +274,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   const scrollActors = (direction: 'left' | 'right') => {
     if (actorsRowRef.current) {
         const { scrollLeft, clientWidth } = actorsRowRef.current;
-        const scrollTo =
-            direction === 'left'
-                ? scrollLeft - clientWidth * 0.8
-                : scrollLeft + clientWidth * 0.8;
+        const scrollTo = direction === 'left' ? scrollLeft - clientWidth * 0.8 : scrollLeft + clientWidth * 0.8;
         actorsRowRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
@@ -289,10 +282,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   const scrollSimilar = (direction: 'left' | 'right') => {
     if (similarRowRef.current) {
         const { scrollLeft, clientWidth } = similarRowRef.current;
-        const scrollTo =
-            direction === 'left'
-                ? scrollLeft - clientWidth * 0.8
-                : scrollLeft + clientWidth * 0.8;
+        const scrollTo = direction === 'left' ? scrollLeft - clientWidth * 0.8 : scrollLeft + clientWidth * 0.8;
         similarRowRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
@@ -354,7 +344,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             {/* Player and Controls Layer */}
             <div className="relative z-10">
                 <div className="relative pt-20">
-                    {/* Player Centered */}
                     <div className="relative z-10 px-4 md:px-16 flex justify-center">
                         <div className="w-full max-w-6xl aspect-video shadow-2xl bg-black rounded-lg overflow-hidden">
                             {playerUrl ? (
@@ -378,10 +367,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                             )}
                         </div>
                     </div>
-                    {/* Server Selection Bar */}
                     <div className="w-full max-w-6xl mx-auto mt-4 px-4 md:px-16 pb-4">
                         <div className="p-2 bg-zinc-800 rounded-lg backdrop-blur-sm border border-zinc-700 shadow-sm">
-                            {/* Desktop: Button row */}
                             <div className="hidden md:flex flex-wrap items-center gap-2">
                                 <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
                                 {servers.map(({ name, displayName }) => (
@@ -398,8 +385,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                     </button>
                                 ))}
                             </div>
-
-                            {/* Mobile: Dropdown */}
                             <div className="relative w-full md:hidden" ref={serverDropdownRef}>
                                 <div onClick={() => setIsServerDropdownOpen(!isServerDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-zinc-700 rounded-md cursor-pointer hover:bg-zinc-600">
                                     <span className="font-semibold text-white">Server: {servers.find(s => s.name === selectedServer)?.displayName}</span>
@@ -431,21 +416,35 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             </div>
         </div>
       ) : (
-        <div className="relative h-[50vh] sm:h-[90vh] md:h-screen overflow-hidden">
-            {/* Background Layer */}
-            <div className="absolute top-0 left-0 w-full h-full">
-                <img 
-                    src={details.backdropUrl.replace('/w780/', '/original/')} 
-                    alt={details.title} 
-                    className="object-cover w-full h-full" 
-                />
+        <div className="relative h-[50vh] sm:h-[90vh] md:h-screen overflow-hidden bg-black">
+            {/* Background Layer: Image or Video */}
+            <div className="absolute top-0 left-0 w-full h-full z-0">
+                {showInlineTrailer && details.trailerUrl ? (
+                    <div className="relative w-full h-full scale-[1.3] pointer-events-none">
+                         <iframe
+                            src={`${details.trailerUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${details.trailerUrl.split('/').pop()?.split('?')[0]}&rel=0&iv_load_policy=3&enablejsapi=1`}
+                            title="Trailer background"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            className="w-full h-full object-cover"
+                        ></iframe>
+                        {/* Overlay to catch clicks and prevent interacting with iframe directly */}
+                        <div className="absolute inset-0 z-10" />
+                    </div>
+                ) : (
+                    <img 
+                        src={details.backdropUrl.replace('/w780/', '/original/')} 
+                        alt={details.title} 
+                        className="object-cover w-full h-full animate-fast-fade-in" 
+                    />
+                )}
                 {/* Gradient Overlays */}
-                <div className="absolute inset-0 bg-[#141414]/40" />
-                <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#141414] to-transparent" />
+                <div className={`absolute inset-0 transition-colors duration-1000 ${showInlineTrailer ? 'bg-[#141414]/20' : 'bg-[#141414]/40'}`} />
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#141414] to-transparent z-10" />
             </div>
 
             {/* Content Layer */}
-            <div className="relative z-10 h-full flex flex-col justify-center px-4 md:px-16">
+            <div className="relative z-20 h-full flex flex-col justify-center px-4 md:px-16">
                 <div className="max-w-3xl space-y-2 md:space-y-4">
                     {details.logoUrl ? (
                         <img 
@@ -489,9 +488,12 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                             {isAdded ? <CheckIcon className="h-5 sm:h-6 w-5 sm:w-6"/> : <PlusIcon className="h-5 sm:h-6 w-5 sm:w-6"/>}
                         </button>
                         {details.trailerUrl && (
-                            <button onClick={() => setShowTrailer(true)} className="flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition font-semibold text-white">
+                            <button 
+                                onClick={() => setShowInlineTrailer(!showInlineTrailer)} 
+                                className={`flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg backdrop-blur-sm border transition font-semibold ${showInlineTrailer ? 'bg-[var(--brand-color)] border-[var(--brand-color)] text-white' : 'bg-white/20 border-white/30 hover:bg-white/30 text-white'}`}
+                            >
                                 <VideoCameraIcon className="w-5 sm:h-6 w-5 sm:w-6"/>
-                                Trailer
+                                {showInlineTrailer ? 'Hide Trailer' : 'Trailer'}
                             </button>
                         )}
                         {isTV ? (
@@ -724,32 +726,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         )}
       </div>
     </div>
-
-    {/* Trailer Modal */}
-    {showTrailer && details.trailerUrl && (
-        <div 
-            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center animate-fade-scale-in" 
-            onClick={() => setShowTrailer(false)}
-        >
-            <div className="relative w-full max-w-4xl aspect-video bg-black rounded-lg shadow-2xl" onClick={e => e.stopPropagation()}>
-                <iframe
-                    src={`${details.trailerUrl}?autoplay=1&rel=0`}
-                    title="Trailer player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="w-full h-full rounded-lg"
-                ></iframe>
-                <button 
-                    onClick={() => setShowTrailer(false)}
-                    aria-label="Close trailer"
-                    className="absolute -top-3 -right-3 md:-top-5 md:-right-5 text-white bg-black/50 rounded-full p-2 hover:bg-black/80 transition-colors"
-                >
-                    <CloseIcon className="w-7 h-7"/>
-                </button>
-            </div>
-        </div>
-    )}
     </>
   );
 };
