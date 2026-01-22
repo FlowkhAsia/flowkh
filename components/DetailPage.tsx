@@ -200,7 +200,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   }, [autoPlay, loading, details, handlePlay]);
 
   // Handle mute/unmute communication with YouTube iframe
-  const handleToggleMute = useCallback(() => {
+  const handleToggleMute = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     const nextMuteState = !isMuted;
     setIsMuted(nextMuteState);
     if (trailerIframeRef.current) {
@@ -459,22 +460,23 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 {/* Gradient Overlays */}
                 <div className={`absolute inset-0 transition-colors duration-1000 ${showInlineTrailer ? 'bg-[#141414]/20' : 'bg-[#141414]/40'}`} />
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#141414] to-transparent z-10" />
-                
-                {/* Volume Toggle Button */}
-                {showInlineTrailer && (
-                  <button 
-                    onClick={handleToggleMute}
-                    className="absolute bottom-10 right-10 z-30 p-3 bg-black/40 backdrop-blur-md border border-white/20 rounded-full hover:bg-black/60 transition-all hover:scale-110 shadow-lg pointer-events-auto"
-                    aria-label={isMuted ? "Unmute Trailer" : "Mute Trailer"}
-                  >
-                    {isMuted ? <SpeakerXMarkIcon className="w-6 h-6 text-white" /> : <SpeakerWaveIcon className="w-6 h-6 text-white" />}
-                  </button>
-                )}
             </div>
 
-            {/* Content Layer */}
-            <div className="relative z-20 h-full flex flex-col justify-center px-4 md:px-16">
-                <div className="max-w-3xl space-y-2 md:space-y-4">
+            {/* Volume Toggle Button - Moved to root level of hero and given higher Z to be clickable */}
+            {showInlineTrailer && !isPlaying && (
+                <button 
+                    onClick={handleToggleMute}
+                    className="absolute bottom-10 right-10 z-[40] p-3 bg-black/40 backdrop-blur-md border border-white/20 rounded-full hover:bg-black/60 transition-all hover:scale-110 shadow-xl cursor-pointer pointer-events-auto"
+                    aria-label={isMuted ? "Unmute Trailer" : "Mute Trailer"}
+                    style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}
+                >
+                    {isMuted ? <SpeakerXMarkIcon className="w-6 h-6 text-white" /> : <SpeakerWaveIcon className="w-6 h-6 text-white" />}
+                </button>
+            )}
+
+            {/* Content Layer - Set pointer-events-none on parent, pointer-events-auto on children */}
+            <div className="relative z-20 h-full flex flex-col justify-center px-4 md:px-16 pointer-events-none">
+                <div className="max-w-3xl space-y-2 md:space-y-4 pointer-events-auto">
                     {details.logoUrl ? (
                         <img 
                         src={details.logoUrl} 
