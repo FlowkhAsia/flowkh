@@ -105,7 +105,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         title: `${details?.title || ''}: S${seasonNumber}E${episode.episode_number} - ${episode.name}`,
     });
     setIsPlaying(true);
-    setShowInlineTrailer(false); // Stop trailer when content starts
+    setShowInlineTrailer(false); 
     navigate?.(`/tv/${movieId}/${seasonNumber}/${episode.episode_number}`, { replace: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [movieId, details?.title, navigate]);
@@ -136,7 +136,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         episode: mediaType === 'tv' ? 1 : undefined,
     });
     setIsPlaying(true);
-    setShowInlineTrailer(false); // Stop trailer when content starts
+    setShowInlineTrailer(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [details, selectedSeason, episodes, movieId, mediaType, handleEpisodePlay, autoPlay, initialEpisodeNumber]);
 
@@ -180,15 +180,49 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     loadDetails();
   }, [movieId, mediaType, autoPlay, initialSeasonNumber]);
 
-  // Autoplay trailer logic
+  // Autoplay trailer logic with cinematic entry
   useEffect(() => {
     if (details?.trailerUrl && !isPlaying && !loading) {
         const timer = setTimeout(() => {
             setShowInlineTrailer(true);
-        }, 1500); // 1.5s delay before cinematic start
+        }, 1500); 
         return () => clearTimeout(timer);
     }
   }, [details, isPlaying, loading]);
+
+  // Handle mute/unmute communication with YouTube iframe
+  const sendPlayerCommand = useCallback((command: string) => {
+    if (trailerIframeRef.current) {
+        trailerIframeRef.current.contentWindow?.postMessage(
+          JSON.stringify({ event: 'command', func: command, args: [] }),
+          '*'
+        );
+      }
+  }, []);
+
+  const handleToggleMute = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextMuteState = !isMuted;
+    setIsMuted(nextMuteState);
+    sendPlayerCommand(nextMuteState ? 'mute' : 'unMute');
+  }, [isMuted, sendPlayerCommand]);
+
+  // Special handler for the Trailer button: Toggle visibility OR unmute if already showing
+  const handleTrailerButtonClick = useCallback(() => {
+    if (!showInlineTrailer) {
+        setShowInlineTrailer(true);
+        // We can't unmute immediately as iframe might not be loaded, but we'll try
+        setIsMuted(false);
+    } else {
+        // If it's already showing, unmuting is usually what the user wants when clicking "Trailer"
+        if (isMuted) {
+            setIsMuted(false);
+            sendPlayerCommand('unMute');
+        } else {
+            setShowInlineTrailer(false);
+        }
+    }
+  }, [showInlineTrailer, isMuted, sendPlayerCommand]);
 
   useEffect(() => {
     if (autoPlay && !loading && details) {
@@ -198,20 +232,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         return () => clearTimeout(timer);
     }
   }, [autoPlay, loading, details, handlePlay]);
-
-  // Handle mute/unmute communication with YouTube iframe
-  const handleToggleMute = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    const nextMuteState = !isMuted;
-    setIsMuted(nextMuteState);
-    if (trailerIframeRef.current) {
-      const command = nextMuteState ? 'mute' : 'unMute';
-      trailerIframeRef.current.contentWindow?.postMessage(
-        JSON.stringify({ event: 'command', func: command, args: [] }),
-        '*'
-      );
-    }
-  }, [isMuted]);
 
   // Effect to close dropdowns on outside click
   useEffect(() => {
@@ -333,6 +353,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     return `${h > 0 ? `${h}h ` : ''}${m}m`;
   };
 
+  // Using w1280 for better performance without losing visible quality
+  const optimizedBackdrop = details.backdropUrl.replace('/w780/', '/w1280/');
+
   return (
     <>
     {isPlaying && (
@@ -352,7 +375,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             {/* Backdrop Layer */}
             <div className="absolute inset-0 overflow-hidden">
                 <img
-                    src={details.backdropUrl.replace('/w780/', '/original/')}
+                    src={optimizedBackdrop}
                     alt=""
                     className="w-full h-full object-cover opacity-20 blur-sm"
                 />
@@ -438,10 +461,10 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             {/* Background Layer: Image or Video */}
             <div className="absolute top-0 left-0 w-full h-full z-0">
                 {showInlineTrailer && details.trailerUrl ? (
-                    <div className="relative w-full h-full scale-[1.3] pointer-events-none">
+                    <div className="relative w-full h-full scale-[1.3] pointer-events-none overflow-hidden">
                          <iframe
                             ref={trailerIframeRef}
-                            src={`${details.trailerUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${details.trailerUrl.split('/').pop()?.split('?')[0]}&rel=0&iv_load_policy=3&enablejsapi=1`}
+                            src={`${details.trailerUrl}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&loop=1&playlist=${details.trailerUrl.split('/').pop()?.split('?')[0]}&rel=0&iv_load_policy=3&enablejsapi=1`}
                             title="Trailer background"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -449,24 +472,26 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         ></iframe>
                         {/* Overlay to catch clicks and prevent interacting with iframe directly */}
                         <div className="absolute inset-0 z-10" />
+                        {/* Cinematic Vignette Overlay */}
+                        <div className="absolute inset-0 z-20 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(20,20,20,0.4)_70%,rgba(20,20,20,0.8)_100%)]" />
                     </div>
                 ) : (
                     <img 
-                        src={details.backdropUrl.replace('/w780/', '/original/')} 
+                        src={optimizedBackdrop} 
                         alt={details.title} 
                         className="object-cover w-full h-full animate-fast-fade-in" 
                     />
                 )}
                 {/* Gradient Overlays */}
-                <div className={`absolute inset-0 transition-colors duration-1000 ${showInlineTrailer ? 'bg-[#141414]/20' : 'bg-[#141414]/40'}`} />
+                <div className={`absolute inset-0 transition-opacity duration-1000 ${showInlineTrailer ? 'opacity-30' : 'opacity-50'} bg-[#141414] z-10`} />
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#141414] to-transparent z-10" />
             </div>
 
-            {/* Volume Toggle Button - Moved to root level of hero and given higher Z to be clickable */}
+            {/* Volume Toggle Button */}
             {showInlineTrailer && !isPlaying && (
                 <button 
                     onClick={handleToggleMute}
-                    className="absolute bottom-10 right-10 z-[40] p-3 bg-black/40 backdrop-blur-md border border-white/20 rounded-full hover:bg-black/60 transition-all hover:scale-110 shadow-xl cursor-pointer pointer-events-auto"
+                    className={`absolute bottom-10 right-10 z-[40] p-3 bg-black/40 backdrop-blur-md border border-white/20 rounded-full hover:bg-black/60 transition-all hover:scale-110 shadow-xl cursor-pointer pointer-events-auto ${isMuted ? 'animate-pulse' : ''}`}
                     aria-label={isMuted ? "Unmute Trailer" : "Mute Trailer"}
                     style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}
                 >
@@ -474,7 +499,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 </button>
             )}
 
-            {/* Content Layer - Set pointer-events-none on parent, pointer-events-auto on children */}
+            {/* Content Layer */}
             <div className="relative z-20 h-full flex flex-col justify-center px-4 md:px-16 pointer-events-none">
                 <div className="max-w-3xl space-y-2 md:space-y-4 pointer-events-auto">
                     {details.logoUrl ? (
@@ -520,11 +545,11 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         </button>
                         {details.trailerUrl && (
                             <button 
-                                onClick={() => setShowInlineTrailer(!showInlineTrailer)} 
-                                className={`flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg backdrop-blur-sm border transition font-semibold ${showInlineTrailer ? 'bg-[var(--brand-color)] border-[var(--brand-color)] text-white' : 'bg-white/20 border-white/30 hover:bg-white/30 text-white'}`}
+                                onClick={handleTrailerButtonClick} 
+                                className={`flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg backdrop-blur-sm border transition font-semibold ${showInlineTrailer && !isMuted ? 'bg-[var(--brand-color)] border-[var(--brand-color)] text-white' : 'bg-white/20 border-white/30 hover:bg-white/30 text-white'}`}
                             >
                                 <VideoCameraIcon className="w-5 sm:h-6 w-5 sm:w-6"/>
-                                {showInlineTrailer ? 'Hide Trailer' : 'Trailer'}
+                                {showInlineTrailer ? (isMuted ? 'Unmute Trailer' : 'Hide Trailer') : 'Watch Trailer'}
                             </button>
                         )}
                         {isTV ? (
