@@ -39,7 +39,7 @@ const Hero: React.FC<HeroProps> = ({ movies, onSelectMovie, onPlayMovie }) => {
             {movies.map((movie, index) => (
               <img
                 key={movie.id}
-                src={movie.backdropUrl.replace('/w780/', '/original/')}
+                src={movie.backdropUrl.replace('/w780/', '/w1280/')}
                 alt=""
                 aria-hidden="true"
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${

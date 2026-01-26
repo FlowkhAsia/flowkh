@@ -23,6 +23,7 @@ import {
 } from './icons/Icons';
 import MovieCard from './MovieCard';
 import ActorCard from './ActorCard';
+import AdsterraBanner from './AdsterraBanner';
 
 interface DetailPageProps {
   movieId: number;
@@ -211,10 +212,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   const handleTrailerButtonClick = useCallback(() => {
     if (!showInlineTrailer) {
         setShowInlineTrailer(true);
-        // We can't unmute immediately as iframe might not be loaded, but we'll try
         setIsMuted(false);
     } else {
-        // If it's already showing, unmuting is usually what the user wants when clicking "Trailer"
         if (isMuted) {
             setIsMuted(false);
             sendPlayerCommand('unMute');
@@ -780,6 +779,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             </div>
         </section>
         )}
+
+        {/* Advertisement Section */}
+        <AdsterraBanner />
       </div>
     </div>
     </>
