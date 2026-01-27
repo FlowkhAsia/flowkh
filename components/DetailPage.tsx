@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Movie, MovieDetail, Actor, Season, Episode } from '../types';
 import { fetchDetailPageData, fetchSeasonEpisodes } from '../services/geminiService';
 import { 
@@ -11,13 +11,9 @@ import {
     ClockIcon,
     ChevronDownIcon,
     SearchIcon,
-    ArrowLeftIcon,
-    FilterIcon,
     VideoCameraIcon,
-    CloseIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
-    ServerIcon,
     SpeakerWaveIcon,
     SpeakerXMarkIcon
 } from './icons/Icons';
@@ -61,13 +57,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   const [isMuted, setIsMuted] = useState(true);
   const trailerIframeRef = useRef<HTMLIFrameElement>(null);
 
-  const handleClosePlayer = useCallback(() => {
-    setIsPlaying(false);
-    if (navigate) {
-        navigate(`/${mediaType}/${movieId}`, { replace: true });
-    }
-  }, [navigate, mediaType, movieId]);
-  
   // Episodes state
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
@@ -122,7 +111,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         }
 
         if (episodesToPlay.length > 0) {
-            const episodeToPlay = (autoPlay && initialEpisodeNumber && episodesToPlay.some(e => e.episode_number === initialEpisodeNumber))
+            const episodeToPlay = (initialEpisodeNumber && episodesToPlay.some(e => e.episode_number === initialEpisodeNumber))
               ? episodesToPlay.find(e => e.episode_number === initialEpisodeNumber)!
               : episodesToPlay[0];
             handleEpisodePlay(selectedSeason.season_number, episodeToPlay);
@@ -139,7 +128,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     setIsPlaying(true);
     setShowInlineTrailer(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [details, selectedSeason, episodes, movieId, mediaType, handleEpisodePlay, autoPlay, initialEpisodeNumber]);
+  }, [details, selectedSeason, episodes, movieId, mediaType, handleEpisodePlay, initialEpisodeNumber]);
 
   useEffect(() => {
     const loadDetails = async () => {
@@ -181,7 +170,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     loadDetails();
   }, [movieId, mediaType, autoPlay, initialSeasonNumber]);
 
-  // Autoplay trailer logic with cinematic entry
+  // Autoplay trailer logic
   useEffect(() => {
     if (details?.trailerUrl && !isPlaying && !loading) {
         const timer = setTimeout(() => {
@@ -191,10 +180,9 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     }
   }, [details, isPlaying, loading]);
 
-  // Handle mute/unmute communication with YouTube iframe
   const sendPlayerCommand = useCallback((command: string) => {
-    if (trailerIframeRef.current) {
-        trailerIframeRef.current.contentWindow?.postMessage(
+    if (trailerIframeRef.current && trailerIframeRef.current.contentWindow) {
+        trailerIframeRef.current.contentWindow.postMessage(
           JSON.stringify({ event: 'command', func: command, args: [] }),
           '*'
         );
@@ -208,34 +196,31 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     sendPlayerCommand(nextMuteState ? 'mute' : 'unMute');
   }, [isMuted, sendPlayerCommand]);
 
-  // Special handler for the Trailer button: Toggle visibility OR unmute if already showing
   const handleTrailerButtonClick = useCallback(() => {
     if (!showInlineTrailer) {
         setShowInlineTrailer(true);
         setIsMuted(false);
-        // Delay unmuting slightly to give the iframe a moment to mount/load
-        setTimeout(() => sendPlayerCommand('unMute'), 500);
+        setTimeout(() => sendPlayerCommand('unMute'), 800);
     } else {
         if (isMuted) {
             setIsMuted(false);
             sendPlayerCommand('unMute');
         } else {
             setShowInlineTrailer(false);
-            setIsMuted(true); // Reset for next time
+            setIsMuted(true);
         }
     }
   }, [showInlineTrailer, isMuted, sendPlayerCommand]);
 
   useEffect(() => {
-    if (autoPlay && !loading && details) {
+    if (autoPlay && !loading && details && !isPlaying) {
         const timer = setTimeout(() => {
             handlePlay();
         }, 100);
         return () => clearTimeout(timer);
     }
-  }, [autoPlay, loading, details, handlePlay]);
+  }, [autoPlay, loading, details, handlePlay, isPlaying]);
 
-  // Effect to close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
         if (seasonDropdownRef.current && !seasonDropdownRef.current.contains(event.target as Node)) {
@@ -268,26 +253,13 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         case 'VidStorm':
             if (media_type === 'movie') return `https://vidstorm.ru/movie/${id}`;
             return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
-        case 'VidSrcV2': 
-            if (media_type === 'movie') return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=true`;
-            return `https://vidsrc.cc/v2/embed/tv/${id}/${seasonNum}/${episodeNum}?autoPlay=true`;
-        case 'Videasy': 
-            if (media_type === 'movie') return `https://player.videasy.net/movie/${id}?autoplay=true`;
-            return `https://player.videasy.net/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
-        case 'VidSrcMe': 
-            if (media_type === 'movie') return `https://vidsrcme.ru/embed/movie?tmdb=${id}`;
-            return `https://vidsrcme.ru/embed/tv?tmdb=${id}&season=${seasonNum}&episode=${episodeNum}`;
-        case 'VidPlus': 
-            if (media_type === 'movie') return `https://player.vidplus.to/embed/movie/${id}?autoplay=true`;
-            return `https://player.vidplus.to/embed/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
-        case 'MoviesAPI': 
-            if (media_type === 'movie') return `https://moviesapi.club/movie/${id}`;
-            return `https://moviesapi.club/tv/${id}-${seasonNum}-${episodeNum}`;
-        case 'VidLink': 
-            if (media_type === 'movie') return `https://vidlink.pro/movie/${id}`;
-            return `https://vidlink.pro/tv/${id}/${seasonNum}/${episodeNum}`;
-        default:
-            return '';
+        case 'VidSrcV2': return `https://vidsrc.cc/v2/embed/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}?autoPlay=true`;
+        case 'Videasy': return `https://player.videasy.net/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}?autoplay=true`;
+        case 'VidSrcMe': return `https://vidsrcme.ru/embed/${media_type === 'movie' ? 'movie' : 'tv'}?tmdb=${id}${media_type === 'tv' ? `&season=${seasonNum}&episode=${episodeNum}` : ''}`;
+        case 'VidPlus': return `https://player.vidplus.to/embed/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}?autoplay=true`;
+        case 'MoviesAPI': return `https://moviesapi.club/${media_type}/${media_type === 'movie' ? id : `${id}-${seasonNum}-${episodeNum}`}`;
+        case 'VidLink': return `https://vidlink.pro/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}`;
+        default: return '';
     }
   };
   
@@ -303,30 +275,16 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     );
   }, [episodes, episodeSearch]);
 
-  const scrollToEpisodes = () => {
-    episodesRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-  
-  const scrollToSimilar = () => {
-    similarSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const scrollToEpisodes = () => episodesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToSimilar = () => similarSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
 
-  const scrollActors = (direction: 'left' | 'right') => {
-    if (actorsRowRef.current) {
-        const { scrollLeft, clientWidth } = actorsRowRef.current;
+  const scrollContainer = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
+    if (ref.current) {
+        const { scrollLeft, clientWidth } = ref.current;
         const scrollTo = direction === 'left' ? scrollLeft - clientWidth * 0.8 : scrollLeft + clientWidth * 0.8;
-        actorsRowRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+        ref.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
-
-  const scrollSimilar = (direction: 'left' | 'right') => {
-    if (similarRowRef.current) {
-        const { scrollLeft, clientWidth } = similarRowRef.current;
-        const scrollTo = direction === 'left' ? scrollLeft - clientWidth * 0.8 : scrollLeft + clientWidth * 0.8;
-        similarRowRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
-    }
-  };
-
 
   if (loading) {
     return (
@@ -355,43 +313,20 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     return `${h > 0 ? `${h}h ` : ''}${m}m`;
   };
 
-  // Using w1280 for better performance without losing visible quality
-  const optimizedBackdrop = details.backdropUrl.replace('/w780/', '/w1280/');
-
-  // Stable Trailer URL to prevent re-renders when isMuted changes
-  const stableTrailerUrl = useMemo(() => {
-    if (!details.trailerUrl) return '';
-    const videoId = details.trailerUrl.split('/').pop()?.split('?')[0];
-    return `${details.trailerUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&iv_load_policy=3&enablejsapi=1`;
-  }, [details.trailerUrl]);
+  const optimizedBackdrop = details.backdropUrl?.replace('/w780/', '/w1280/') || '';
+  const videoId = details.trailerUrl?.split('/').pop()?.split('?')[0] || '';
+  const stableTrailerUrl = videoId ? `${details.trailerUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&iv_load_policy=3&enablejsapi=1` : '';
 
   return (
-    <>
-    {isPlaying && (
-      <button 
-          onClick={handleClosePlayer}
-          className="fixed top-6 right-6 z-[60] p-2 text-white bg-black/30 rounded-full transition-transform hover:scale-110"
-          aria-label="Close player"
-          style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))' }}
-      >
-          <CloseIcon className="h-8 w-8 text-white" />
-      </button>
-    )}
     <div className="relative">
       {/* Hero Section / Player */}
       {isPlaying ? (
         <div className="relative w-full z-30">
-            {/* Backdrop Layer */}
             <div className="absolute inset-0 overflow-hidden">
-                <img
-                    src={optimizedBackdrop}
-                    alt=""
-                    className="w-full h-full object-cover opacity-20 blur-sm"
-                />
+                <img src={optimizedBackdrop} alt="" className="w-full h-full object-cover opacity-20 blur-sm" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/80 to-transparent" />
             </div>
 
-            {/* Player and Controls Layer */}
             <div className="relative z-10">
                 <div className="relative pt-20">
                     <div className="relative z-10 px-4 md:px-16 flex justify-center">
@@ -409,10 +344,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                 ></iframe>
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-center text-white">
-                                    <div>
-                                        <p className="text-lg">Loading player...</p>
-                                        <p className="text-sm text-gray-400">This may take a moment.</p>
-                                    </div>
+                                    <p className="text-lg">Loading player...</p>
                                 </div>
                             )}
                         </div>
@@ -425,11 +357,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                     <button
                                         key={name}
                                         onClick={() => setSelectedServer(name)}
-                                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                                            selectedServer === name
-                                                ? 'bg-zinc-600 text-white'
-                                                : 'bg-zinc-700 text-gray-300 hover:bg-zinc-600'
-                                        }`}
+                                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${selectedServer === name ? 'bg-zinc-600 text-white' : 'bg-zinc-700 text-gray-300 hover:bg-zinc-600'}`}
                                     >
                                         {displayName}
                                     </button>
@@ -446,11 +374,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                             {servers.map(({ name, displayName }) => {
                                                 const isSelected = selectedServer === name;
                                                 return (
-                                                    <li
-                                                        key={name}
-                                                        onClick={() => { setSelectedServer(name); setIsServerDropdownOpen(false); }}
-                                                        className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-zinc-700 font-semibold text-white' : 'hover:bg-zinc-700/50 text-gray-300' }`}
-                                                    >
+                                                    <li key={name} onClick={() => { setSelectedServer(name); setIsServerDropdownOpen(false); }} className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-zinc-700 font-semibold text-white' : 'hover:bg-zinc-700/50 text-gray-300' }`}>
                                                         <span>{displayName}</span>
                                                         {isSelected && <CheckIcon className="w-5 h-5" />}
                                                     </li>
@@ -467,9 +391,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         </div>
       ) : (
         <div className="relative h-[50vh] sm:h-[90vh] md:h-screen overflow-hidden bg-black">
-            {/* Background Layer: Image or Video */}
             <div className="absolute top-0 left-0 w-full h-full z-0">
-                {showInlineTrailer && details.trailerUrl ? (
+                {showInlineTrailer && stableTrailerUrl ? (
                     <div className="relative w-full h-full scale-[1.3] pointer-events-none overflow-hidden">
                          <iframe
                             ref={trailerIframeRef}
@@ -479,44 +402,30 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             className="w-full h-full object-cover"
                         ></iframe>
-                        {/* Overlay to catch clicks and prevent interacting with iframe directly */}
                         <div className="absolute inset-0 z-10" />
-                        {/* Cinematic Vignette Overlay */}
                         <div className="absolute inset-0 z-20 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(20,20,20,0.4)_70%,rgba(20,20,20,0.8)_100%)]" />
                     </div>
                 ) : (
-                    <img 
-                        src={optimizedBackdrop} 
-                        alt={details.title} 
-                        className="object-cover w-full h-full animate-fast-fade-in" 
-                    />
+                    <img src={optimizedBackdrop} alt={details.title} className="object-cover w-full h-full animate-fast-fade-in" />
                 )}
-                {/* Gradient Overlays */}
                 <div className={`absolute inset-0 transition-opacity duration-1000 ${showInlineTrailer ? 'opacity-30' : 'opacity-50'} bg-[#141414] z-10`} />
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#141414] to-transparent z-10" />
             </div>
 
-            {/* Volume Toggle Button */}
             {showInlineTrailer && !isPlaying && (
                 <button 
                     onClick={handleToggleMute}
                     className={`absolute bottom-10 right-10 z-[40] p-3 bg-black/40 backdrop-blur-md border border-white/20 rounded-full hover:bg-black/60 transition-all hover:scale-110 shadow-xl cursor-pointer pointer-events-auto ${isMuted ? 'animate-pulse' : ''}`}
                     aria-label={isMuted ? "Unmute Trailer" : "Mute Trailer"}
-                    style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}
                 >
                     {isMuted ? <SpeakerXMarkIcon className="w-6 h-6 text-white" /> : <SpeakerWaveIcon className="w-6 h-6 text-white" />}
                 </button>
             )}
 
-            {/* Content Layer */}
             <div className="relative z-20 h-full flex flex-col justify-center px-4 md:px-16 pointer-events-none">
                 <div className="max-w-3xl space-y-2 md:space-y-4 pointer-events-auto">
                     {details.logoUrl ? (
-                        <img 
-                        src={details.logoUrl} 
-                        alt={`${details.title} Logo`} 
-                        className="w-auto max-w-[60%] md:max-w-[50%] max-h-16 md:max-h-32 object-contain object-left drop-shadow-lg"
-                        />
+                        <img src={details.logoUrl} alt={`${details.title} Logo`} className="w-auto max-w-[60%] md:max-w-[50%] max-h-16 md:max-h-32 object-contain object-left drop-shadow-lg" />
                     ) : (
                         <h1 className="text-3xl sm:text-4xl md:text-6xl font-bebas tracking-wider text-white drop-shadow-sm">{details.title}</h1>
                     )}
@@ -533,9 +442,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                             <ClockIcon className="w-4 h-4 text-gray-300"/><span>{isTV ? `${details.runtime}m` : formatRuntime(details.runtime)}</span>
                           </div>
                         }
-                        {details.genres.slice(0, 3).map(genre => (
-                            <div key={genre} className="bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-2 py-0.5 sm:px-3 sm:py-1 font-medium text-gray-300">{genre}</div>
-                        ))}
                     </div>
 
                     <p className="text-xs sm:text-sm md:text-base lg:text-lg max-w-xl line-clamp-2 md:line-clamp-3 text-gray-100 font-medium drop-shadow-sm">{details.description}</p>
@@ -544,19 +450,11 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         <button onClick={handlePlay} className="flex items-center gap-x-2 rounded-lg bg-white px-4 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base font-bold text-black transition hover:bg-gray-200">
                             <PlayIcon className="h-5 sm:h-6 w-5 sm:w-6 text-black" /> Play
                         </button>
-                        <button 
-                            onClick={() => onToggleMyList(details)} 
-                            className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition text-white" 
-                            aria-label={isAdded ? "Remove from My List" : "Add to My List"}
-                            title={isAdded ? "Remove from My List" : "Add to My List"}
-                        >
+                        <button onClick={() => onToggleMyList(details)} className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition text-white">
                             {isAdded ? <CheckIcon className="h-5 sm:h-6 w-5 sm:w-6"/> : <PlusIcon className="h-5 sm:h-6 w-5 sm:w-6"/>}
                         </button>
                         {details.trailerUrl && (
-                            <button 
-                                onClick={handleTrailerButtonClick} 
-                                className={`flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg backdrop-blur-sm border transition font-semibold ${showInlineTrailer && !isMuted ? 'bg-[var(--brand-color)] border-[var(--brand-color)] text-white' : 'bg-white/20 border-white/30 hover:bg-white/30 text-white'}`}
-                            >
+                            <button onClick={handleTrailerButtonClick} className={`flex items-center gap-2 px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg backdrop-blur-sm border transition font-semibold ${showInlineTrailer && !isMuted ? 'bg-[var(--brand-color)] border-[var(--brand-color)] text-white' : 'bg-white/20 border-white/30 hover:bg-white/30 text-white'}`}>
                                 <VideoCameraIcon className="w-5 sm:h-6 w-5 sm:w-6"/>
                                 {showInlineTrailer ? (isMuted ? 'Unmute Trailer' : 'Hide Trailer') : 'Watch Trailer'}
                             </button>
@@ -564,14 +462,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         {isTV ? (
                             <button onClick={scrollToEpisodes} className="px-4 py-1.5 text-sm sm:px-5 sm:py-2 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition font-semibold text-white">Episodes</button>
                         ) : (
-                             <a 
-                                href={`https://dl.vidsrc.vip/movie/${details.id}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition text-white" 
-                                aria-label="Download"
-                                title="Download Movie"
-                              >
+                             <a href={`https://dl.vidsrc.vip/movie/${details.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition text-white" title="Download Movie">
                                 <DownloadIcon className="w-5 sm:h-6 w-5 sm:w-6"/>
                             </a>
                         )}
@@ -583,7 +474,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
       )}
       
       <div className="px-4 md:px-16 py-12 space-y-12 md:space-y-16">
-        {/* Episodes Section */}
         {isTV && details.seasons && selectedSeason && (
             <section ref={episodesRef}>
                 <div className="flex items-center space-x-3 mb-6">
@@ -591,25 +481,19 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     <h2 className="text-2xl font-bold text-white">Episodes</h2>
                 </div>
 
-                {/* Toolbar */}
                 <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-6 bg-zinc-800 p-3 rounded-lg border border-zinc-700 shadow-sm">
-                    {/* Season Selector */}
                     <div className="relative w-full" ref={seasonDropdownRef}>
                         <div onClick={() => setIsSeasonDropdownOpen(!isSeasonDropdownOpen)} className="flex items-center justify-between w-full px-4 py-2.5 bg-zinc-700 rounded-md cursor-pointer hover:bg-zinc-600">
                             <span className="font-semibold text-gray-200">{selectedSeason.name}</span>
                             <ChevronDownIcon className={`w-5 h-5 text-gray-400 transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
                         </div>
                         {isSeasonDropdownOpen && (
-                            <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-zinc-800 rounded-md shadow-lg z-20 animate-fade-scale-in custom-scrollbar border border-zinc-700">
+                            <div className="absolute top-full mt-2 w-full max-h-60 overflow-y-auto bg-zinc-800 rounded-md shadow-lg z-20 animate-fade-scale-in border border-zinc-700">
                                 <ul className="py-1">
                                     {(details.seasons || []).filter(s => s.episode_count > 0).map(season => {
                                         const isSelected = selectedSeason.id === season.id;
                                         return (
-                                            <li
-                                                key={season.id}
-                                                onClick={() => { setSelectedSeason(season); setIsSeasonDropdownOpen(false); }}
-                                                className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-zinc-700 font-semibold text-white' : 'hover:bg-zinc-700/50 text-gray-300' }`}
-                                            >
+                                            <li key={season.id} onClick={() => { setSelectedSeason(season); setIsSeasonDropdownOpen(false); }} className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors duration-150 ${ isSelected ? 'bg-zinc-700 font-semibold text-white' : 'hover:bg-zinc-700/50 text-gray-300' }`}>
                                                 <span>{season.name}</span>
                                                 {isSelected && <CheckIcon className="w-5 h-5" />}
                                             </li>
@@ -619,20 +503,12 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                             </div>
                         )}
                     </div>
-                    {/* Episode Search */}
                     <div className="relative w-full flex items-center">
                         <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"/>
-                        <input
-                            type="text"
-                            placeholder="Search by title, overview, or number..."
-                            value={episodeSearch}
-                            onChange={(e) => setEpisodeSearch(e.target.value)}
-                            className="w-full bg-zinc-700 border-0 rounded-md focus:ring-2 focus:ring-[var(--brand-color)] text-white py-2.5 pl-10 pr-4 placeholder-gray-500"
-                        />
+                        <input type="text" placeholder="Search by title, overview, or number..." value={episodeSearch} onChange={(e) => setEpisodeSearch(e.target.value)} className="w-full bg-zinc-700 border-0 rounded-md focus:ring-2 focus:ring-[var(--brand-color)] text-white py-2.5 pl-10 pr-4 placeholder-gray-500" />
                     </div>
                 </div>
                 
-                {/* Episode List */}
                 {episodesLoading ? (
                     <div className="flex justify-center items-center p-4 min-h-[40vh]">
                       <div className="w-8 h-8 border-4 border-[var(--brand-color)] border-solid border-t-transparent rounded-full animate-spin"></div>
@@ -645,79 +521,48 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
                                 const [year, month, day] = episode.air_date.split('-').map(Number);
-                                const releaseDate = new Date(year, month - 1, day);
-                                return releaseDate <= today;
+                                return new Date(year, month - 1, day) <= today;
                             })();
-                            const airDate = episode.air_date ? new Date(episode.air_date.replace(/-/g, '/')).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
-                            
-                            const isPlayingEpisode = isPlaying &&
-                                                     currentPlayingInfo.media_type === 'tv' &&
-                                                     selectedSeason?.season_number === currentPlayingInfo.season &&
-                                                     episode.episode_number === currentPlayingInfo.episode;
+                            const isPlayingEpisode = isPlaying && currentPlayingInfo.media_type === 'tv' && selectedSeason?.season_number === currentPlayingInfo.season && episode.episode_number === currentPlayingInfo.episode;
 
                             return (
-                                <div 
-                                    key={episode.id} 
-                                    onClick={() => selectedSeason && isReleased && handleEpisodePlay(selectedSeason.season_number, episode)}
-                                    className={`flex items-center gap-4 bg-zinc-800 p-2 rounded-lg group transition-all duration-200 shadow-sm border ${isReleased ? 'cursor-pointer hover:bg-zinc-700 border-zinc-700' : 'cursor-not-allowed opacity-70 border-transparent'} ${isPlayingEpisode ? 'bg-[var(--brand-color)]/10 border-[var(--brand-color)]/50' : ''}`}
-                                >
+                                <div key={episode.id} onClick={() => selectedSeason && isReleased && handleEpisodePlay(selectedSeason.season_number, episode)} className={`flex items-center gap-4 bg-zinc-800 p-2 rounded-lg group transition-all duration-200 shadow-sm border ${isReleased ? 'cursor-pointer hover:bg-zinc-700 border-zinc-700' : 'cursor-not-allowed opacity-70 border-transparent'} ${isPlayingEpisode ? 'bg-[var(--brand-color)]/10 border-[var(--brand-color)]/50' : ''}`}>
                                     <div className="relative w-32 sm:w-40 md:w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-zinc-900">
-                                        <img src={episode.still_path || details.backdropUrl} alt={episode.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async"/>
+                                        <img src={episode.still_path || details.backdropUrl} alt={episode.name} className="w-full h-full object-cover" loading="lazy" />
                                         {isReleased ? (
                                             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 flex items-center justify-center transition-colors">
                                                 {isPlayingEpisode ? (
                                                     <div className="flex items-center gap-2 text-white text-sm font-bold bg-zinc-900/80 backdrop-blur-sm px-3 py-1.5 rounded-md border border-white/30">
-                                                        <svg className="w-5 h-5 animate-pulse text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 4.5V19.5L18 12L6 4.5Z"></path></svg>
+                                                        <svg className="w-5 h-5 animate-pulse text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4.5V19.5L18 12L6 4.5Z"></path></svg>
                                                         <span>Playing</span>
                                                     </div>
                                                 ) : (
-                                                    <PlayIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" />
+                                                    <PlayIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                                                 )}
                                             </div>
                                         ) : (
-                                            <div className="absolute top-2 right-2 bg-black/60 border border-white/20 text-white text-[11px] font-semibold px-2 py-0.5 rounded-md shadow-sm backdrop-blur-sm">
-                                                Coming Soon
-                                            </div>
+                                            <div className="absolute top-2 right-2 bg-black/60 border border-white/20 text-white text-[11px] font-semibold px-2 py-0.5 rounded-md">Coming Soon</div>
                                         )}
-                                        <span className="absolute bottom-1 left-2 bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none">{episode.episode_number}</span>
+                                        <span className="absolute bottom-1 left-2 bg-black/60 text-white text-xs font-bold px-1.5 py-0.5 rounded">{episode.episode_number}</span>
                                     </div>
                                     <div className="flex-1 min-w-0 pr-4">
                                         <div className="flex items-baseline justify-between">
                                             <h3 className={`text-base font-bold truncate ${isPlayingEpisode ? 'text-[var(--brand-color)]' : 'text-gray-100'}`}>{episode.name}</h3>
-                                            {episode.runtime && isReleased && <span className="text-sm text-gray-400 flex-shrink-0 ml-4">{episode.runtime}m</span>}
+                                            {episode.runtime && isReleased && <span className="text-sm text-gray-400 ml-4">{episode.runtime}m</span>}
                                         </div>
-                                        {!isReleased && airDate && (
-                                            <p className="text-xs text-gray-400 mt-1">Releases on: {airDate}</p>
-                                        )}
-                                        <p className="text-sm text-gray-300 mt-2 line-clamp-2">
-                                            {episode.overview || 'No description available for this episode.'}
-                                        </p>
+                                        <p className="text-sm text-gray-300 mt-2 line-clamp-2">{episode.overview || 'No description available for this episode.'}</p>
                                     </div>
-                                     <a 
-                                        href={`https://dl.vidsrc.vip/tv/${movieId}/${selectedSeason.season_number}/${episode.episode_number}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="ml-auto flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-zinc-700 hover:bg-zinc-600 transition-colors" 
-                                        aria-label={`Download episode ${episode.episode_number}`}
-                                        title={`Download Episode ${episode.episode_number}`}
-                                    >
+                                     <a href={`https://dl.vidsrc.vip/tv/${movieId}/${selectedSeason.season_number}/${episode.episode_number}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="ml-auto flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-zinc-700 hover:bg-zinc-600 transition-colors" title={`Download Episode ${episode.episode_number}`}>
                                         <DownloadIcon className="w-6 h-6 text-gray-300"/>
                                     </a>
                                 </div>
                             )
-                        }) : (
-                            <div className="text-center text-gray-500 py-16">
-                                <p className="text-xl">No episodes found</p>
-                                <p className="text-sm mt-1">Try adjusting your search query.</p>
-                            </div>
-                        )}
+                        }) : <p className="text-center text-gray-500 py-16">No episodes found</p>}
                     </div>
                 )}
             </section>
         )}
 
-        {/* Actors Section */}
         {cast.length > 0 && (
             <section>
                 <div className="flex items-center space-x-3 mb-6">
@@ -725,34 +570,15 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     <h2 className="text-2xl font-bold text-white">Actors</h2>
                 </div>
                 <div className="group/row relative md:-ml-2">
-                    <button
-                        aria-label="Scroll actors left"
-                        onClick={() => scrollActors('left')} 
-                        className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-black shadow-md hover:bg-white"
-                    >
-                        <ChevronLeftIcon className="w-full h-full p-1" />
-                    </button>
+                    <button onClick={() => scrollContainer(actorsRowRef, 'left')} className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition group-hover/row:opacity-100 bg-white/70 rounded-full text-black hover:bg-white"><ChevronLeftIcon className="w-full h-full p-1" /></button>
                     <div ref={actorsRowRef} className="flex items-start space-x-2 sm:space-x-4 md:space-x-5 overflow-x-scroll scrollbar-hide md:p-2 overscroll-x-contain scroll-smooth">
-                        {cast.map(actor => (
-                            <ActorCard 
-                                key={actor.id} 
-                                actor={actor} 
-                                onSelectActor={onSelectActor}
-                            />
-                        ))}
+                        {cast.map(actor => <ActorCard key={actor.id} actor={actor} onSelectActor={onSelectActor} />)}
                     </div>
-                    <button
-                        aria-label="Scroll actors right"
-                        onClick={() => scrollActors('right')} 
-                        className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-black shadow-md hover:bg-white"
-                    >
-                        <ChevronRightIcon className="w-full h-full p-1" />
-                    </button>
+                    <button onClick={() => scrollContainer(actorsRowRef, 'right')} className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition group-hover/row:opacity-100 bg-white/70 rounded-full text-black hover:bg-white"><ChevronRightIcon className="w-full h-full p-1" /></button>
                 </div>
             </section>
         )}
 
-        {/* You may like Section */}
         {similar.length > 0 && (
         <section ref={similarSectionRef}>
             <div className="flex items-center space-x-3 mb-6">
@@ -760,13 +586,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                 <h2 className="text-2xl font-bold text-white">You may like</h2>
             </div>
             <div className="group/row relative md:-ml-2">
-                 <button
-                    aria-label="Scroll similar titles left"
-                    onClick={() => scrollSimilar('left')}
-                    className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-black shadow-md hover:bg-white"
-                >
-                    <ChevronLeftIcon className="w-full h-full p-1" />
-                </button>
+                 <button onClick={() => scrollContainer(similarRowRef, 'left')} className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition group-hover/row:opacity-100 bg-white/70 rounded-full text-black hover:bg-white"><ChevronLeftIcon className="w-full h-full p-1" /></button>
                 <div ref={similarRowRef} className="flex items-start space-x-2 sm:space-x-4 md:space-x-5 overflow-x-scroll scrollbar-hide md:p-2 overscroll-x-contain scroll-smooth">
                     {similar.map((s_movie) => (
                         <MovieCard 
@@ -779,22 +599,14 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         />
                     ))}
                 </div>
-                <button
-                    aria-label="Scroll similar titles right"
-                    onClick={() => scrollSimilar('right')}
-                    className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition [@media(hover:hover)]:hover:scale-125 [@media(hover:hover)]:group-hover/row:opacity-100 focus:opacity-100 pointer-events-none md:pointer-events-auto bg-white/70 rounded-full text-black shadow-md hover:bg-white"
-                >
-                    <ChevronRightIcon className="w-full h-full p-1" />
-                </button>
+                <button onClick={() => scrollContainer(similarRowRef, 'right')} className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition group-hover/row:opacity-100 bg-white/70 rounded-full text-black hover:bg-white"><ChevronRightIcon className="w-full h-full p-1" /></button>
             </div>
         </section>
         )}
 
-        {/* Advertisement Section */}
         <AdsterraBanner />
       </div>
     </div>
-    </>
   );
 };
 
