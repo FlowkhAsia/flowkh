@@ -213,12 +213,15 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     if (!showInlineTrailer) {
         setShowInlineTrailer(true);
         setIsMuted(false);
+        // Delay unmuting slightly to give the iframe a moment to mount/load
+        setTimeout(() => sendPlayerCommand('unMute'), 500);
     } else {
         if (isMuted) {
             setIsMuted(false);
             sendPlayerCommand('unMute');
         } else {
             setShowInlineTrailer(false);
+            setIsMuted(true); // Reset for next time
         }
     }
   }, [showInlineTrailer, isMuted, sendPlayerCommand]);
@@ -355,6 +358,13 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   // Using w1280 for better performance without losing visible quality
   const optimizedBackdrop = details.backdropUrl.replace('/w780/', '/w1280/');
 
+  // Stable Trailer URL to prevent re-renders when isMuted changes
+  const stableTrailerUrl = useMemo(() => {
+    if (!details.trailerUrl) return '';
+    const videoId = details.trailerUrl.split('/').pop()?.split('?')[0];
+    return `${details.trailerUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&iv_load_policy=3&enablejsapi=1`;
+  }, [details.trailerUrl]);
+
   return (
     <>
     {isPlaying && (
@@ -463,7 +473,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                     <div className="relative w-full h-full scale-[1.3] pointer-events-none overflow-hidden">
                          <iframe
                             ref={trailerIframeRef}
-                            src={`${details.trailerUrl}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&loop=1&playlist=${details.trailerUrl.split('/').pop()?.split('?')[0]}&rel=0&iv_load_policy=3&enablejsapi=1`}
+                            src={stableTrailerUrl}
                             title="Trailer background"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
