@@ -78,9 +78,15 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     const getEpisodes = async () => {
         if (mediaType === 'tv' && selectedSeason) {
             setEpisodesLoading(true);
-            const fetchedEpisodes = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
-            setEpisodes(fetchedEpisodes);
-            setEpisodesLoading(false);
+            try {
+              const fetchedEpisodes = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
+              setEpisodes(fetchedEpisodes);
+            } catch (err) {
+              console.error("Failed to load episodes", err);
+              setEpisodes([]);
+            } finally {
+              setEpisodesLoading(false);
+            }
         }
     };
     getEpisodes();
@@ -105,9 +111,14 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
         let episodesToPlay = episodes;
         if (episodesToPlay.length === 0) {
             setEpisodesLoading(true);
-            episodesToPlay = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
-            setEpisodes(episodesToPlay);
-            setEpisodesLoading(false);
+            try {
+              episodesToPlay = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
+              setEpisodes(episodesToPlay);
+            } catch (err) {
+              console.error("Play action failed to fetch episodes", err);
+            } finally {
+              setEpisodesLoading(false);
+            }
         }
 
         if (episodesToPlay.length > 0) {

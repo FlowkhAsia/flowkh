@@ -5,7 +5,7 @@ import {
   fetchLogoUrl,
 } from './services/geminiService';
 import Navbar from './components/Navbar';
-import { ArrowLeftIcon, CloseIcon } from './components/icons/Icons';
+import { CloseIcon } from './components/icons/Icons';
 import Hero from './components/Hero';
 import MovieRow from './components/MovieRow';
 import BackToTopButton from './components/BackToTopButton';
@@ -215,8 +215,11 @@ const App: React.FC = () => {
   }, [navigate]);
 
   const handleBack = () => {
-    if (window.history.length <= 2) navigate('/');
-    else window.history.back();
+    if (window.history.length <= 2) {
+      navigate('/');
+    } else {
+      window.history.back();
+    }
   };
 
   const filteredGenres = useMemo(() => {
@@ -233,7 +236,8 @@ const App: React.FC = () => {
     return genres.filter(g => homeKeys.includes(g.key)).sort((a, b) => homeKeys.indexOf(a.key) - homeKeys.indexOf(b.key));
   }, [genres, location.pathname]);
   
-  const isDetailPageActive = /^\/(movie|tv|person)\/\d+/.test(location.pathname);
+  // Cinematic detail pages hide the navbar to maximize screen space
+  const isCinematicDetailView = /^\/(movie|tv)\/\d+/.test(location.pathname);
   const isCurrentlyPlaying = new URLSearchParams(location.search).get('autoplay') === 'true';
   
   const renderContent = () => {
@@ -315,7 +319,7 @@ const App: React.FC = () => {
                   </Suspense>
                 )}
                 
-                {isDetailPageActive && (
+                {isCinematicDetailView && (
                   <button 
                       onClick={() => isCurrentlyPlaying ? navigate(location.pathname, { replace: true }) : handleBack()}
                       className="fixed top-6 right-6 z-[60] p-2 text-white bg-black/40 rounded-full transition-all hover:scale-110 hover:bg-black/60 shadow-xl"
@@ -325,11 +329,11 @@ const App: React.FC = () => {
                   </button>
                 )}
                 
-                {!isDetailPageActive && (
+                {!isCinematicDetailView && (
                   <Navbar location={location} navigate={navigate} onOpenSearch={handleOpenSearch} />
                 )}
                 
-                <Suspense fallback={<div className="h-screen w-full flex items-center justify-center"><div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" /></div>}>
+                <Suspense fallback={<div className="h-screen w-full flex items-center justify-center"><div className="w-12 h-12 border-4 border-[var(--brand-color)] border-t-transparent rounded-full animate-spin" /></div>}>
                   {renderContent()}
                 </Suspense>
                 <Footer navigate={navigate} />
