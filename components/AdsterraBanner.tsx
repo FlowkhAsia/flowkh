@@ -15,7 +15,7 @@ const adHtml = `
           'params' : {}
         };
       </script>
-      <script type="text/javascript" src="https://tallthirsty.com/0b4f16fea4f75df34e43ce6b23bf563f/invoke.js"></script>
+      <script type="text/javascript" src="https://shaggysinner.com/0b4f16fea4f75df34e43ce6b23bf563f/invoke.js"></script>
     </body>
   </html>
 `.trim();
