@@ -50,7 +50,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     episode: mediaType === 'tv' ? (initialEpisodeNumber || 1) : undefined,
     title: '',
   });
-  const [selectedServer, setSelectedServer] = useState('VidStorm');
+  const [selectedServer, setSelectedServer] = useState('VidSrcV2');
 
   // Inline Trailer state
   const [showInlineTrailer, setShowInlineTrailer] = useState(false);
@@ -75,21 +75,29 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
 
   // Fetch episodes when season changes
   useEffect(() => {
+    const controller = new AbortController();
+    
     const getEpisodes = async () => {
         if (mediaType === 'tv' && selectedSeason) {
             setEpisodesLoading(true);
             try {
-              const fetchedEpisodes = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
-              setEpisodes(fetchedEpisodes);
+              const fetchedEpisodes = await fetchSeasonEpisodes(movieId, selectedSeason.season_number, controller.signal);
+              if (!controller.signal.aborted) {
+                setEpisodes(fetchedEpisodes);
+              }
             } catch (err) {
+              if (err instanceof Error && err.name === 'AbortError') return;
               console.error("Failed to load episodes", err);
-              setEpisodes([]);
+              if (!controller.signal.aborted) setEpisodes([]);
             } finally {
-              setEpisodesLoading(false);
+              if (!controller.signal.aborted) setEpisodesLoading(false);
             }
         }
     };
+
     getEpisodes();
+    
+    return () => controller.abort();
   }, [selectedSeason, movieId, mediaType]);
   
   const handleEpisodePlay = useCallback((seasonNumber: number, episode: Episode) => {
@@ -142,44 +150,55 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   }, [details, selectedSeason, episodes, movieId, mediaType, handleEpisodePlay, initialEpisodeNumber]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    
     const loadDetails = async () => {
       try {
         setLoading(true);
         setError(null);
         setDetails(null);
         setEpisodes([]);
-        const { details, cast, similar } = await fetchDetailPageData(movieId, mediaType);
-        setDetails(details);
-        setCast(cast);
-        setSimilar(similar);
-        document.title = `${details.title} | flowkh`;
+        setSelectedSeason(null);
+        
+        const { details: fetchedDetails, cast: fetchedCast, similar: fetchedSimilar } = await fetchDetailPageData(movieId, mediaType, controller.signal);
+        
+        if (controller.signal.aborted) return;
+
+        setDetails(fetchedDetails);
+        setCast(fetchedCast);
+        setSimilar(fetchedSimilar);
+        document.title = `${fetchedDetails.title} | flowkh`;
 
         setCurrentPlayingInfo(prev => ({
             ...prev,
-            id: details.id,
-            media_type: details.media_type,
-            season: details.media_type === 'tv' ? (initialSeasonNumber || 1) : undefined,
-            episode: details.media_type === 'tv' ? (initialEpisodeNumber || 1) : undefined,
-            title: details.title,
+            id: fetchedDetails.id,
+            media_type: fetchedDetails.media_type,
+            season: fetchedDetails.media_type === 'tv' ? (initialSeasonNumber || 1) : undefined,
+            episode: fetchedDetails.media_type === 'tv' ? (initialEpisodeNumber || 1) : undefined,
+            title: fetchedDetails.title,
         }));
 
-        if(details.media_type === 'tv' && details.seasons && details.seasons.length > 0) {
+        if(fetchedDetails.media_type === 'tv' && fetchedDetails.seasons && fetchedDetails.seasons.length > 0) {
             const seasonToSelect = initialSeasonNumber 
-                ? details.seasons.find(s => s.season_number === initialSeasonNumber)
+                ? fetchedDetails.seasons.find(s => s.season_number === initialSeasonNumber)
                 : undefined;
-            const firstSeason = details.seasons.find(s => s.season_number > 0) || details.seasons[0];
+            const firstSeason = fetchedDetails.seasons.find(s => s.season_number > 0) || fetchedDetails.seasons[0];
             setSelectedSeason(seasonToSelect || firstSeason);
         }
       } catch (err) {
-        setError('Failed to load details. Please try again later.');
+        if (err instanceof Error && err.name === 'AbortError') return;
+        setError('Failed to load details. Please check your internet connection and try again.');
         console.error(err);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     };
+
     setIsPlaying(autoPlay);
     loadDetails();
-  }, [movieId, mediaType, autoPlay, initialSeasonNumber]);
+
+    return () => controller.abort();
+  }, [movieId, mediaType, autoPlay, initialSeasonNumber, initialEpisodeNumber]);
 
   // Autoplay trailer logic
   useEffect(() => {
@@ -188,6 +207,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             setShowInlineTrailer(true);
         }, 1500); 
         return () => clearTimeout(timer);
+    } else {
+        setShowInlineTrailer(false);
     }
   }, [details, isPlaying, loading]);
 
@@ -246,8 +267,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   }, []);
   
   const servers = useMemo(() => [
-    { name: 'VidStorm', displayName: 'Primary' },
-    { name: 'VidSrcV2', displayName: 'Alternate 1' },
+    { name: 'VidSrcV2', displayName: 'Primary' },
+    { name: 'VidStorm', displayName: 'Alternate 1' },
     { name: 'Videasy', displayName: 'Alternate 2' },
     { name: 'VidSrcMe', displayName: 'Alternate 3' },
     { name: 'VidPlus', displayName: 'Alternate 4' },
@@ -261,10 +282,10 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     const episodeNum = episode || 1;
 
     switch (selectedServer) {
+        case 'VidSrcV2': return `https://vidsrc.cc/v2/embed/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}?autoPlay=true`;
         case 'VidStorm':
             if (media_type === 'movie') return `https://vidstorm.ru/movie/${id}`;
             return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
-        case 'VidSrcV2': return `https://vidsrc.cc/v2/embed/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}?autoPlay=true`;
         case 'Videasy': return `https://player.videasy.net/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}?autoplay=true`;
         case 'VidSrcMe': return `https://vidsrcme.ru/embed/${media_type === 'movie' ? 'movie' : 'tv'}?tmdb=${id}${media_type === 'tv' ? `&season=${seasonNum}&episode=${episodeNum}` : ''}`;
         case 'VidPlus': return `https://player.vidplus.to/embed/${media_type}/${id}${media_type === 'tv' ? `/${seasonNum}/${episodeNum}` : ''}?autoplay=true`;
@@ -309,7 +330,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
     return (
       <div className="flex flex-col justify-center items-center h-screen text-center px-4 pt-16">
         <p className="text-xl text-red-500 mb-4">{error}</p>
-        <p className="text-gray-400">Please try navigating back home.</p>
+        <button onClick={() => window.location.reload()} className="mt-4 px-6 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 transition">Retry</button>
       </div>
     );
   }
@@ -598,7 +619,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
             </div>
             <div className="group/row relative md:-ml-2">
                  <button onClick={() => scrollContainer(similarRowRef, 'left')} className="absolute top-0 bottom-0 left-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition group-hover/row:opacity-100 bg-white/70 rounded-full text-black hover:bg-white"><ChevronLeftIcon className="w-full h-full p-1" /></button>
-                <div ref={similarRowRef} className="flex items-start space-x-2 sm:space-x-4 md:space-x-5 overflow-x-scroll scrollbar-hide md:p-2 overscroll-x-contain scroll-smooth">
+                <div ref={similarRowRef} className="flex items-start space-x-2 sm:space-x-4 md:space-x-5 overflow-x-scroll scrollbar-hide md:p-2 overscroll-x-contain snap-x snap-mandatory scroll-smooth">
                     {similar.map((s_movie) => (
                         <MovieCard 
                             key={s_movie.id} 
@@ -610,7 +631,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
                         />
                     ))}
                 </div>
-                <button onClick={() => scrollContainer(similarRowRef, 'right')} className="absolute top-0 bottom-0 right-0 z-40 my-auto h-9 w-9 cursor-pointer opacity-0 transition group-hover/row:opacity-100 bg-white/70 rounded-full text-black hover:bg-white"><ChevronRightIcon className="w-full h-full p-1" /></button>
+                <button onClick={() => scrollContainer(similarRowRef, 'right')} className="absolute top-0 bottom-0 right-0 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition group-hover/row:opacity-100 bg-white/70 rounded-full text-black hover:bg-white"><ChevronRightIcon className="w-full h-full p-1" /></button>
             </div>
         </section>
         )}

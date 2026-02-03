@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { ArrowLeftIcon, CheckIcon, ChevronDownIcon } from './icons/Icons';
 // Removed non-existent and unused export fetchExternalIds
@@ -20,7 +19,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
   const [currentContent, setCurrentContent] = useState(contentToPlay);
   const [controlsVisible, setControlsVisible] = useState(true);
   const hideControlsTimeout = useRef<number | null>(null);
-  const [selectedServer, setSelectedServer] = useState('VidStorm');
+  const [selectedServer, setSelectedServer] = useState('VidSrcV2');
   
   // Server Dropdown State
   const [isServerDropdownOpen, setIsServerDropdownOpen] = useState(false);
@@ -120,8 +119,8 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
   }, [onClose]);
 
   const servers = useMemo(() => [
-    { name: 'VidStorm', displayName: 'Primary' },
-    { name: 'VidSrcV2', displayName: 'Alternate 1' },
+    { name: 'VidSrcV2', displayName: 'Primary' },
+    { name: 'VidStorm', displayName: 'Alternate 1' },
     { name: 'Videasy', displayName: 'Alternate 2' },
     { name: 'VidSrcMe', displayName: 'Alternate 3' },
     { name: 'VidPlus', displayName: 'Alternate 4' },
@@ -135,12 +134,12 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ contentToPlay, onClose }) => 
     const episodeNum = episode || 1;
 
     switch (selectedServer) {
-        case 'VidStorm':
-            if (media_type === 'movie') return `https://vidstorm.ru/movie/${id}`;
-            return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
-        case 'VidSrcV2': // Alternate 1
+        case 'VidSrcV2': // Primary
             if (media_type === 'movie') return `https://vidsrc.cc/v2/embed/movie/${id}`;
             return `https://vidsrc.cc/v2/embed/tv/${id}/${seasonNum}/${episodeNum}`;
+        case 'VidStorm': // Alternate 1
+            if (media_type === 'movie') return `https://vidstorm.ru/movie/${id}`;
+            return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
         case 'Videasy': // Alternate 2
             if (media_type === 'movie') return `https://player.videasy.net/movie/${id}`;
             return `https://player.videasy.net/tv/${id}/${seasonNum}/${episodeNum}`;
