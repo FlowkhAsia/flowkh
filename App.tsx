@@ -60,14 +60,16 @@ const useLocation = () => {
 };
 
 const SkeletonScreen: React.FC = () => (
-    <div className="min-h-screen bg-[#141414] animate-pulse">
-        <div className="h-[70vh] bg-zinc-800" />
+    <div className="min-h-screen bg-[#141414]">
+        <div className="h-[70vh] bg-zinc-800 animate-pulse" />
         <div className="p-8 space-y-12">
             {[1, 2, 3].map(i => (
                 <div key={i} className="space-y-4">
-                    <div className="h-8 w-48 bg-zinc-800 rounded" />
+                    <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
                     <div className="flex gap-4 overflow-hidden">
-                        {[1, 2, 3, 4, 5, 6].map(j => <div key={j} className="w-44 aspect-[2/3] bg-zinc-800 rounded" />)}
+                        {[1, 2, 3, 4, 5, 6].map(j => (
+                          <div key={j} className="w-44 flex-shrink-0 aspect-[2/3] bg-zinc-800 rounded animate-pulse" />
+                        ))}
                     </div>
                 </div>
             ))}
@@ -81,33 +83,44 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [myList, setMyList] = useState<Movie[]>([]);
-  const loadedViewsRef = useRef<Set<string>>(new Set());
   const [heroMovies, setHeroMovies] = useState<Movie[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  
+  const currentFetchController = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const storedList = localStorage.getItem('myList');
-    if (storedList) setMyList(JSON.parse(storedList));
+    if (storedList) {
+      try {
+        setMyList(JSON.parse(storedList));
+      } catch (e) {
+        console.error("Failed to parse myList", e);
+      }
+    }
   }, []);
 
   const loadMovies = useCallback(async (view: 'home' | 'movies' | 'tv' | 'anime') => {
-    if (loadedViewsRef.current.has(view) && genres.length > 0) {
-        setLoading(false);
-        return;
+    if (currentFetchController.current) {
+      currentFetchController.current.abort();
     }
+    
+    const controller = new AbortController();
+    currentFetchController.current = controller;
+
     try {
       setLoading(true);
       setError(null);
-      const movieData = await fetchMoviesData(view);
-      setGenres(movieData);
-      loadedViewsRef.current.add(view);
+      const movieData = await fetchMoviesData(view, controller.signal);
+      if (!controller.signal.aborted) {
+        setGenres(movieData);
+        setLoading(false);
+      }
     } catch (err) {
-      setError('Failed to fetch movie data. Please try again later.');
-      console.error(err);
-    } finally {
+      if (err instanceof Error && err.name === 'AbortError') return;
+      setError('Failed to fetch movie data. Please check your internet connection and try again.');
       setLoading(false);
     }
-  }, [genres.length]);
+  }, []);
 
   useEffect(() => { 
     const path = location.pathname;
@@ -118,6 +131,12 @@ const App: React.FC = () => {
     } else {
       setLoading(false);
     }
+    
+    return () => {
+      if (currentFetchController.current) {
+        currentFetchController.current.abort();
+      }
+    };
   }, [location.pathname, loadMovies]);
   
   const handleOpenSearch = useCallback(() => setIsSearchOpen(true), []);
@@ -134,26 +153,6 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleOpenSearch]);
 
-  useEffect(() => {
-    const baseTitle = 'flowkh - Movies and TV Series — All in One Flow';
-    let pageTitle: string;
-    const pathParts = location.pathname.split('/').filter(Boolean);
-    const isDynamicPath = (pathParts.length >= 2 && ['tv', 'movie', 'person', 'category'].includes(pathParts[0]));
-
-    if (!isDynamicPath) {
-        switch (location.pathname) {
-          case '/': pageTitle = baseTitle; break;
-          case '/movies': pageTitle = `Movies | ${baseTitle}`; break;
-          case '/tv-shows': pageTitle = `TV Shows | ${baseTitle}`; break;
-          case '/anime': pageTitle = `Anime | ${baseTitle}`; break;
-          case '/discover': pageTitle = `Discover | ${baseTitle}`; break;
-          case '/my-list': pageTitle = `My List | ${baseTitle}`; break;
-          default: pageTitle = baseTitle;
-        }
-        document.title = pageTitle;
-    }
-  }, [location.pathname]);
-
   const getActiveFilter = () => {
     switch (location.pathname) {
       case '/movies': return 'movie';
@@ -164,27 +163,25 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchHeroLogos = async (movies: Movie[]) => {
-      const moviesWithLogos = await Promise.all(
-        movies.map(async (movie) => ({ ...movie, logoUrl: await fetchLogoUrl(movie.id, movie.media_type) }))
-      );
-      setHeroMovies(moviesWithLogos);
-    };
+    const activeFilter = getActiveFilter();
+    let heroKey = 'trending_today';
+    if (activeFilter === 'tv') heroKey = 'trending_tv';
+    else if (activeFilter === 'movie') heroKey = 'trending_movies';
+    else if (activeFilter === 'anime') heroKey = 'anime_trending';
     
-    const shouldShowHero = ['/', '/movies', '/tv-shows', '/anime'].includes(location.pathname);
-    if (genres.length > 0 && shouldShowHero) {
-      const activeFilter = getActiveFilter();
-      let heroKey = 'trending_today';
-      if (activeFilter === 'tv') heroKey = 'trending_tv';
-      else if (activeFilter === 'movie') heroKey = 'trending_movies';
-      else if (activeFilter === 'anime') heroKey = 'anime_trending';
+    const heroGenre = genres.find(g => g.key === heroKey);
+    const topTen = (heroGenre?.movies || []).slice(0, 10);
+    
+    if (topTen.length > 0) {
+      setHeroMovies(topTen);
       
-      const heroGenre = genres.find(g => g.key === heroKey);
-      const topTen = (heroGenre?.movies || []).slice(0, 10);
-      if (topTen.length > 0) {
-        setHeroMovies(topTen);
-        fetchHeroLogos(topTen);
-      }
+      // Load logos in background
+      Promise.all(topTen.map(async (movie) => {
+        const logo = await fetchLogoUrl(movie.id, movie.media_type);
+        return logo ? { ...movie, logoUrl: logo } : movie;
+      })).then(updated => {
+        setHeroMovies(updated);
+      });
     }
   }, [genres, location.pathname]);
 
@@ -201,10 +198,6 @@ const App: React.FC = () => {
     handleCloseSearch();
     navigate(`/${movie.media_type}/${movie.id}`);
   }, [navigate, handleCloseSearch]);
-
-  const handleSeeAllClick = useCallback((genre: Genre) => {
-    navigate(`/category/${genre.key}`);
-  }, [navigate]);
 
   const handleSelectActor = useCallback((actor: Actor) => {
     navigate(`/person/${actor.id}`);
@@ -236,7 +229,6 @@ const App: React.FC = () => {
     return genres.filter(g => homeKeys.includes(g.key)).sort((a, b) => homeKeys.indexOf(a.key) - homeKeys.indexOf(b.key));
   }, [genres, location.pathname]);
   
-  // Cinematic detail pages hide the navbar to maximize screen space
   const isCinematicDetailView = /^\/(movie|tv)\/\d+/.test(location.pathname);
   const isCurrentlyPlaying = new URLSearchParams(location.search).get('autoplay') === 'true';
   
@@ -298,7 +290,7 @@ const App: React.FC = () => {
             {heroMovies.length > 0 && <Hero movies={heroMovies} onSelectMovie={handleSelectMovie} onPlayMovie={handlePlayFromHero} />}
             <section className="relative -mt-16 md:-mt-24 px-4 md:px-16 pb-8 space-y-6 md:space-y-8">
               {filteredGenres.map((genre) => (
-                <MovieRow key={genre.key} title={genre.title} movies={genre.movies} onSeeAll={() => handleSeeAllClick(genre)} onSelectMovie={handleSelectMovie} myList={myList} onToggleMyList={handleToggleMyList} />
+                <MovieRow key={genre.key} title={genre.title} movies={genre.movies} onSeeAll={() => navigate(`/category/${genre.key}`)} onSelectMovie={handleSelectMovie} myList={myList} onToggleMyList={handleToggleMyList} />
               ))}
             </section>
           </main>
@@ -309,8 +301,11 @@ const App: React.FC = () => {
   
   return (
     <div className="relative bg-[#141414] min-h-screen text-white overflow-x-hidden">
-        {loading ? <SkeletonScreen /> : error ? (
-            <div className="flex justify-center items-center h-screen text-center"><p className="text-xl text-red-500">{error}</p></div>
+        {loading && genres.length === 0 ? <SkeletonScreen /> : error ? (
+            <div className="flex flex-col justify-center items-center h-screen text-center px-4">
+              <p className="text-xl text-red-500 mb-4">{error}</p>
+              <button onClick={() => window.location.reload()} className="px-6 py-2 bg-zinc-800 rounded-md hover:bg-zinc-700 transition">Try Again</button>
+            </div>
         ) : (
             <>
                 {isSearchOpen && (

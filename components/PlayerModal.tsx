@@ -1,6 +1,8 @@
+
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { ArrowLeftIcon, CheckIcon, ChevronDownIcon } from './icons/Icons';
-import { fetchExternalIds, fetchSeasonEpisodes, fetchTVSeasons } from '../services/geminiService';
+// Removed non-existent and unused export fetchExternalIds
+import { fetchSeasonEpisodes, fetchTVSeasons } from '../services/geminiService';
 import { Episode, Season } from '../types';
 
 interface PlayerModalProps {
