@@ -101,6 +101,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   }, [selectedSeason, movieId, mediaType]);
   
   const handleEpisodePlay = useCallback((seasonNumber: number, episode: Episode) => {
+    if (!episode) return;
+    
     setCurrentPlayingInfo({ 
         id: movieId, 
         media_type: 'tv', 
@@ -117,26 +119,35 @@ const DetailPage: React.FC<DetailPageProps> = ({ movieId, mediaType, onSelectMov
   const handlePlay = useCallback(async () => {
     if (details?.media_type === 'tv' && selectedSeason) {
         let episodesToPlay = episodes;
+        
+        // If episodes aren't loaded yet, fetch them immediately
         if (episodesToPlay.length === 0) {
             setEpisodesLoading(true);
             try {
-              episodesToPlay = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
-              setEpisodes(episodesToPlay);
+              const fetched = await fetchSeasonEpisodes(movieId, selectedSeason.season_number);
+              episodesToPlay = fetched;
+              setEpisodes(fetched); // Sync state for the UI list
             } catch (err) {
               console.error("Play action failed to fetch episodes", err);
+              return; // Stop if we can't get episodes
             } finally {
               setEpisodesLoading(false);
             }
         }
 
-        if (episodesToPlay.length > 0) {
+        if (episodesToPlay && episodesToPlay.length > 0) {
             const episodeToPlay = (initialEpisodeNumber && episodesToPlay.some(e => e.episode_number === initialEpisodeNumber))
               ? episodesToPlay.find(e => e.episode_number === initialEpisodeNumber)!
               : episodesToPlay[0];
-            handleEpisodePlay(selectedSeason.season_number, episodeToPlay);
-            return;
+            
+            if (episodeToPlay) {
+              handleEpisodePlay(selectedSeason.season_number, episodeToPlay);
+              return;
+            }
         }
     }
+    
+    // Default fallback for movies or TV shows with no episode data
     setCurrentPlayingInfo({
         id: movieId,
         media_type: mediaType,
