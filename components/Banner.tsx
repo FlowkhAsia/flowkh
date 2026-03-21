@@ -3,17 +3,36 @@
 import { Movie, IMAGE_BASE_URL } from '@/lib/tmdb';
 import Image from 'next/image';
 import { Play, Info } from 'lucide-react';
-import { motion } from 'motion/react';
-import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect } from 'react';
 import Modal from './Modal';
+import { getLogoAction } from '@/app/actions';
 
 interface BannerProps {
-  netflixOriginals: Movie[];
+  movies: Movie[];
 }
 
-export default function Banner({ netflixOriginals }: BannerProps) {
+export default function Banner({ movies }: BannerProps) {
   const [showModal, setShowModal] = useState(false);
-  const movie = netflixOriginals?.[0];
+  const [logoPath, setLogoPath] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!movies || movies.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % movies.length);
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [movies]);
+
+  const movie = movies?.[currentIndex];
+
+  useEffect(() => {
+    if (movie) {
+      const type = movie.media_type || (movie.first_air_date ? 'tv' : 'movie');
+      getLogoAction(movie.id, type).then(setLogoPath);
+    }
+  }, [movie]);
 
   if (!movie) return <div className="h-[65vh] lg:h-[85vh] bg-netflix-black" />;
 
@@ -23,28 +42,52 @@ export default function Banner({ netflixOriginals }: BannerProps) {
 
   return (
     <>
-      <div className="flex flex-col space-y-2 py-16 md:space-y-4 lg:h-[85vh] lg:justify-end lg:pb-12">
-        <div className="absolute top-0 left-0 -z-10 h-[95vh] w-full">
-          <Image
-            src={imageUrl}
-            alt={movie.title || movie.name || 'Banner Image'}
-            fill
-            priority
-            className="object-cover"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute bottom-0 h-32 w-full bg-gradient-to-t from-netflix-black to-transparent" />
-        </div>
+      <div className="relative flex flex-col space-y-2 py-16 md:space-y-4 lg:h-[85vh] lg:justify-end lg:pb-12">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={movie.id + 'bg'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute top-0 left-0 -z-10 h-[95vh] w-full"
+          >
+            <Image
+              src={imageUrl}
+              alt={movie.title || movie.name || 'Banner Image'}
+              fill
+              priority
+              className="object-cover"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute bottom-0 h-32 w-full bg-gradient-to-t from-netflix-black to-transparent" />
+          </motion.div>
+        </AnimatePresence>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="px-4 md:px-10 z-10 max-w-2xl"
-        >
-          <h1 className="text-2xl font-bold md:text-4xl lg:text-7xl text-shadow-md">
-            {movie.title || movie.name || movie.original_name}
-          </h1>
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={movie.id + 'content'}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.8 }}
+            className="px-4 md:px-10 z-10 max-w-2xl"
+          >
+          {logoPath ? (
+            <div className="relative h-24 w-full md:h-32 lg:h-40 max-w-md mb-4">
+              <Image
+                src={`${IMAGE_BASE_URL}${logoPath}`}
+                alt={movie.title || movie.name || movie.original_name || 'Movie Logo'}
+                fill
+                className="object-contain object-left"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          ) : (
+            <h1 className="text-2xl font-bold md:text-4xl lg:text-7xl text-shadow-md">
+              {movie.title || movie.name || movie.original_name}
+            </h1>
+          )}
           
           <p className="max-w-xs text-xs text-shadow-md md:max-w-lg md:text-lg lg:max-w-2xl lg:text-xl mt-4 line-clamp-3">
             {movie.overview}
@@ -63,7 +106,8 @@ export default function Banner({ netflixOriginals }: BannerProps) {
               More Info
             </button>
           </div>
-        </motion.div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} movie={movie} />

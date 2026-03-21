@@ -3,8 +3,10 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Bell, User, X } from 'lucide-react';
-import { searchMovies, Movie } from '@/lib/tmdb';
+import { Search, Bell, User, X, Film } from 'lucide-react';
+import { Movie, IMAGE_BASE_URL } from '@/lib/tmdb';
+import { searchMoviesAction } from '@/app/actions';
+import Image from 'next/image';
 
 function NavbarContent() {
   const router = useRouter();
@@ -32,7 +34,7 @@ function NavbarContent() {
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
       const timeoutId = setTimeout(async () => {
-        const results = await searchMovies(searchQuery.trim());
+        const results = await searchMoviesAction(searchQuery.trim());
         setSuggestions(results.slice(0, 5));
         if (document.activeElement === searchInputRef.current) {
           setShowSuggestions(true);
@@ -40,7 +42,9 @@ function NavbarContent() {
       }, 300);
       return () => clearTimeout(timeoutId);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSuggestions([]);
+       
       setShowSuggestions(false);
     }
   }, [searchQuery]);
@@ -61,10 +65,14 @@ function NavbarContent() {
   useEffect(() => {
     const q = searchParams.get('q');
     if (q) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearchQuery(q);
+       
       setIsSearchOpen(true);
     } else {
+       
       setSearchQuery('');
+       
       setIsSearchOpen(false);
     }
   }, [searchParams]);
@@ -148,13 +156,20 @@ function NavbarContent() {
           </div>
           
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-[#141414] border border-white/20 rounded shadow-lg overflow-hidden">
+            <div className="absolute top-full left-0 mt-2 w-64 md:w-80 bg-[#141414] border border-white/20 rounded-md shadow-2xl overflow-hidden z-50">
               {suggestions.map((movie) => {
                 const title = movie.title || movie.name || movie.original_name;
+                const releaseDate = movie.release_date || movie.first_air_date;
+                const year = releaseDate ? releaseDate.substring(0, 4) : '';
+                const imagePath = movie.poster_path || movie.backdrop_path;
+                const imageUrl = imagePath 
+                  ? `${IMAGE_BASE_URL}${imagePath}`
+                  : `https://picsum.photos/seed/${movie.id}/100/150?blur=2`;
+
                 return (
                   <div
                     key={movie.id}
-                    className="px-4 py-3 hover:bg-white/10 cursor-pointer text-sm text-white truncate border-b border-white/10 last:border-0"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 cursor-pointer transition-colors border-b border-white/10 last:border-0"
                     onClick={() => {
                       if (title) {
                         setSearchQuery(title);
@@ -163,10 +178,39 @@ function NavbarContent() {
                       }
                     }}
                   >
-                    {title}
+                    <div className="relative h-16 w-12 flex-shrink-0 overflow-hidden rounded bg-[#2a2a2a]">
+                      {imagePath ? (
+                        <Image
+                          src={imageUrl}
+                          alt={title || 'Movie poster'}
+                          fill
+                          className="object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center">
+                          <Film className="h-6 w-6 text-gray-500" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-sm font-medium text-white truncate">{title}</span>
+                      {year && <span className="text-xs text-gray-400">{year}</span>}
+                    </div>
                   </div>
                 );
               })}
+              <div 
+                className="px-4 py-3 text-center text-sm text-gray-400 hover:text-white hover:bg-white/10 cursor-pointer transition-colors"
+                onClick={() => {
+                  if (searchQuery.trim().length > 0) {
+                    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                    setShowSuggestions(false);
+                  }
+                }}
+              >
+                See all results for &quot;{searchQuery}&quot;
+              </div>
             </div>
           )}
         </div>

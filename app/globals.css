@@ -6,6 +6,9 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-netflix-black text-white;
     overflow-x: hidden;

@@ -9,10 +9,9 @@ import { motion } from 'motion/react';
 interface RowProps {
   title: string;
   movies: Movie[];
-  isLargeRow?: boolean;
 }
 
-export default function Row({ title, movies, isLargeRow = false }: RowProps) {
+export default function Row({ title, movies }: RowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isMoved, setIsMoved] = useState(false);
 
@@ -31,7 +30,7 @@ export default function Row({ title, movies, isLargeRow = false }: RowProps) {
   if (!movies || movies.length === 0) return null;
 
   return (
-    <div className="h-40 space-y-0.5 md:space-y-2 px-4 md:px-10 mb-8">
+    <div className="space-y-0.5 md:space-y-2 px-4 md:px-10 mb-8">
       <h2 className="w-56 cursor-pointer text-sm font-semibold text-[#e5e5e5] transition duration-200 hover:text-white md:text-2xl">
         {title}
       </h2>
@@ -45,22 +44,20 @@ export default function Row({ title, movies, isLargeRow = false }: RowProps) {
         
         <div
           ref={rowRef}
-          className="flex items-center space-x-2.5 overflow-x-scroll scrollbar-hide md:space-x-4 md:p-2"
+          className="flex items-center space-x-2.5 overflow-x-scroll scroll-smooth scrollbar-hide md:space-x-4 md:p-2"
         >
           {movies.map((movie) => {
-            const imagePath = isLargeRow ? movie.poster_path : movie.backdrop_path;
+            const imagePath = movie.poster_path || movie.backdrop_path;
             const imageUrl = imagePath 
               ? `${IMAGE_BASE_URL}${imagePath}`
-              : `https://picsum.photos/seed/${movie.id}/${isLargeRow ? '400/600' : '500/281'}?blur=2`;
+              : `https://picsum.photos/seed/${movie.id}/400/600?blur=2`;
 
             return (
               <motion.div
                 key={movie.id}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
-                className={`relative cursor-pointer transition duration-200 ease-out md:hover:z-50 ${
-                  isLargeRow ? 'h-64 min-w-[160px] md:h-80 md:min-w-[200px]' : 'h-28 min-w-[200px] md:h-36 md:min-w-[260px]'
-                }`}
+                className="relative cursor-pointer transition duration-200 ease-out md:hover:z-50 h-64 min-w-[160px] md:h-80 md:min-w-[200px]"
               >
                 <Image
                   src={imageUrl}

@@ -1,50 +1,38 @@
 import Banner from '@/components/Banner';
 import Row from '@/components/Row';
 import {
-  getNetflixOriginals,
   getTrending,
-  getTopRated,
-  getActionMovies,
-  getComedyMovies,
-  getHorrorMovies,
-  getRomanceMovies,
-  getDocumentaries,
+  getKDrama,
+  getCDrama,
+  getAnime,
+  getPopularMovies,
 } from '@/lib/tmdb';
 
 export default async function Home() {
   const [
-    netflixOriginals,
     trendingNow,
-    topRated,
-    actionMovies,
-    comedyMovies,
-    horrorMovies,
-    romanceMovies,
-    documentaries,
+    kDrama,
+    cDrama,
+    anime,
+    popularMovies,
   ] = await Promise.all([
-    getNetflixOriginals(),
     getTrending(),
-    getTopRated(),
-    getActionMovies(),
-    getComedyMovies(),
-    getHorrorMovies(),
-    getRomanceMovies(),
-    getDocumentaries(),
+    getKDrama(),
+    getCDrama(),
+    getAnime(),
+    getPopularMovies(),
   ]);
 
   return (
     <main className="relative h-screen bg-gradient-to-b from-transparent to-netflix-black lg:h-[140vh]">
-      <Banner netflixOriginals={netflixOriginals} />
+      <Banner movies={trendingNow} />
       
       <section className="md:space-y-12 pb-24">
-        <Row title="Netflix Originals" movies={netflixOriginals} isLargeRow />
-        <Row title="Trending Now" movies={trendingNow} />
-        <Row title="Top Rated" movies={topRated} />
-        <Row title="Action Thrillers" movies={actionMovies} />
-        <Row title="Comedies" movies={comedyMovies} />
-        <Row title="Scary Movies" movies={horrorMovies} />
-        <Row title="Romance Movies" movies={romanceMovies} />
-        <Row title="Documentaries" movies={documentaries} />
+        <Row title="Trending" movies={trendingNow} />
+        <Row title="K-Drama" movies={kDrama} />
+        <Row title="C-Drama" movies={cDrama} />
+        <Row title="Anime" movies={anime} />
+        <Row title="Popular Movies" movies={popularMovies} />
       </section>
     </main>
   );

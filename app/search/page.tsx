@@ -17,7 +17,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <main className="pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
-      <h1 className="text-2xl font-semibold mb-8">Search Results for "{query}"</h1>
+      <h1 className="text-2xl font-semibold mb-8">Search Results for &quot;{query}&quot;</h1>
       
       {results.length === 0 ? (
         <p className="text-gray-400">No results found for your query.</p>

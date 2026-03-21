@@ -60,6 +60,10 @@ export const requests = {
   fetchHorrorMovies: '/discover/movie?with_genres=27',
   fetchRomanceMovies: '/discover/movie?with_genres=10749',
   fetchDocumentaries: '/discover/movie?with_genres=99',
+  fetchKDrama: '/discover/tv?with_original_language=ko',
+  fetchCDrama: '/discover/tv?with_original_language=zh',
+  fetchAnime: '/discover/tv?with_genres=16&with_original_language=ja',
+  fetchPopularMovies: '/movie/popular',
 };
 
 export const getTrending = () => fetchTMDB(requests.fetchTrending);
@@ -70,6 +74,10 @@ export const getComedyMovies = () => fetchTMDB(requests.fetchComedyMovies);
 export const getHorrorMovies = () => fetchTMDB(requests.fetchHorrorMovies);
 export const getRomanceMovies = () => fetchTMDB(requests.fetchRomanceMovies);
 export const getDocumentaries = () => fetchTMDB(requests.fetchDocumentaries);
+export const getKDrama = () => fetchTMDB(requests.fetchKDrama);
+export const getCDrama = () => fetchTMDB(requests.fetchCDrama);
+export const getAnime = () => fetchTMDB(requests.fetchAnime);
+export const getPopularMovies = () => fetchTMDB(requests.fetchPopularMovies);
 export const searchMovies = (query: string) => fetchTMDB(`/search/multi?query=${encodeURIComponent(query)}&include_adult=false`);
 
 export const getGenres = async (): Promise<Genre[]> => {
@@ -123,6 +131,13 @@ export const getGenres = async (): Promise<Genre[]> => {
   }
 };
 
+export interface Cast {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+}
+
 export const getTrailer = async (id: number, type: string = 'movie'): Promise<string | null> => {
   if (!API_KEY || API_KEY === 'YOUR_TMDB_API_KEY') {
     return 'dQw4w9WgXcQ'; // Rick roll for mock data
@@ -135,6 +150,41 @@ export const getTrailer = async (id: number, type: string = 'movie'): Promise<st
     return trailer ? trailer.key : null;
   } catch (error) {
     console.error('Error fetching trailer:', error);
+    return null;
+  }
+};
+
+export const getCast = async (id: number, type: string = 'movie'): Promise<Cast[]> => {
+  if (!API_KEY || API_KEY === 'YOUR_TMDB_API_KEY') {
+    return [
+      { id: 1, name: 'Mock Actor 1', character: 'Lead Role', profile_path: null },
+      { id: 2, name: 'Mock Actor 2', character: 'Supporting Role', profile_path: null },
+      { id: 3, name: 'Mock Actor 3', character: 'Cameo', profile_path: null },
+    ];
+  }
+  try {
+    const response = await fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}&language=en-US`);
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.cast || [];
+  } catch (error) {
+    console.error('Error fetching cast:', error);
+    return [];
+  }
+};
+
+export const getLogo = async (id: number, type: string = 'movie'): Promise<string | null> => {
+  if (!API_KEY || API_KEY === 'YOUR_TMDB_API_KEY') return null;
+  try {
+    const response = await fetch(`${BASE_URL}/${type}/${id}/images?api_key=${API_KEY}`);
+    if (!response.ok) return null;
+    const data = await response.json();
+    const logos = data.logos;
+    if (!logos || logos.length === 0) return null;
+    const enLogo = logos.find((logo: any) => logo.iso_639_1 === 'en');
+    return enLogo ? enLogo.file_path : logos[0].file_path;
+  } catch (error) {
+    console.error('Error fetching logo:', error);
     return null;
   }
 };
