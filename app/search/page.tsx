@@ -1,7 +1,6 @@
 import { searchMovies, IMAGE_BASE_URL } from '@/lib/tmdb';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star } from 'lucide-react';
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const params = await searchParams;
@@ -32,7 +31,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               : `https://picsum.photos/seed/${movie.id}/500/281?blur=2`;
 
             return (
-              <Link key={movie.id} href={`/movie/${movie.id}`}>
+              <Link key={movie.id} href={`/title/${movie.media_type || 'movie'}/${movie.id}`}>
                 <div className="relative group cursor-pointer transition duration-200 ease-out hover:scale-105">
                   <div className="aspect-video relative rounded overflow-hidden">
                     <Image
@@ -47,11 +46,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                       <p className="text-white text-xs md:text-sm font-semibold truncate w-full text-shadow-md mb-1">
                         {movie.title || movie.name || movie.original_name}
                       </p>
-                      <div className="flex items-center gap-1 text-yellow-400">
-                        <Star className="h-3 w-3 fill-current" />
-                        <span className="text-[10px] font-bold text-white">{movie.vote_average?.toFixed(1)}</span>
-                        <span className="text-[10px] text-gray-300">({movie.vote_count})</span>
-                      </div>
                     </div>
                   </div>
                 </div>

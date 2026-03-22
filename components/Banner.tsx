@@ -3,7 +3,7 @@
 import { Movie, IMAGE_BASE_URL } from '@/lib/tmdb';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Play, Info, Star } from 'lucide-react';
+import { Play, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { getLogoAction } from '@/app/actions';
@@ -88,12 +88,6 @@ export default function Banner({ movies }: BannerProps) {
             </h1>
           )}
           
-          <div className="flex items-center gap-2 mt-4 text-yellow-400 text-shadow-md">
-            <Star className="h-4 w-4 md:h-5 md:w-5 fill-current" />
-            <span className="font-bold md:text-lg">{movie.vote_average?.toFixed(1)}</span>
-            <span className="text-gray-300 text-xs md:text-sm">({movie.vote_count} votes)</span>
-          </div>
-
           <p className="max-w-xs text-xs text-shadow-md md:max-w-lg md:text-lg lg:max-w-2xl lg:text-xl mt-4 line-clamp-3">
             {movie.overview}
           </p>
@@ -104,7 +98,7 @@ export default function Banner({ movies }: BannerProps) {
               Play
             </button>
             <Link 
-              href={`/movie/${movie.id}`}
+              href={`/title/${movie.media_type || 'movie'}/${movie.id}`}
               className="flex items-center gap-2 rounded bg-[gray]/70 px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl"
             >
               <Info className="h-5 w-5 md:h-7 md:w-7" />

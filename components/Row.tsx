@@ -1,7 +1,7 @@
 'use client';
 
 import { Movie, IMAGE_BASE_URL } from '@/lib/tmdb';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
@@ -54,7 +54,7 @@ export default function Row({ title, movies }: RowProps) {
               : `https://picsum.photos/seed/${movie.id}/400/600?blur=2`;
 
             return (
-              <Link key={movie.id} href={`/movie/${movie.id}`}>
+              <Link key={movie.id} href={`/title/${movie.media_type || 'movie'}/${movie.id}`}>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
@@ -72,11 +72,6 @@ export default function Row({ title, movies }: RowProps) {
                      <p className="text-white text-xs md:text-sm font-semibold truncate w-full text-shadow-md mb-1">
                        {movie.title || movie.name || movie.original_name}
                      </p>
-                     <div className="flex items-center gap-1 text-yellow-400">
-                       <Star className="h-3 w-3 fill-current" />
-                       <span className="text-[10px] font-bold text-white">{movie.vote_average?.toFixed(1)}</span>
-                       <span className="text-[10px] text-gray-300">({movie.vote_count})</span>
-                     </div>
                   </div>
                 </motion.div>
               </Link>

@@ -1,3 +1,26 @@
+export interface Season {
+  air_date: string;
+  episode_count: number;
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string;
+  season_number: number;
+}
+
+export interface Episode {
+  air_date: string;
+  episode_number: number;
+  id: number;
+  name: string;
+  overview: string;
+  production_code: string;
+  runtime: number;
+  season_number: number;
+  show_id: number;
+  still_path: string;
+}
+
 export interface Movie {
   id: number;
   title?: string;
@@ -14,6 +37,7 @@ export interface Movie {
   first_air_date?: string;
   vote_average: number;
   vote_count: number;
+  seasons?: Season[];
 }
 
 export interface Genre {
@@ -44,7 +68,16 @@ const fetchTMDB = async (endpoint: string): Promise<Movie[]> => {
     }
 
     const data = await response.json();
-    return data.results;
+    
+    let defaultMediaType = 'movie';
+    if (endpoint.includes('/tv') || endpoint.includes('with_networks=213')) {
+      defaultMediaType = 'tv';
+    }
+
+    return data.results.map((item: any) => ({
+      ...item,
+      media_type: item.media_type || defaultMediaType,
+    }));
   } catch (error) {
     console.error('Error fetching from TMDB:', error);
     return getMockData(endpoint); // Fallback to mock data on error
@@ -66,6 +99,14 @@ export const requests = {
   fetchPopularMovies: '/movie/popular',
 };
 
+const getAiringDateRange = () => {
+  const today = new Date();
+  const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const formatDate = (date: Date) => date.toISOString().split('T')[0];
+  return `&air_date.gte=${formatDate(lastWeek)}&air_date.lte=${formatDate(nextWeek)}&sort_by=popularity.desc`;
+};
+
 export const getTrending = () => fetchTMDB(requests.fetchTrending);
 export const getNetflixOriginals = () => fetchTMDB(requests.fetchNetflixOriginals);
 export const getTopRated = () => fetchTMDB(requests.fetchTopRated);
@@ -74,9 +115,9 @@ export const getComedyMovies = () => fetchTMDB(requests.fetchComedyMovies);
 export const getHorrorMovies = () => fetchTMDB(requests.fetchHorrorMovies);
 export const getRomanceMovies = () => fetchTMDB(requests.fetchRomanceMovies);
 export const getDocumentaries = () => fetchTMDB(requests.fetchDocumentaries);
-export const getKDrama = () => fetchTMDB(requests.fetchKDrama);
-export const getCDrama = () => fetchTMDB(requests.fetchCDrama);
-export const getAnime = () => fetchTMDB(requests.fetchAnime);
+export const getKDrama = () => fetchTMDB(`/discover/tv?with_original_language=ko${getAiringDateRange()}`);
+export const getCDrama = () => fetchTMDB(`/discover/tv?with_original_language=zh${getAiringDateRange()}`);
+export const getAnime = () => fetchTMDB(`/discover/tv?with_genres=16&with_original_language=ja${getAiringDateRange()}`);
 export const getPopularMovies = () => fetchTMDB(requests.fetchPopularMovies);
 export const searchMovies = (query: string) => fetchTMDB(`/search/multi?query=${encodeURIComponent(query)}&include_adult=false`);
 
@@ -143,7 +184,9 @@ export const getTrailer = async (id: number, type: string = 'movie'): Promise<st
     return 'dQw4w9WgXcQ'; // Rick roll for mock data
   }
   try {
-    const response = await fetch(`${BASE_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en-US`);
+    const response = await fetch(`${BASE_URL}/${type}/${id}/videos?api_key=${API_KEY}&language=en-US`, {
+      next: { revalidate: 3600 }
+    });
     if (!response.ok) return null;
     const data = await response.json();
     const trailer = data.results?.find((vid: any) => vid.type === 'Trailer' && vid.site === 'YouTube');
@@ -163,7 +206,9 @@ export const getCast = async (id: number, type: string = 'movie'): Promise<Cast[
     ];
   }
   try {
-    const response = await fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}&language=en-US`);
+    const response = await fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}&language=en-US`, {
+      next: { revalidate: 3600 }
+    });
     if (!response.ok) return [];
     const data = await response.json();
     return data.cast || [];
@@ -176,7 +221,9 @@ export const getCast = async (id: number, type: string = 'movie'): Promise<Cast[
 export const getLogo = async (id: number, type: string = 'movie'): Promise<string | null> => {
   if (!API_KEY || API_KEY === 'YOUR_TMDB_API_KEY') return null;
   try {
-    const response = await fetch(`${BASE_URL}/${type}/${id}/images?api_key=${API_KEY}`);
+    const response = await fetch(`${BASE_URL}/${type}/${id}/images?api_key=${API_KEY}`, {
+      next: { revalidate: 3600 }
+    });
     if (!response.ok) return null;
     const data = await response.json();
     const logos = data.logos;
@@ -186,6 +233,46 @@ export const getLogo = async (id: number, type: string = 'movie'): Promise<strin
   } catch (error) {
     console.error('Error fetching logo:', error);
     return null;
+  }
+};
+
+export const getSimilar = async (id: number, type: string = 'movie'): Promise<Movie[]> => {
+  if (!API_KEY || API_KEY === 'YOUR_TMDB_API_KEY') {
+    return getMockData(`/${type}/${id}/similar`);
+  }
+  try {
+    const response = await fetch(`${BASE_URL}/${type}/${id}/similar?api_key=${API_KEY}&language=en-US&page=1`, {
+      next: { revalidate: 3600 }
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.results.map((item: any) => ({
+      ...item,
+      media_type: type,
+    }));
+  } catch (error) {
+    console.error('Error fetching similar:', error);
+    return [];
+  }
+};
+
+export const getTvSeason = async (id: number, seasonNumber: number): Promise<Episode[]> => {
+  if (!API_KEY || API_KEY === 'YOUR_TMDB_API_KEY') {
+    return [
+      { id: 1, name: 'Mock Episode 1', overview: 'This is a mock episode overview.', episode_number: 1, season_number: seasonNumber, runtime: 45, still_path: '', air_date: '2023-01-01', production_code: '', show_id: id },
+      { id: 2, name: 'Mock Episode 2', overview: 'This is another mock episode overview.', episode_number: 2, season_number: seasonNumber, runtime: 42, still_path: '', air_date: '2023-01-08', production_code: '', show_id: id },
+    ];
+  }
+  try {
+    const response = await fetch(`${BASE_URL}/tv/${id}/season/${seasonNumber}?api_key=${API_KEY}&language=en-US`, {
+      next: { revalidate: 3600 }
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.episodes || [];
+  } catch (error) {
+    console.error('Error fetching tv season:', error);
+    return [];
   }
 };
 
@@ -205,7 +292,9 @@ export const getMovieDetails = async (id: number, type: string = 'movie'): Promi
     };
   }
   try {
-    const response = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=en-US`);
+    const response = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=en-US`, {
+      next: { revalidate: 3600 }
+    });
     if (!response.ok) return null;
     const data = await response.json();
     // TMDB returns genres as an array of objects, map it to genre_ids to match the Movie interface
@@ -230,6 +319,7 @@ function getMockData(endpoint: string): Movie[] {
     overview: 'This is a mock overview for a movie or TV show. It provides a brief description of the plot and characters. Enjoy watching this placeholder content!',
     poster_path: '', // We will handle empty paths in the UI
     backdrop_path: '',
+    media_type: endpoint.includes('/tv') || endpoint.includes('with_networks=213') ? 'tv' : 'movie',
     genre_ids: [28, 12, 16],
     popularity: 100 - i,
     vote_average: 8.5 - (i * 0.1),
