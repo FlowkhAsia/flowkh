@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Search, Bell, User, X, Film } from 'lucide-react';
 import { Movie, IMAGE_BASE_URL } from '@/lib/tmdb';
 import { searchMoviesAction } from '@/app/actions';
@@ -141,7 +141,9 @@ function NavbarContent() {
       <div className="flex items-center space-x-4 text-sm font-light">
         <div className="relative" ref={searchContainerRef}>
           <div className={`flex items-center transition-all duration-300 ${isSearchOpen ? 'bg-black/80 border border-white/80 px-2 py-1' : ''}`}>
-            <Search className="h-6 w-6 cursor-pointer" onClick={toggleSearch} />
+            <button aria-label="Toggle search" onClick={toggleSearch} className="focus:outline-none focus:ring-2 focus:ring-white/50 rounded">
+              <Search className="h-6 w-6 cursor-pointer" aria-hidden="true" />
+            </button>
             {isSearchOpen && (
               <>
                 <input
@@ -152,9 +154,12 @@ function NavbarContent() {
                   onKeyDown={handleKeyDown}
                   onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
                   placeholder="Titles, people, genres"
+                  aria-label="Search titles, people, genres"
                   className="bg-transparent outline-none text-white ml-2 w-40 md:w-56 transition-all duration-300"
                 />
-                <X className="h-4 w-4 cursor-pointer text-gray-400 hover:text-white" onClick={clearSearch} />
+                <button aria-label="Clear search" onClick={clearSearch} className="focus:outline-none focus:ring-2 focus:ring-white/50 rounded">
+                  <X className="h-4 w-4 cursor-pointer text-gray-400 hover:text-white" aria-hidden="true" />
+                </button>
               </>
             )}
           </div>
@@ -171,9 +176,9 @@ function NavbarContent() {
                   : `https://picsum.photos/seed/${movie.id}/100/150?blur=2`;
 
                 return (
-                  <div
+                  <button
                     key={movie.id}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 cursor-pointer transition-colors border-b border-white/10 last:border-0"
+                    className="flex w-full items-center gap-3 px-4 py-3 hover:bg-white/10 cursor-pointer transition-colors border-b border-white/10 last:border-0 text-left focus:outline-none focus:ring-2 focus:ring-white/50"
                     onClick={() => {
                       if (title) {
                         setSearchQuery(title);
@@ -181,6 +186,7 @@ function NavbarContent() {
                         router.push(`/search?q=${encodeURIComponent(title)}`);
                       }
                     }}
+                    aria-label={`Search for ${title}`}
                   >
                     <div className="relative h-16 w-12 flex-shrink-0 overflow-hidden rounded bg-[#2a2a2a]">
                       {imagePath ? (
@@ -201,11 +207,11 @@ function NavbarContent() {
                       <span className="text-sm font-medium text-white truncate">{title}</span>
                       {year && <span className="text-xs text-gray-400">{year}</span>}
                     </div>
-                  </div>
+                  </button>
                 );
               })}
-              <div 
-                className="px-4 py-3 text-center text-sm text-gray-400 hover:text-white hover:bg-white/10 cursor-pointer transition-colors"
+              <button 
+                className="w-full px-4 py-3 text-center text-sm text-gray-400 hover:text-white hover:bg-white/10 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
                 onClick={() => {
                   if (searchQuery.trim().length > 0) {
                     router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
@@ -214,21 +220,29 @@ function NavbarContent() {
                 }}
               >
                 See all results for &quot;{searchQuery}&quot;
-              </div>
+              </button>
             </div>
           )}
         </div>
         <p className="hidden lg:inline cursor-pointer">Kids</p>
-        <Bell className="h-6 w-6 cursor-pointer" />
-        <div className="cursor-pointer rounded bg-gray-800 p-1">
-          <User className="h-5 w-5 text-gray-300" />
-        </div>
+        <button aria-label="Notifications" className="focus:outline-none focus:ring-2 focus:ring-white/50 rounded">
+          <Bell className="h-6 w-6 cursor-pointer" aria-hidden="true" />
+        </button>
+        <button aria-label="User profile" className="cursor-pointer rounded bg-gray-800 p-1 focus:outline-none focus:ring-2 focus:ring-white/50">
+          <User className="h-5 w-5 text-gray-300" aria-hidden="true" />
+        </button>
       </div>
     </header>
   );
 }
 
 export default function Navbar() {
+  const pathname = usePathname();
+  
+  if (pathname?.startsWith('/watch')) {
+    return null;
+  }
+
   return (
     <Suspense fallback={<header className="fixed top-0 z-50 flex w-full h-16 bg-transparent" />}>
       <NavbarContent />

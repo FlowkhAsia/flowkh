@@ -15,9 +15,10 @@ export default function TrailerButton({ trailerId }: TrailerButtonProps) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 rounded bg-white/20 px-6 py-2 md:px-8 md:py-3 text-sm md:text-lg font-semibold text-white transition hover:bg-white/30"
+        className="flex items-center gap-2 rounded bg-white/20 px-6 py-2 md:px-8 md:py-3 text-sm md:text-lg font-semibold text-white transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+        aria-label="Play Trailer"
       >
-        <Play className="h-5 w-5 md:h-7 md:w-7" />
+        <Play className="h-5 w-5 md:h-7 md:w-7" aria-hidden="true" />
         Play Trailer
       </button>
 
@@ -39,9 +40,10 @@ export default function TrailerButton({ trailerId }: TrailerButtonProps) {
             >
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white hover:bg-white/20 transition"
+                className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white hover:bg-white/20 transition focus:outline-none focus:ring-2 focus:ring-white/50"
+                aria-label="Close trailer"
               >
-                ✕
+                <span aria-hidden="true">✕</span>
               </button>
               <iframe
                 className="w-full h-full"

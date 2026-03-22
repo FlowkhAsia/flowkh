@@ -36,12 +36,15 @@ export default function Row({ title, movies }: RowProps) {
         {title}
       </h2>
       <div className="group relative md:-ml-2">
-        <ChevronLeft
-          className={`absolute top-0 bottom-0 left-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1 ${
+        <button
+          className={`absolute top-0 bottom-0 left-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-white/50 ${
             !isMoved && 'hidden'
           }`}
           onClick={() => handleClick('left')}
-        />
+          aria-label="Scroll left"
+        >
+          <ChevronLeft aria-hidden="true" />
+        </button>
         
         <div
           ref={rowRef}
@@ -54,7 +57,12 @@ export default function Row({ title, movies }: RowProps) {
               : `https://picsum.photos/seed/${movie.id}/400/600?blur=2`;
 
             return (
-              <Link key={movie.id} href={`/title/${movie.media_type || 'movie'}/${movie.id}`}>
+              <Link 
+                key={movie.id} 
+                href={`/title/${movie.media_type || 'movie'}/${movie.id}`}
+                aria-label={`View details for ${movie.title || movie.name || movie.original_name}`}
+                className="focus:outline-none focus:ring-2 focus:ring-white/50 rounded-sm md:rounded"
+              >
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
@@ -79,10 +87,13 @@ export default function Row({ title, movies }: RowProps) {
           })}
         </div>
 
-        <ChevronRight
-          className="absolute top-0 bottom-0 right-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1"
+        <button
+          className="absolute top-0 bottom-0 right-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-white/50"
           onClick={() => handleClick('right')}
-        />
+          aria-label="Scroll right"
+        >
+          <ChevronRight aria-hidden="true" />
+        </button>
       </div>
     </div>
   );

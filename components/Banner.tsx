@@ -93,15 +93,19 @@ export default function Banner({ movies }: BannerProps) {
           </p>
 
           <div className="flex space-x-3 mt-6">
-            <button className="flex items-center gap-2 rounded bg-white px-5 py-1.5 text-sm font-semibold text-black transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl">
-              <Play className="h-5 w-5 md:h-7 md:w-7 fill-black" />
+            <button 
+              className="flex items-center gap-2 rounded bg-white px-5 py-1.5 text-sm font-semibold text-black transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl focus:outline-none focus:ring-2 focus:ring-white/50"
+              aria-label={`Play ${movie.title || movie.name || movie.original_name}`}
+            >
+              <Play className="h-5 w-5 md:h-7 md:w-7 fill-black" aria-hidden="true" />
               Play
             </button>
             <Link 
               href={`/title/${movie.media_type || 'movie'}/${movie.id}`}
-              className="flex items-center gap-2 rounded bg-[gray]/70 px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl"
+              className="flex items-center gap-2 rounded bg-[gray]/70 px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl focus:outline-none focus:ring-2 focus:ring-white/50"
+              aria-label={`More info about ${movie.title || movie.name || movie.original_name}`}
             >
-              <Info className="h-5 w-5 md:h-7 md:w-7" />
+              <Info className="h-5 w-5 md:h-7 md:w-7" aria-hidden="true" />
               More Info
             </Link>
           </div>

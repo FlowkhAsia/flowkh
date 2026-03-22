@@ -5,6 +5,7 @@ import { Play, Plus, ThumbsUp, Check, ArrowLeft } from 'lucide-react';
 import AddToListButton from '@/components/AddToListButton';
 import TrailerButton from '@/components/TrailerButton';
 import Row from '@/components/Row';
+import BackButton from '@/components/BackButton';
 
 export default async function MovieDetailPage({ params }: { params: Promise<{ id: string, type: string }> }) {
   const { id, type } = await params;
@@ -44,10 +45,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
     <main className="min-h-screen bg-[#141414] text-white pb-20">
       <div className="relative h-[60vh] md:h-[80vh] w-full">
         <div className="absolute top-24 left-4 md:left-10 z-50">
-          <Link href="/" className="flex items-center gap-2 text-white hover:text-gray-300 transition bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm">
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Back</span>
-          </Link>
+          <BackButton />
         </div>
         
         <Image
@@ -82,14 +80,18 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
             <Link 
               href={type === 'tv' ? `/watch/tv/${id}?season=${firstSeasonNumber}&episode=1` : `/watch/movie/${id}`}
               className="flex items-center gap-2 rounded bg-white px-6 py-2 md:px-8 md:py-3 text-sm md:text-lg font-semibold text-black transition hover:bg-opacity-80"
+              aria-label={`Play ${movie.title || movie.name || movie.original_name}`}
             >
-              <Play className="h-5 w-5 md:h-7 md:w-7 fill-black" />
+              <Play className="h-5 w-5 md:h-7 md:w-7 fill-black" aria-hidden="true" />
               Play
             </Link>
             {trailer && <TrailerButton trailerId={trailer} />}
             <AddToListButton movie={movie} />
-            <button className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border-2 border-white/40 bg-[#2a2a2a]/60 transition hover:border-white hover:bg-white/20">
-              <ThumbsUp className="h-5 w-5 md:h-6 md:w-6 text-white" />
+            <button 
+              className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border-2 border-white/40 bg-[#2a2a2a]/60 transition hover:border-white hover:bg-white/20"
+              aria-label="Rate"
+            >
+              <ThumbsUp className="h-5 w-5 md:h-6 md:w-6 text-white" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -202,14 +204,23 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
 
                 if (isReleased) {
                   return (
-                    <Link key={episode.id} href={`/watch/tv/${id}?season=${firstSeasonNumber}&episode=${episode.episode_number}`} className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 hover:bg-[#2a2a2a]">
+                    <Link 
+                      key={episode.id} 
+                      href={`/watch/tv/${id}?season=${firstSeasonNumber}&episode=${episode.episode_number}`} 
+                      className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 hover:bg-[#2a2a2a]"
+                      aria-label={`Play Episode ${episode.episode_number}: ${episode.name}`}
+                    >
                       {innerContent}
                     </Link>
                   );
                 }
 
                 return (
-                  <div key={episode.id} className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 opacity-70">
+                  <div 
+                    key={episode.id} 
+                    className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 opacity-70"
+                    aria-label={`Episode ${episode.episode_number}: ${episode.name}, Coming ${formattedAirDate}`}
+                  >
                     {innerContent}
                   </div>
                 );
