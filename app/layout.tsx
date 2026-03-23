@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import { MyListProvider } from '@/context/MyListContext';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           <Navbar />
           {children}
         </MyListProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
