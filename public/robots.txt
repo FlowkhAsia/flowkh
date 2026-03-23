@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /watch/
+Disallow: /api/
+Disallow: /search?
+
+Sitemap: https://flowkh.com/sitemap.xml

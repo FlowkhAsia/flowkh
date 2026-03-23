@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import Banner from '@/components/Banner';
 import Row from '@/components/Row';
 import {
@@ -7,6 +8,11 @@ import {
   getAnime,
   getPopularMovies,
 } from '@/lib/tmdb';
+
+export const metadata: Metadata = {
+  title: 'Flowkh - Watch TV Shows Online, Watch Movies Online',
+  description: 'Flowkh is a streaming platform to watch your favorite movies and TV shows online for free. Discover new releases, popular series, and classic films.',
+};
 
 export default async function Home() {
   const [

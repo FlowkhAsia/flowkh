@@ -7,10 +7,14 @@ export default function BackButton() {
   const router = useRouter();
   
   const handleBack = () => {
-    // Check if the previous page is from the same origin
-    if (typeof document !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+    // If there is history to go back to, use router.back()
+    // window.history.length > 2 is a common check because a new tab starts with length 1 or 2
+    if (typeof window !== 'undefined' && window.history.length > 2) {
+      router.back();
+    } else if (typeof document !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
       router.back();
     } else {
+      // Fallback to home if they landed directly on this page
       router.push('/');
     }
   };

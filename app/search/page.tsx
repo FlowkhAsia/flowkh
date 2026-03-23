@@ -1,6 +1,28 @@
+import { Metadata } from 'next';
 import { searchMovies, IMAGE_BASE_URL } from '@/lib/tmdb';
 import Image from 'next/image';
 import Link from 'next/link';
+
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {
+  const params = await searchParams;
+  const query = params.q;
+
+  if (!query) {
+    return {
+      title: 'Search',
+      description: 'Search for movies and TV shows on Flowkh.',
+    };
+  }
+
+  return {
+    title: `Search results for "${query}"`,
+    description: `Find movies and TV shows related to "${query}" on Flowkh.`,
+    robots: {
+      index: false,
+      follow: true,
+    }
+  };
+}
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const params = await searchParams;

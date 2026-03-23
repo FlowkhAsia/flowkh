@@ -1,8 +1,68 @@
+import { Metadata } from 'next';
 import { ArrowLeft, Play } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTvSeason, getMovieDetails, getSimilar, IMAGE_BASE_URL } from '@/lib/tmdb';
 import SeasonSelector from '@/components/SeasonSelector';
+
+export async function generateMetadata({ params, searchParams }: { 
+  params: Promise<{ id: string, type: string }>,
+  searchParams: Promise<{ season?: string, episode?: string }>
+}): Promise<Metadata> {
+  const { id, type } = await params;
+  const { season, episode } = await searchParams;
+  const movieId = parseInt(id, 10);
+  const movie = await getMovieDetails(movieId, type);
+
+  if (!movie) {
+    return {
+      title: 'Watch on Flowkh',
+      description: 'Watch movies and TV shows online for free on Flowkh.',
+    };
+  }
+
+  const title = movie.title || movie.name || movie.original_name;
+  let pageTitle = `Watch ${title}`;
+  let description = movie.overview || `Watch ${title} on Flowkh.`;
+
+  if (type === 'tv') {
+    const currentSeason = season || '1';
+    const currentEpisode = episode || '1';
+    pageTitle = `Watch ${title} - Season ${currentSeason} Episode ${currentEpisode}`;
+    description = `Watch ${title} Season ${currentSeason} Episode ${currentEpisode} online for free on Flowkh.`;
+  }
+
+  const image = movie.backdrop_path ? `${IMAGE_BASE_URL}${movie.backdrop_path}` : '/og-image.jpg';
+
+  return {
+    title: pageTitle,
+    description: description,
+    openGraph: {
+      title: pageTitle,
+      description: description,
+      url: `https://flowkh.com/watch/${type}/${id}${type === 'tv' ? `?season=${season || 1}&episode=${episode || 1}` : ''}`,
+      type: 'video.other',
+      images: [
+        {
+          url: image,
+          width: 1280,
+          height: 720,
+          alt: pageTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: pageTitle,
+      description: description,
+      images: [image],
+    },
+    robots: {
+      index: false, // Usually you don't want to index the actual player page to avoid duplicate content/thin content, but we'll allow it or set to noindex depending on preference. Let's set index: false for player pages to focus SEO on the title pages.
+      follow: true,
+    }
+  };
+}
 
 export default async function WatchPage({ 
   params, 

@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { getMovieDetails, getCast, getTrailer, getGenres, getSimilar, getLogo, getTvSeason, IMAGE_BASE_URL } from '@/lib/tmdb';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,6 +7,48 @@ import AddToListButton from '@/components/AddToListButton';
 import TrailerButton from '@/components/TrailerButton';
 import Row from '@/components/Row';
 import BackButton from '@/components/BackButton';
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string, type: string }> }): Promise<Metadata> {
+  const { id, type } = await params;
+  const movieId = parseInt(id, 10);
+  const movie = await getMovieDetails(movieId, type);
+
+  if (!movie) {
+    return {
+      title: 'Title Not Found',
+      description: 'The requested movie or TV show could not be found on Flowkh.',
+    };
+  }
+
+  const title = movie.title || movie.name || movie.original_name;
+  const description = movie.overview || `Watch ${title} on Flowkh.`;
+  const image = movie.backdrop_path ? `${IMAGE_BASE_URL}${movie.backdrop_path}` : '/og-image.jpg';
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      url: `https://flowkh.com/title/${type}/${id}`,
+      type: type === 'tv' ? 'video.tv_show' : 'video.movie',
+      images: [
+        {
+          url: image,
+          width: 1280,
+          height: 720,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+      images: [image],
+    },
+  };
+}
 
 export default async function MovieDetailPage({ params }: { params: Promise<{ id: string, type: string }> }) {
   const { id, type } = await params;
