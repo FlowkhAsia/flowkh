@@ -30,7 +30,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   if (!query) {
     return (
-      <main className="pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
+      <main className="pt-24 md:pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
         <h1 className="text-2xl font-semibold mb-8">Please enter a search term.</h1>
       </main>
     );
@@ -39,7 +39,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const results = await searchMovies(query);
 
   return (
-    <main className="pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
+    <main className="pt-24 md:pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
       <h1 className="text-2xl font-semibold mb-8">Search Results for &quot;{query}&quot;</h1>
       
       {results.length === 0 ? (

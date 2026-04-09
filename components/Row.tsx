@@ -37,7 +37,7 @@ export default function Row({ title, movies }: RowProps) {
       </h2>
       <div className="group relative md:-ml-2">
         <button
-          className={`absolute top-0 bottom-0 left-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-white/50 ${
+          className={`hidden md:block absolute top-0 bottom-0 left-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-white/50 ${
             !isMoved && 'hidden'
           }`}
           onClick={() => handleClick('left')}
@@ -88,7 +88,7 @@ export default function Row({ title, movies }: RowProps) {
         </div>
 
         <button
-          className="absolute top-0 bottom-0 right-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="hidden md:block absolute top-0 bottom-0 right-2 z-40 m-auto h-9 w-9 cursor-pointer opacity-0 transition hover:scale-125 group-hover:opacity-100 bg-black/50 rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-white/50"
           onClick={() => handleClick('right')}
           aria-label="Scroll right"
         >

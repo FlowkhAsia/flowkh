@@ -17,14 +17,14 @@ export default function MyListPage() {
 
   if (!isMounted) {
     return (
-      <main className="pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
+      <main className="pt-24 md:pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
         <h1 className="text-2xl font-semibold mb-8">My List</h1>
       </main>
     );
   }
 
   return (
-    <main className="pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
+    <main className="pt-24 md:pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
       <h1 className="text-2xl font-semibold mb-8">My List</h1>
       
       {myList.length === 0 ? (

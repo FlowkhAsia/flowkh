@@ -58,7 +58,7 @@ export default async function CategoryPage({
   const selectedGenreName = genre ? allGenres.find(g => g.id.toString() === genre)?.name : null;
 
   return (
-    <main className="pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
+    <main className="pt-24 md:pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <h1 className="text-2xl font-semibold">
           {title} {selectedGenreName && <span className="text-gray-400 text-lg ml-2">› {selectedGenreName}</span>}

@@ -57,7 +57,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
   
   if (!movie) {
     return (
-      <main className="pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white flex flex-col items-center justify-center">
+      <main className="pt-24 md:pt-32 px-4 md:px-10 min-h-screen bg-netflix-black text-white flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold mb-4">Title not found</h1>
         <Link href="/" className="text-netflix-red hover:underline">Return to Home</Link>
       </main>
@@ -127,7 +127,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
             </h1>
           )}
           
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6">
             <Link 
               href={type === 'tv' ? `/watch/tv/${id}?season=${firstSeasonNumber}&episode=1` : `/watch/movie/${id}`}
               className="flex items-center gap-2 rounded bg-white px-6 py-2 md:px-8 md:py-3 text-sm md:text-lg font-semibold text-black transition hover:bg-opacity-80"
@@ -217,10 +217,10 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
 
                 const innerContent = (
                   <>
-                    <div className="flex items-center justify-center text-2xl font-light text-gray-400 w-12 shrink-0">
+                    <div className="hidden md:flex items-center justify-center text-2xl font-light text-gray-400 w-12 shrink-0">
                       {episode.episode_number}
                     </div>
-                    <div className="relative w-full sm:w-40 h-24 shrink-0 rounded overflow-hidden bg-[#141414]">
+                    <div className="relative w-32 md:w-40 h-20 md:h-24 shrink-0 rounded overflow-hidden bg-[#141414]">
                       <Image
                         src={imageSrc}
                         alt={episode.name}
@@ -230,22 +230,25 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
                       />
                       {!isReleased ? (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-                          <span className="text-white text-xs font-semibold px-2 py-1 bg-black/80 rounded">
+                          <span className="text-white text-[10px] md:text-xs font-semibold px-1.5 py-0.5 md:px-2 md:py-1 bg-black/80 rounded text-center">
                             Coming {formattedAirDate}
                           </span>
                         </div>
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/40 cursor-pointer">
-                          <Play className="w-8 h-8 text-white fill-white" />
+                          <Play className="w-6 h-6 md:w-8 md:h-8 text-white fill-white" />
                         </div>
                       )}
                     </div>
                     <div className="flex flex-col justify-center flex-grow min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <h4 className="text-white font-medium truncate pr-4">{episode.name}</h4>
-                        <span className="text-sm text-gray-400 shrink-0">{episode.runtime ? `${episode.runtime}m` : ''}</span>
+                        <h4 className="text-white font-medium truncate pr-2 text-sm md:text-base">
+                          <span className="md:hidden mr-1">{episode.episode_number}.</span>
+                          {episode.name}
+                        </h4>
+                        <span className="text-xs md:text-sm text-gray-400 shrink-0">{episode.runtime ? `${episode.runtime}m` : ''}</span>
                       </div>
-                      <p className="text-sm text-gray-400 line-clamp-2">{episode.overview || 'No overview available.'}</p>
+                      <p className="text-xs md:text-sm text-gray-400 line-clamp-2 md:line-clamp-3">{episode.overview || 'No overview available.'}</p>
                     </div>
                   </>
                 );
@@ -255,7 +258,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
                     <Link 
                       key={episode.id} 
                       href={`/watch/tv/${id}?season=${firstSeasonNumber}&episode=${episode.episode_number}`} 
-                      className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 hover:bg-[#2a2a2a]"
+                      className="flex flex-row gap-3 md:gap-4 p-3 md:p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 hover:bg-[#2a2a2a]"
                       aria-label={`Play Episode ${episode.episode_number}: ${episode.name}`}
                     >
                       {innerContent}
@@ -266,7 +269,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
                 return (
                   <div 
                     key={episode.id} 
-                    className="flex flex-col sm:flex-row gap-4 p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 opacity-70"
+                    className="flex flex-row gap-3 md:gap-4 p-3 md:p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 opacity-70"
                     aria-label={`Episode ${episode.episode_number}: ${episode.name}, Coming ${formattedAirDate}`}
                   >
                     {innerContent}
