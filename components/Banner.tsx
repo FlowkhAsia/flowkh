@@ -94,7 +94,7 @@ export default function Banner({ movies }: BannerProps) {
 
           <div className="flex space-x-3 mt-6">
             <Link 
-              href={`/watch/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}`}
+              href={`/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}/play`}
               className="flex items-center gap-2 rounded bg-white px-5 py-1.5 text-sm font-semibold text-black transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl focus:outline-none focus:ring-2 focus:ring-white/50"
               aria-label={`Play ${movie.title || movie.name || movie.original_name}`}
             >
@@ -102,7 +102,7 @@ export default function Banner({ movies }: BannerProps) {
               Play
             </Link>
             <Link 
-              href={`/title/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}`}
+              href={`/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}`}
               className="flex items-center gap-2 rounded bg-[gray]/70 px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl focus:outline-none focus:ring-2 focus:ring-white/50"
               aria-label={`More info about ${movie.title || movie.name || movie.original_name}`}
             >

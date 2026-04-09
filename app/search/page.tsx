@@ -55,7 +55,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             return (
               <Link 
                 key={movie.id} 
-                href={`/title/${movie.media_type || 'movie'}/${movie.id}`}
+                href={`/${movie.media_type || 'movie'}/${movie.id}`}
                 aria-label={`View details for ${movie.title || movie.name || movie.original_name}`}
                 className="focus:outline-none focus:ring-2 focus:ring-white/50 rounded block"
               >

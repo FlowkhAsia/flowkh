@@ -11,7 +11,13 @@ import Image from 'next/image';
 function NavbarContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const initialQuery = searchParams.get('q') || '';
+  const isPlaying = searchParams.has('episode') || searchParams.get('play') === 'true';
+
+  if (isPlaying) {
+    return null;
+  }
   
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -206,7 +212,7 @@ function NavbarContent() {
                 return (
                   <Link
                     key={movie.id}
-                    href={`/title/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}`}
+                    href={`/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}`}
                     className="flex w-full items-center gap-3 px-4 py-3 hover:bg-white/10 cursor-pointer transition-colors border-b border-white/10 last:border-0 text-left focus:outline-none focus:ring-2 focus:ring-white/50"
                     onClick={() => {
                       if (title) {
@@ -261,12 +267,6 @@ function NavbarContent() {
 }
 
 export default function Navbar() {
-  const pathname = usePathname();
-  
-  if (pathname?.startsWith('/watch')) {
-    return null;
-  }
-
   return (
     <Suspense fallback={<header className="fixed top-0 z-50 flex w-full h-16 bg-transparent" />}>
       <NavbarContent />

@@ -8,8 +8,12 @@ import TrailerButton from '@/components/TrailerButton';
 import Row from '@/components/Row';
 import SeasonSelector from '@/components/SeasonSelector';
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string, type: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { 
+  params: Promise<{ id: string, type: string }>,
+  searchParams: Promise<{ season?: string, episode?: string, play?: string }>
+}): Promise<Metadata> {
   const { id, type } = await params;
+  const { season, episode, play } = await searchParams;
   const movieId = parseInt(id, 10);
   const movie = await getMovieDetails(movieId, type);
 
@@ -21,32 +25,48 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   const title = movie.title || movie.name || movie.original_name;
-  const description = movie.overview || `Watch ${title} on Flowkh.`;
+  const isPlaying = (type === 'tv' && episode) || (type === 'movie' && play === 'true');
+  
+  let pageTitle = title;
+  let description = movie.overview || `Watch ${title} on Flowkh.`;
+
+  if (isPlaying) {
+    if (type === 'tv') {
+      const currentSeason = season || '1';
+      const currentEpisode = episode || '1';
+      pageTitle = `Watch ${title} - Season ${currentSeason} Episode ${currentEpisode}`;
+      description = `Watch ${title} Season ${currentSeason} Episode ${currentEpisode} online for free on Flowkh.`;
+    } else {
+      pageTitle = `Watch ${title}`;
+    }
+  }
+
   const image = movie.backdrop_path ? `${IMAGE_BASE_URL}${movie.backdrop_path}` : '/og-image.jpg';
 
   return {
-    title: title,
+    title: pageTitle,
     description: description,
     openGraph: {
-      title: title,
+      title: pageTitle,
       description: description,
-      url: `https://flowkh.com/title/${type}/${id}`,
+      url: `https://flowkh.com/${type}/${id}${isPlaying ? (type === 'tv' ? `?season=${season || 1}&episode=${episode || 1}` : '?play=true') : ''}`,
       type: type === 'tv' ? 'video.tv_show' : 'video.movie',
       images: [
         {
           url: image,
           width: 1280,
           height: 720,
-          alt: title,
+          alt: pageTitle,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: title,
+      title: pageTitle,
       description: description,
       images: [image],
     },
+    robots: isPlaying ? { index: false, follow: true } : undefined,
   };
 }
 
@@ -55,12 +75,201 @@ export default async function MovieDetailPage({
   searchParams
 }: { 
   params: Promise<{ id: string, type: string }>,
-  searchParams: Promise<{ season?: string }>
+  searchParams: Promise<{ season?: string, episode?: string, play?: string }>
 }) {
   const { id, type } = await params;
-  const { season } = await searchParams;
+  const { season, episode, play } = await searchParams;
   const movieId = parseInt(id, 10);
   
+  const isPlaying = (type === 'tv' && episode) || (type === 'movie' && play === 'true');
+
+  if (isPlaying) {
+    let embedUrl = '';
+    let episodes: any[] = [];
+    let showDetails: any = null;
+    let similarMovies: any[] = [];
+    const currentSeason = season || '1';
+    const currentEpisode = episode || '1';
+
+    if (type === 'movie') {
+      embedUrl = `https://vidsrc.cc/v2/embed/movie/${id}`;
+      try {
+        similarMovies = await getSimilar(movieId, 'movie');
+      } catch (e) {
+        console.error("Failed to fetch similar movies", e);
+      }
+    } else if (type === 'tv') {
+      embedUrl = `https://vidsrc.cc/v2/embed/tv/${id}/${currentSeason}/${currentEpisode}`;
+      try {
+        const seasonNum = parseInt(currentSeason, 10);
+        [showDetails, episodes] = await Promise.all([
+          getMovieDetails(movieId, 'tv'),
+          getTvSeason(movieId, seasonNum)
+        ]);
+      } catch (e) {
+        console.error("Failed to fetch TV show details", e);
+      }
+    }
+
+    return (
+      <div className="w-screen h-screen bg-black flex flex-col md:flex-row overflow-hidden">
+        {/* Main Player Area */}
+        <div className="flex-grow flex flex-col relative h-[40vh] md:h-full shrink-0 md:shrink">
+          <iframe 
+            src={embedUrl} 
+            title={`Video player for ${type === 'movie' ? 'movie' : 'TV show'}`}
+            className="w-full h-full border-0" 
+            allowFullScreen 
+            allow="autoplay; fullscreen"
+          ></iframe>
+        </div>
+
+        {/* Episodes Sidebar (Only for TV Shows) */}
+        {type === 'tv' && episodes && episodes.length > 0 && (
+          <div className="w-full md:w-80 lg:w-96 bg-[#141414] h-[60vh] md:h-full overflow-y-auto border-t md:border-t-0 md:border-l border-white/10 flex flex-col shrink-0">
+            <div className="p-4 sticky top-0 bg-[#141414]/95 backdrop-blur z-10 border-b border-white/10">
+              <h2 className="text-lg font-semibold text-white truncate">
+                {showDetails?.name || 'Episodes'}
+              </h2>
+              {showDetails?.seasons ? (
+                <SeasonSelector seasons={showDetails.seasons} currentSeason={currentSeason} appendEpisode={true} />
+              ) : (
+                <p className="text-sm text-gray-400">Season {currentSeason}</p>
+              )}
+            </div>
+            
+            <div className="flex flex-col p-2 gap-2">
+              {episodes.map((ep) => {
+                const airDate = ep.air_date ? new Date(ep.air_date) : null;
+                const isReleased = airDate ? airDate <= new Date() : true;
+                const isCurrent = ep.episode_number.toString() === currentEpisode;
+                
+                const imageSrc = ep.still_path 
+                  ? `${IMAGE_BASE_URL}${ep.still_path}` 
+                  : (showDetails?.backdrop_path ? `${IMAGE_BASE_URL}${showDetails.backdrop_path}` : `https://picsum.photos/seed/${ep.id}/300/170?blur=2`);
+
+                const innerContent = (
+                  <div className="flex gap-3 items-center">
+                    <div className="relative w-24 h-16 shrink-0 rounded overflow-hidden bg-[#2a2a2a]">
+                      <Image
+                        src={imageSrc}
+                        alt={ep.name}
+                        fill
+                        className="object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                      {!isReleased ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+                          <span className="text-white text-[10px] font-semibold px-1 py-0.5 bg-black/80 rounded">
+                            Coming
+                          </span>
+                        </div>
+                      ) : isCurrent ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <span className="text-white text-xs font-bold">Playing</span>
+                        </div>
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                          <Play className="w-6 h-6 text-white fill-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className={`text-sm font-medium truncate ${isCurrent ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                        {ep.episode_number}. {ep.name}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {ep.runtime ? `${ep.runtime}m` : ''}
+                      </span>
+                    </div>
+                  </div>
+                );
+
+                if (isReleased && !isCurrent) {
+                  return (
+                    <Link 
+                      key={ep.id} 
+                      href={`/${type}/${id}?season=${currentSeason}&episode=${ep.episode_number}`}
+                      className="group p-2 rounded hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/50 border-l-4 border-transparent"
+                      aria-label={`Play Episode ${ep.episode_number}: ${ep.name}`}
+                    >
+                      {innerContent}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div 
+                    key={ep.id} 
+                    className={`p-2 rounded ${isCurrent ? 'bg-[#2a2a2a] border-l-4 border-netflix-red' : 'opacity-50 border-l-4 border-transparent'}`}
+                    aria-label={isCurrent ? `Currently playing Episode ${ep.episode_number}: ${ep.name}` : `Episode ${ep.episode_number}: ${ep.name}, Coming ${airDate?.toLocaleDateString()}`}
+                  >
+                    {innerContent}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Similar Movies Sidebar (Only for Movies) */}
+        {type === 'movie' && similarMovies && similarMovies.length > 0 && (
+          <div className="w-full md:w-80 lg:w-96 bg-[#141414] h-[60vh] md:h-full overflow-y-auto border-t md:border-t-0 md:border-l border-white/10 flex flex-col shrink-0">
+            <div className="p-4 sticky top-0 bg-[#141414]/95 backdrop-blur z-10 border-b border-white/10">
+              <h2 className="text-lg font-semibold text-white truncate">
+                More Like This
+              </h2>
+            </div>
+            
+            <div className="flex flex-col p-2 gap-2">
+              {similarMovies.map((similarMovie) => {
+                const imageSrc = similarMovie.backdrop_path 
+                  ? `${IMAGE_BASE_URL}${similarMovie.backdrop_path}` 
+                  : (similarMovie.poster_path ? `${IMAGE_BASE_URL}${similarMovie.poster_path}` : `https://picsum.photos/seed/${similarMovie.id}/300/170?blur=2`);
+
+                const innerContent = (
+                  <div className="flex gap-3 items-center">
+                    <div className="relative w-24 h-16 shrink-0 rounded overflow-hidden bg-[#2a2a2a]">
+                      <Image
+                        src={imageSrc}
+                        alt={similarMovie.title || similarMovie.name || 'Movie'}
+                        fill
+                        className="object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                        <Play className="w-6 h-6 text-white fill-white" />
+                      </div>
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-sm font-medium truncate text-gray-300 group-hover:text-white">
+                        {similarMovie.title || similarMovie.name || similarMovie.original_name}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {similarMovie.release_date ? similarMovie.release_date.substring(0, 4) : ''}
+                      </span>
+                    </div>
+                  </div>
+                );
+
+                return (
+                  <Link 
+                    key={similarMovie.id} 
+                    href={`/movie/${similarMovie.id}?play=true`}
+                    className="group p-2 rounded hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/50"
+                    aria-label={`Play ${similarMovie.title || similarMovie.name || similarMovie.original_name}`}
+                  >
+                    {innerContent}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   const movie = await getMovieDetails(movieId, type);
   
   if (!movie) {
@@ -141,7 +350,7 @@ export default async function MovieDetailPage({
           
           <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6">
             <Link 
-              href={type === 'tv' ? `/watch/tv/${id}?season=${currentSeasonNumber}&episode=1` : `/watch/movie/${id}`}
+              href={type === 'tv' ? `/${type}/${id}?season=${currentSeasonNumber}&episode=1` : `/${type}/${id}?play=true`}
               className="flex items-center gap-2 rounded bg-white px-6 py-2 md:px-8 md:py-3 text-sm md:text-lg font-semibold text-black transition hover:bg-opacity-80"
               aria-label={`Play ${movie.title || movie.name || movie.original_name}`}
             >
@@ -273,7 +482,7 @@ export default async function MovieDetailPage({
                   return (
                     <Link 
                       key={episode.id} 
-                      href={`/watch/tv/${id}?season=${currentSeasonNumber}&episode=${episode.episode_number}`} 
+                      href={`/${type}/${id}?season=${currentSeasonNumber}&episode=${episode.episode_number}`} 
                       className="flex flex-row gap-3 md:gap-4 p-3 md:p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 hover:bg-[#2a2a2a]"
                       aria-label={`Play Episode ${episode.episode_number}: ${episode.name}`}
                     >
