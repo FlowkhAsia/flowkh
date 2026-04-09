@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { Search, Bell, User, X, Film, ChevronDown } from 'lucide-react';
+import { Search, Bell, User, X, Film, ChevronDown, Menu } from 'lucide-react';
 import { Movie, IMAGE_BASE_URL } from '@/lib/tmdb';
 import { searchMoviesAction } from '@/app/actions';
 import Image from 'next/image';
@@ -121,7 +121,28 @@ function NavbarContent() {
         isScrolled ? 'bg-[#141414]' : 'bg-transparent bg-gradient-to-b from-black/80 to-transparent'
       }`}
     >
-      <div className="flex items-center space-x-2 md:space-x-10">
+      <div className="flex items-center space-x-3 md:space-x-10">
+        {/* Mobile Menu */}
+        <div className="md:hidden relative">
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="flex items-center text-white focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+          
+          {isMobileMenuOpen && (
+            <div className="absolute top-full left-0 mt-4 w-48 bg-black/95 border border-white/20 rounded-md shadow-2xl flex flex-col py-2 z-50">
+              <Link href="/" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-left" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+              <Link href="/category/tv" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-left" onClick={() => setIsMobileMenuOpen(false)}>TV Shows</Link>
+              <Link href="/category/movie" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-left" onClick={() => setIsMobileMenuOpen(false)}>Movies</Link>
+              <Link href="/category/popular" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-left" onClick={() => setIsMobileMenuOpen(false)}>New &amp; Popular</Link>
+              <Link href="/my-list" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-left" onClick={() => setIsMobileMenuOpen(false)}>My List</Link>
+            </div>
+          )}
+        </div>
+
         <Link href="/">
           <h1 className="text-2xl font-bold text-netflix-red md:text-4xl cursor-pointer tracking-wider">FLOWKH</h1>
         </Link>
@@ -143,27 +164,6 @@ function NavbarContent() {
             <Link href="/my-list">My List</Link>
           </li>
         </ul>
-
-        {/* Mobile Menu */}
-        <div className="md:hidden relative">
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex items-center gap-1 text-xs font-semibold text-white focus:outline-none"
-            aria-label="Browse menu"
-          >
-            Browse <ChevronDown className={`h-3 w-3 transition-transform ${isMobileMenuOpen ? 'rotate-180' : ''}`} />
-          </button>
-          
-          {isMobileMenuOpen && (
-            <div className="absolute top-full left-0 mt-4 w-48 bg-black/95 border border-white/20 rounded-md shadow-2xl flex flex-col py-2 z-50">
-              <Link href="/" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-center" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-              <Link href="/category/tv" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-center" onClick={() => setIsMobileMenuOpen(false)}>TV Shows</Link>
-              <Link href="/category/movie" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-center" onClick={() => setIsMobileMenuOpen(false)}>Movies</Link>
-              <Link href="/category/popular" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-center" onClick={() => setIsMobileMenuOpen(false)}>New & Popular</Link>
-              <Link href="/my-list" className="px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 text-center" onClick={() => setIsMobileMenuOpen(false)}>My List</Link>
-            </div>
-          )}
-        </div>
       </div>
 
       <div className="flex items-center space-x-3 md:space-x-4 text-sm font-light">

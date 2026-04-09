@@ -11,15 +11,20 @@ interface Season {
 interface SeasonSelectorProps {
   seasons: Season[];
   currentSeason: string;
+  appendEpisode?: boolean;
 }
 
-export default function SeasonSelector({ seasons, currentSeason }: SeasonSelectorProps) {
+export default function SeasonSelector({ seasons, currentSeason, appendEpisode = true }: SeasonSelectorProps) {
   const router = useRouter();
   const pathname = usePathname();
 
   const handleSeasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSeason = e.target.value;
-    router.push(`${pathname}?season=${newSeason}&episode=1`);
+    if (appendEpisode) {
+      router.push(`${pathname}?season=${newSeason}&episode=1`);
+    } else {
+      router.push(`${pathname}?season=${newSeason}`);
+    }
   };
 
   // Filter out season 0 (Specials) if you want, or keep it.

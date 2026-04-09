@@ -6,6 +6,7 @@ import { Play, Plus, ThumbsUp, Check, ArrowLeft } from 'lucide-react';
 import AddToListButton from '@/components/AddToListButton';
 import TrailerButton from '@/components/TrailerButton';
 import Row from '@/components/Row';
+import SeasonSelector from '@/components/SeasonSelector';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string, type: string }> }): Promise<Metadata> {
   const { id, type } = await params;
@@ -49,8 +50,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export default async function MovieDetailPage({ params }: { params: Promise<{ id: string, type: string }> }) {
+export default async function MovieDetailPage({ 
+  params,
+  searchParams
+}: { 
+  params: Promise<{ id: string, type: string }>,
+  searchParams: Promise<{ season?: string }>
+}) {
   const { id, type } = await params;
+  const { season } = await searchParams;
   const movieId = parseInt(id, 10);
   
   const movie = await getMovieDetails(movieId, type);
@@ -64,9 +72,13 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
     );
   }
 
-  let firstSeasonNumber = 1;
+  let currentSeasonNumber = 1;
   if (type === 'tv' && movie.seasons && movie.seasons.length > 0) {
-    firstSeasonNumber = movie.seasons.find(s => s.season_number > 0)?.season_number || 1;
+    if (season) {
+      currentSeasonNumber = parseInt(season, 10);
+    } else {
+      currentSeasonNumber = movie.seasons.find(s => s.season_number > 0)?.season_number || 1;
+    }
   }
 
   const [cast, trailer, allGenres, similarMovies, logoPath, episodes] = await Promise.all([
@@ -75,7 +87,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
     getGenres(),
     getSimilar(movieId, type),
     getLogo(movieId, type),
-    type === 'tv' ? getTvSeason(movieId, firstSeasonNumber) : Promise.resolve([])
+    type === 'tv' ? getTvSeason(movieId, currentSeasonNumber) : Promise.resolve([])
   ]);
 
   const movieGenres = allGenres.filter(genre => movie.genre_ids?.includes(genre.id));
@@ -129,7 +141,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
           
           <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6">
             <Link 
-              href={type === 'tv' ? `/watch/tv/${id}?season=${firstSeasonNumber}&episode=1` : `/watch/movie/${id}`}
+              href={type === 'tv' ? `/watch/tv/${id}?season=${currentSeasonNumber}&episode=1` : `/watch/movie/${id}`}
               className="flex items-center gap-2 rounded bg-white px-6 py-2 md:px-8 md:py-3 text-sm md:text-lg font-semibold text-black transition hover:bg-opacity-80"
               aria-label={`Play ${movie.title || movie.name || movie.original_name}`}
             >
@@ -203,7 +215,11 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
           <div className="mt-16">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-semibold text-white">Episodes</h3>
-              <span className="text-lg text-gray-300">Season {firstSeasonNumber}</span>
+              {movie.seasons ? (
+                <SeasonSelector seasons={movie.seasons} currentSeason={currentSeasonNumber.toString()} appendEpisode={false} />
+              ) : (
+                <span className="text-lg text-gray-300">Season {currentSeasonNumber}</span>
+              )}
             </div>
             <div className="flex flex-col gap-4">
               {episodes.map((episode) => {
@@ -257,7 +273,7 @@ export default async function MovieDetailPage({ params }: { params: Promise<{ id
                   return (
                     <Link 
                       key={episode.id} 
-                      href={`/watch/tv/${id}?season=${firstSeasonNumber}&episode=${episode.episode_number}`} 
+                      href={`/watch/tv/${id}?season=${currentSeasonNumber}&episode=${episode.episode_number}`} 
                       className="flex flex-row gap-3 md:gap-4 p-3 md:p-4 rounded-lg bg-[#2a2a2a]/40 transition border border-white/5 hover:bg-[#2a2a2a]"
                       aria-label={`Play Episode ${episode.episode_number}: ${episode.name}`}
                     >

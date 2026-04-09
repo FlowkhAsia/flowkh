@@ -130,7 +130,7 @@ export default async function WatchPage({
               {showDetails?.name || 'Episodes'}
             </h2>
             {showDetails?.seasons ? (
-              <SeasonSelector seasons={showDetails.seasons} currentSeason={currentSeason} />
+              <SeasonSelector seasons={showDetails.seasons} currentSeason={currentSeason} appendEpisode={true} />
             ) : (
               <p className="text-sm text-gray-400">Season {currentSeason}</p>
             )}
