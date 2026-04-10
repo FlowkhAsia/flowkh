@@ -14,10 +14,6 @@ function NavbarContent() {
   const pathname = usePathname();
   const initialQuery = searchParams.get('q') || '';
   const isPlaying = searchParams.has('episode') || searchParams.get('play') === 'true';
-
-  if (isPlaying) {
-    return null;
-  }
   
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -120,6 +116,10 @@ function NavbarContent() {
     setShowSuggestions(false);
     router.push('/');
   };
+
+  if (isPlaying) {
+    return null;
+  }
 
   return (
     <header
