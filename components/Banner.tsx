@@ -39,6 +39,9 @@ export default function Banner({ movies }: BannerProps) {
     ? `${IMAGE_BASE_URL}${movie.backdrop_path || movie.poster_path}`
     : `https://picsum.photos/seed/${movie.id}/1920/1080?blur=2`;
 
+  const mediaType = movie.media_type || (movie.first_air_date ? 'tv' : 'movie');
+  const playUrl = `/${mediaType}/${movie.id}${mediaType === 'tv' ? '?season=1&episode=1' : '?play=true'}`;
+
   return (
     <>
       <div className="relative flex flex-col space-y-2 py-16 md:space-y-4 lg:h-[85vh] lg:justify-end lg:pb-12">
@@ -94,7 +97,7 @@ export default function Banner({ movies }: BannerProps) {
 
           <div className="flex space-x-3 mt-6">
             <Link 
-              href={`/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}/play`}
+              href={playUrl}
               className="flex items-center gap-2 rounded bg-white px-5 py-1.5 text-sm font-semibold text-black transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl focus:outline-none focus:ring-2 focus:ring-white/50"
               aria-label={`Play ${movie.title || movie.name || movie.original_name}`}
             >
@@ -102,7 +105,7 @@ export default function Banner({ movies }: BannerProps) {
               Play
             </Link>
             <Link 
-              href={`/${movie.media_type || (movie.first_air_date ? 'tv' : 'movie')}/${movie.id}`}
+              href={`/${mediaType}/${movie.id}`}
               className="flex items-center gap-2 rounded bg-[gray]/70 px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-opacity-80 md:px-8 md:py-2.5 md:text-xl focus:outline-none focus:ring-2 focus:ring-white/50"
               aria-label={`More info about ${movie.title || movie.name || movie.original_name}`}
             >

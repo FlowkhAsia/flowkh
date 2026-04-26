@@ -15,11 +15,10 @@ export default function TrailerButton({ trailerId }: TrailerButtonProps) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 rounded bg-white/20 px-6 py-2 md:px-8 md:py-3 text-sm md:text-lg font-semibold text-white transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+        className="group flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border-2 border-white/40 bg-[#2a2a2a]/60 transition hover:border-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50"
         aria-label="Play Trailer"
       >
-        <Play className="h-5 w-5 md:h-7 md:w-7" aria-hidden="true" />
-        Play Trailer
+        <Play className="h-5 w-5 md:h-6 md:w-6 text-white ml-0.5" aria-hidden="true" />
       </button>
 
       <AnimatePresence>
