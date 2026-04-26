@@ -8,6 +8,8 @@ import TrailerButton from '@/components/TrailerButton';
 import Row from '@/components/Row';
 import SeasonSelector from '@/components/SeasonSelector';
 
+import PeachifyPlayer from '@/components/PeachifyPlayer';
+
 export async function generateMetadata({ params, searchParams }: { 
   params: Promise<{ id: string, type: string }>,
   searchParams: Promise<{ season?: string, episode?: string, play?: string }>
@@ -84,7 +86,6 @@ export default async function MovieDetailPage({
   const isPlaying = (type === 'tv' && episode) || (type === 'movie' && play === 'true');
 
   if (isPlaying) {
-    let embedUrl = '';
     let episodes: any[] = [];
     let showDetails: any = null;
     let similarMovies: any[] = [];
@@ -92,14 +93,12 @@ export default async function MovieDetailPage({
     const currentEpisode = episode || '1';
 
     if (type === 'movie') {
-      embedUrl = `https://vidsrc.cc/v2/embed/movie/${id}`;
       try {
         similarMovies = await getSimilar(movieId, 'movie');
       } catch (e) {
         console.error("Failed to fetch similar movies", e);
       }
     } else if (type === 'tv') {
-      embedUrl = `https://vidsrc.cc/v2/embed/tv/${id}/${currentSeason}/${currentEpisode}`;
       try {
         const seasonNum = parseInt(currentSeason, 10);
         [showDetails, episodes] = await Promise.all([
@@ -115,13 +114,12 @@ export default async function MovieDetailPage({
       <div className="w-screen h-screen bg-black flex flex-col md:flex-row overflow-hidden">
         {/* Main Player Area */}
         <div className="flex-grow flex flex-col relative h-[40vh] md:h-full shrink-0 md:shrink">
-          <iframe 
-            src={embedUrl} 
-            title={`Video player for ${type === 'movie' ? 'movie' : 'TV show'}`}
-            className="w-full h-full border-0" 
-            allowFullScreen 
-            allow="autoplay; fullscreen"
-          ></iframe>
+          <PeachifyPlayer 
+            tmdbId={id}
+            type={type as 'movie' | 'tv'}
+            season={currentSeason}
+            episode={currentEpisode}
+          />
         </div>
 
         {/* Episodes Sidebar (Only for TV Shows) */}
