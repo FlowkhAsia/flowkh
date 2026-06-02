@@ -22,7 +22,7 @@ export function HeroBanner({ movie }: { movie: Movie }) {
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
       </div>
 
-      <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end pb-24 md:pb-32 lg:pb-36">
+      <div className="absolute inset-0 w-full px-4 sm:px-8 lg:px-12 flex flex-col justify-end pb-24 md:pb-32 lg:pb-36 z-10">
         <div className="max-w-2xl">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4 drop-shadow-lg">
             {movie.title}

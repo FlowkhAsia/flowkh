@@ -19,7 +19,7 @@ export default function WatchlistPage() {
   }
 
   return (
-    <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
+    <div className="pt-24 pb-20 px-4 sm:px-8 lg:px-12 w-full min-h-screen">
       <div className="flex items-center gap-3 mb-8">
         <Heart className="w-8 h-8 text-red-500 fill-red-500" />
         <h1 className="text-3xl font-bold tracking-tight">Your Watchlist</h1>

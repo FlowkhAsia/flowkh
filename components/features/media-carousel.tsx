@@ -28,7 +28,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
 
   return (
     <section className="relative py-4 group">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2 z-10 relative">
+      <div className="px-4 sm:px-8 lg:px-12 mb-2 z-10 relative">
         <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white drop-shadow-md">
           {title}
         </h2>
@@ -43,10 +43,10 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
 
         <div 
           ref={scrollRef}
-          className="flex overflow-x-auto gap-4 px-4 sm:px-6 lg:px-8 pb-8 pt-8 scrollbar-hide snap-x" 
+          className="flex whitespace-nowrap overflow-x-scroll scroll-smooth scrollbar-hide gap-4 px-4 sm:px-8 lg:px-12 pb-8 pt-4 w-full" 
         >
           {items.map((item) => (
-            <div key={item.id} className="min-w-[140px] w-[140px] sm:min-w-[160px] sm:w-[160px] md:min-w-[200px] md:w-[200px] snap-start flex-none relative">
+            <div key={item.id} className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] relative whitespace-normal">
               <MovieCard media={item} />
             </div>
           ))}

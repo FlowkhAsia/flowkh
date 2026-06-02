@@ -50,7 +50,7 @@ function SearchContent() {
   }, [debouncedQuery, router, searchParams]);
 
   return (
-    <div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
+    <div className="pt-24 pb-20 px-4 sm:px-8 lg:px-12 w-full min-h-screen">
       <div className="mb-8 max-w-2xl mx-auto">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

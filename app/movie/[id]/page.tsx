@@ -62,7 +62,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
          
          {/* Title area overlays the hero image */}
-         <div className="absolute bottom-0 w-full top-auto py-12 md:py-20 z-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-8 items-end">
+         <div className="absolute bottom-0 w-full top-auto py-12 md:py-20 z-10 px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row gap-8 items-end">
             <div className="hidden md:block shrink-0 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 w-48 lg:w-64">
               <Image
                 src={getImageUrl(movie.poster_path)}
@@ -115,7 +115,7 @@ export default async function MoviePage({ params }: { params: Promise<{ id: stri
          </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div className="w-full px-4 sm:px-8 lg:px-12 mt-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
          {/* Main Column */}
          <div className="lg:col-span-2 space-y-12">
             <div>
