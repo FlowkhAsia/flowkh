@@ -28,22 +28,22 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
 
   return (
     <section className="relative py-4 group">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
-        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white mb-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2 z-10 relative">
+        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white drop-shadow-md">
           {title}
         </h2>
       </div>
       <div className="relative group/carousel">
         <button 
           onClick={() => scroll('left')}
-          className="absolute left-0 top-4 bottom-12 z-10 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-r-xl"
+          className="absolute left-0 top-8 bottom-12 z-20 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-r-xl"
         >
           <ChevronLeft className="w-8 h-8" />
         </button>
 
         <div 
           ref={scrollRef}
-          className="flex overflow-x-auto gap-4 px-4 sm:px-6 lg:px-8 pb-8 pt-4 scrollbar-hide snap-x" 
+          className="flex overflow-x-auto gap-4 px-4 sm:px-6 lg:px-8 pb-8 pt-8 scrollbar-hide snap-x" 
         >
           {items.map((item) => (
             <div key={item.id} className="min-w-[140px] w-[140px] sm:min-w-[160px] sm:w-[160px] md:min-w-[200px] md:w-[200px] snap-start flex-none relative">
