@@ -1,7 +1,17 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Search, Popcorn, Heart } from 'lucide-react';
 
 export function Navbar() {
+  const pathname = usePathname();
+  const isDetailsPage = pathname?.startsWith('/movie/') || pathname?.startsWith('/tv/');
+
+  if (isDetailsPage) {
+    return null;
+  }
+
   return (
     <header className="fixed top-0 inset-x-0 z-50 h-16 bg-black/60 backdrop-blur-lg border-b border-white/10">
       <div className="w-full px-4 sm:px-8 lg:px-12 h-full flex items-center justify-between">

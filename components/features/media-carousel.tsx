@@ -27,7 +27,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
   if (!items || items.length === 0) return null;
 
   return (
-    <section className="relative py-4 group">
+    <section className="relative py-4">
       <div className="px-4 sm:px-8 lg:px-12 mb-2 z-10 relative">
         <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white drop-shadow-md">
           {title}

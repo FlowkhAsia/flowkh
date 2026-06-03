@@ -105,4 +105,14 @@ export interface TVShowDetails extends Omit<TVShow, 'genre_ids'> {
   number_of_seasons: number;
   status: string;
   tagline: string;
+  seasons: {
+    air_date: string;
+    episode_count: number;
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string | null;
+    season_number: number;
+    vote_average: number;
+  }[];
 }
