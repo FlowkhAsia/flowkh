@@ -6,6 +6,7 @@ import { Play, Star, Calendar, Clock, Loader2, List, ChevronLeft } from 'lucide-
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
+import { PlayerBackButton } from '@/components/features/player-back-button';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -48,12 +49,7 @@ export default async function MoviePage(props: {
   if (isPlaying) {
     return (
       <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
-        <Link 
-          href={`/movie/${id}`}
-          className="absolute top-6 left-6 md:top-10 md:left-12 z-[110] w-11 h-11 rounded-full flex items-center justify-center bg-zinc-900/40 backdrop-blur-md border border-zinc-800/40 text-white hover:bg-zinc-800/60 hover:scale-105 transition-all group"
-        >
-          <ChevronLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
-        </Link>
+        <PlayerBackButton href={`/movie/${id}`} />
         <iframe
           src={`https://vidkh.site/movie/${movie.id}?autoPlay=true`}
           allowFullScreen
