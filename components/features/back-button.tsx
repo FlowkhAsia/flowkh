@@ -1,18 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 
 export function BackButton() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const handleBack = () => {
-    if (typeof window !== 'undefined') {
-      if (window.history.length > 1) {
-        router.back();
-      } else {
-        router.push('/');
-      }
+    const isPlay = searchParams.get('play') === 'true';
+    if (isPlay) {
+      router.replace(pathname);
+    } else {
+      router.push('/');
     }
   };
 
@@ -25,3 +26,4 @@ export function BackButton() {
     </button>
   );
 }
+
