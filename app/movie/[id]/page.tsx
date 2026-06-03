@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { fetchTMDB, getImageUrl } from '@/lib/tmdb';
 import { MovieDetails, Credits, TMDBResponse, Movie, Video } from '@/types/tmdb';
-import { Play, Star, Calendar, Clock, Loader2 } from 'lucide-react';
+import { Play, Star, Calendar, Clock, Loader2, List } from 'lucide-react';
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 
@@ -43,7 +43,7 @@ export default async function MoviePage(props: {
   const director = credits.crew.find(c => c.job === 'Director');
 
   return (
-    <div className="min-h-screen bg-black pb-20">
+    <div className="relative w-full min-h-screen bg-zinc-950 pb-20">
       {/* Hero Banner with Player or Backdrop */}
       {isPlaying ? (
         <div className="w-full pt-16 bg-black z-20 relative">
@@ -57,151 +57,124 @@ export default async function MoviePage(props: {
           </div>
         </div>
       ) : (
-        <div className="relative w-full h-[60vh] md:h-[80vh]">
+        <div className="relative h-[70vh] md:h-[80vh] w-full">
            <Image
               src={getImageUrl(movie.backdrop_path, 'original')}
               alt={movie.title}
               fill
               priority
-              className="object-cover opacity-50"
+              className="object-cover object-center opacity-70"
               referrerPolicy="no-referrer"
             />
-           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/60 to-transparent z-0" />
+           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-0" />
            
-           {/* Title area overlays the hero image */}
-           <div className="absolute bottom-0 w-full top-auto py-12 md:py-20 z-10 px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row gap-8 items-end">
-              <div className="hidden md:block shrink-0 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 w-48 lg:w-64">
-                <Image
-                  src={getImageUrl(movie.poster_path)}
-                  alt={movie.title}
-                  width={300}
-                  height={450}
-                  className="w-full h-auto object-cover"
-                  referrerPolicy="no-referrer"
-                />
+           <div className="absolute bottom-12 left-4 md:left-16 z-20 max-w-2xl space-y-4">
+              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white mb-4">
+                 {movie.title}
+              </h1>
+              
+              <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold text-zinc-400 mb-4">
+                 {movie.vote_average > 0 && (
+                   <div className="flex items-center gap-1">
+                     <Star className="w-4 h-4 text-red-500 fill-red-500" />
+                     <span className="text-white">{movie.vote_average.toFixed(1)}</span>
+                   </div>
+                 )}
+                 {movie.vote_average > 0 && <span>&bull;</span>}
+                 {movie.release_date && (
+                   <>
+                     <span>{new Date(movie.release_date).getFullYear()}</span>
+                     <span>&bull;</span>
+                   </>
+                 )}
+                 {movie.runtime && movie.runtime > 0 && (
+                   <>
+                     <span>{Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m</span>
+                   </>
+                 )}
+                 {movie.genres?.length > 0 && (
+                   <>
+                     <span>&bull;</span>
+                     <div className="flex flex-wrap gap-2">
+                        {movie.genres.slice(0, 3).map(g => (
+                           <span key={g.id} className="text-zinc-300">
+                              {g.name}
+                           </span>
+                        ))}
+                     </div>
+                   </>
+                 )}
+                 {director && (
+                   <>
+                     <span>&bull;</span>
+                     <span className="text-zinc-300">Dir. {director.name}</span>
+                   </>
+                 )}
               </div>
               
-              <div className="flex-1">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-xl">{movie.title}</h1>
+              <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-xl font-normal mb-8 line-clamp-3">
+                 {movie.overview}
+              </p>
+              
+              <div className="flex items-center gap-3 pt-2">
+                {!isPlaying && (
+                  <Link href={`/movie/${id}?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
+                    <Play className="w-5 h-5 fill-black" />
+                    Play
+                  </Link>
+                )}
+                <WatchlistButton media={{...movie, media_type: 'movie', genre_ids: movie.genres?.map(g => g.id) || []}} className="" iconOnly />
                 
-                <div className="flex flex-wrap items-center gap-4 text-sm md:text-base text-neutral-300 mb-6 w-full">
-                  {movie.vote_average > 0 && (
-                    <div className="flex items-center gap-1 font-semibold text-white bg-white/10 px-2 py-1 rounded-md backdrop-blur-sm">
-                      <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                      {movie.vote_average.toFixed(1)}
-                    </div>
-                  )}
-                  {movie.release_date && (
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {new Date(movie.release_date).getFullYear()}
-                    </div>
-                  )}
-                  {movie.runtime && movie.runtime > 0 && (
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
-                    </div>
-                  )}
-                </div>
-                
-                <p className="text-lg text-neutral-200 mb-8 max-w-3xl drop-shadow-md">
-                  {movie.overview}
-                </p>
-                
-                <div className="flex flex-wrap items-center gap-6">
-                  {!isPlaying && (
-                    <Link href={`/movie/${id}?play=true`} className="flex items-center justify-center gap-2 bg-white text-black px-8 py-4 rounded-full font-bold text-lg transition-transform hover:scale-105 shadow-xl shadow-white/10">
-                      <Play className="w-5 h-5 fill-black border-0" />
-                      Watch Movie
-                    </Link>
-                  )}
-                  <WatchlistButton media={{...movie, media_type: 'movie', genre_ids: movie.genres?.map(g => g.id) || []}} />
-                </div>
+                {similar.results.length > 0 && (
+                  <a href="#similar" className="bg-zinc-800/60 border border-zinc-700/50 text-white font-medium text-sm px-5 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-700 transition">
+                     <List className="w-4 h-4" />
+                     Similars
+                  </a>
+                )}
               </div>
            </div>
         </div>
       )}
 
-      <div className={`w-full px-4 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-3 gap-12 ${isPlaying ? 'mt-8' : 'mt-16'}`}>
-         {/* Main Column */}
-         <div className="lg:col-span-2 space-y-12">
+      <div className={`w-full px-4 md:px-16 py-8 space-y-12 ${isPlaying ? 'mt-8' : 'mt-4'}`}>
+         <div className="max-w-screen-xl mx-auto space-y-12">
             <div>
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                Top Cast
+              <h2 className="flex items-center gap-2 text-xl font-bold text-white mb-6">
+                 <div className="w-1 h-6 bg-red-600 rounded-full"></div>
+                 Top Cast
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
                  {mainCast.map(actor => (
-                   <div key={actor.id} className="bg-neutral-900/50 rounded-xl overflow-hidden border border-neutral-800/50">
-                      <div className="aspect-[3/4] relative bg-neutral-800">
+                   <div key={actor.id} className="w-[140px] md:w-[160px] shrink-0 group relative rounded-xl overflow-hidden bg-neutral-900">
+                      <div className="aspect-[2/3] relative w-full h-full">
                          {actor.profile_path ? (
                            <Image 
                              src={getImageUrl(actor.profile_path)}
                              alt={actor.name}
                              fill
-                             className="object-cover"
+                             className="object-cover transition-transform duration-500 group-hover:scale-110"
+                             referrerPolicy="no-referrer"
                            />
                          ) : (
-                           <div className="w-full h-full flex items-center justify-center text-neutral-600">No Image</div>
+                           <div className="w-full h-full flex items-center justify-center text-neutral-600 bg-neutral-800">No Image</div>
                          )}
-                      </div>
-                      <div className="p-3">
-                         <div className="font-medium text-sm text-white line-clamp-1">{actor.name}</div>
-                         <div className="text-xs text-neutral-400 line-clamp-1">{actor.character}</div>
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col justify-end p-4">
+                           <div className="relative z-10 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                             <div className="font-bold text-white text-sm line-clamp-1">{actor.name}</div>
+                             <div className="text-xs font-medium text-neutral-300 mt-1 line-clamp-1">{actor.character}</div>
+                           </div>
+                         </div>
                       </div>
                    </div>
                  ))}
               </div>
             </div>
          </div>
-         
-         {/* Sidebar Info */}
-         <div className="space-y-8 bg-neutral-900/30 p-6 rounded-2xl border border-neutral-800/50 h-fit">
-            <h3 className="text-lg font-semibold border-b border-neutral-800 pb-2">Information</h3>
-            
-            {director && (
-              <div>
-                <span className="block text-sm text-neutral-500 mb-1">Director</span>
-                <span className="font-medium">{director.name}</span>
-              </div>
-            )}
-            
-            {movie.genres?.length > 0 && (
-              <div>
-                <span className="block text-sm text-neutral-500 mb-2">Genres</span>
-                <div className="flex flex-wrap gap-2">
-                  {movie.genres.map(g => (
-                    <span key={g.id} className="text-xs px-2.5 py-1 bg-neutral-800 rounded-full text-neutral-300">
-                      {g.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <div>
-              <span className="block text-sm text-neutral-500 mb-1">Status</span>
-              <span className="font-medium">{movie.status}</span>
-            </div>
-            
-            {(movie.budget > 0) && (
-              <div>
-                <span className="block text-sm text-neutral-500 mb-1">Budget</span>
-                <span className="font-medium">${(movie.budget / 1000000).toFixed(1)}M</span>
-              </div>
-            )}
-            
-            {(movie.revenue > 0) && (
-              <div>
-                <span className="block text-sm text-neutral-500 mb-1">Revenue</span>
-                <span className="font-medium">${(movie.revenue / 1000000).toFixed(1)}M</span>
-              </div>
-            )}
-         </div>
       </div>
       
       {similar.results.length > 0 && (
-        <div className="mt-8 relative z-20">
+        <div id="similar" className="mt-8 relative z-20 scroll-mt-24">
           <MediaCarousel title="More Like This" items={similar.results.map(m => ({...m, media_type: 'movie'}))} />
         </div>
       )}

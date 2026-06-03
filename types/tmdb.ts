@@ -98,6 +98,32 @@ export interface MovieDetails extends Omit<Movie, 'genre_ids'> {
   revenue: number;
 }
 
+export interface Episode {
+  air_date: string;
+  episode_number: number;
+  id: number;
+  name: string;
+  overview: string;
+  production_code: string;
+  runtime: number | null;
+  season_number: number;
+  show_id: number;
+  still_path: string | null;
+  vote_average: number;
+  vote_count: number;
+}
+
+export interface SeasonDetails {
+  _id: string;
+  air_date: string;
+  episodes: Episode[];
+  name: string;
+  overview: string;
+  id: number;
+  poster_path: string | null;
+  season_number: number;
+}
+
 export interface TVShowDetails extends Omit<TVShow, 'genre_ids'> {
   genres: Genre[];
   episode_run_time: number[];

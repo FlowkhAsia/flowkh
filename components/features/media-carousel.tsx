@@ -4,6 +4,7 @@ import * as React from 'react';
 import { MovieCard } from '@/components/ui/movie-card';
 import { Media } from '@/types/tmdb';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface MediaCarouselProps {
   title: string;
@@ -12,6 +13,9 @@ interface MediaCarouselProps {
 
 export function MediaCarousel({ title, items }: MediaCarouselProps) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [isDown, setIsDown] = React.useState(false);
+  const [startX, setStartX] = React.useState(0);
+  const [scrollLeftPos, setScrollLeftPos] = React.useState(0);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -22,6 +26,29 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
         
       scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollRef.current) return;
+    setIsDown(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeftPos(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDown || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX); // scroll distance
+    scrollRef.current.scrollLeft = scrollLeftPos - walk;
   };
 
   if (!items || items.length === 0) return null;
@@ -36,14 +63,22 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
       <div className="relative group/carousel">
         <button 
           onClick={() => scroll('left')}
-          className="absolute left-0 top-8 bottom-12 z-20 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-r-xl"
+          className="absolute left-0 top-8 bottom-12 z-20 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-r-xl pointer-events-auto"
         >
           <ChevronLeft className="w-8 h-8" />
         </button>
 
         <div 
           ref={scrollRef}
-          className="flex whitespace-nowrap overflow-x-scroll scroll-smooth scrollbar-hide gap-4 px-4 sm:px-8 lg:px-12 pb-8 pt-4 w-full" 
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          className={cn(
+            "flex whitespace-nowrap overflow-x-scroll scrollbar-hide gap-4 px-4 sm:px-8 lg:px-12 pb-8 pt-4 w-full select-none transition-cursor",
+            isDown ? "cursor-grabbing" : "cursor-grab",
+            !isDown && "scroll-smooth"
+          )} 
         >
           {items.map((item) => (
             <div key={item.id} className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[200px] relative whitespace-normal">
@@ -54,7 +89,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
 
         <button 
           onClick={() => scroll('right')}
-          className="absolute right-0 top-4 bottom-12 z-10 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-l-xl"
+          className="absolute right-0 top-4 bottom-12 z-10 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-l-xl pointer-events-auto"
         >
           <ChevronRight className="w-8 h-8" />
         </button>

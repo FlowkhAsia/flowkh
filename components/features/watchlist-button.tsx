@@ -6,7 +6,7 @@ import { Heart, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 
-export function WatchlistButton({ media, className }: { media: Media, className?: string }) {
+export function WatchlistButton({ media, className, iconOnly }: { media: Media, className?: string, iconOnly?: boolean }) {
   const { addItem, removeItem, isInWatchlist } = useWatchlist();
   const [mounted, setMounted] = useState(false);
 
@@ -16,9 +16,14 @@ export function WatchlistButton({ media, className }: { media: Media, className?
   }, []);
 
   if (!mounted) return (
-     <button className={cn("flex flex-col items-center gap-1 opacity-50", className)}>
-       <Heart className="w-6 h-6" />
-       <span className="text-xs">Save</span>
+     <button className={cn(
+       iconOnly 
+        ? "w-10 h-10 rounded-full bg-zinc-800/60 border border-zinc-700/50 flex items-center justify-center text-white opacity-50"
+        : "flex flex-col items-center gap-1 opacity-50", 
+       className
+     )}>
+       <Heart className={iconOnly ? "w-5 h-5" : "w-6 h-6"} />
+       {!iconOnly && <span className="text-xs">Save</span>}
      </button>
   );
 
@@ -31,6 +36,22 @@ export function WatchlistButton({ media, className }: { media: Media, className?
       addItem(media);
     }
   };
+
+  if (iconOnly) {
+    return (
+      <button 
+        onClick={toggleList}
+        title={inList ? 'Remove from Watchlist' : 'Add to Watchlist'}
+        className={cn(
+          "w-10 h-10 rounded-full bg-zinc-800/60 border border-zinc-700/50 flex items-center justify-center text-white hover:bg-zinc-700 transition-colors",
+          inList && "bg-red-500/20 border-red-500 text-red-500 hover:bg-red-500/30",
+          className
+        )}
+      >
+        {inList ? <Check className="w-5 h-5" /> : <Heart className="w-5 h-5" />}
+      </button>
+    );
+  }
 
   return (
     <button 

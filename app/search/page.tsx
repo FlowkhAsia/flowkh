@@ -82,7 +82,7 @@ function SearchContent() {
             Results for &quot;{debouncedQuery}&quot;
             <span className="text-sm font-normal text-neutral-500 bg-neutral-900 px-2 py-0.5 rounded-full">{results.length}</span>
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 md:gap-6">
             {results.map((media) => (
               <MovieCard key={media.id} media={media} />
             ))}

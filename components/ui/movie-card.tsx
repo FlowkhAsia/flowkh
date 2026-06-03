@@ -3,11 +3,10 @@
 import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Play, TrendingUp, Calendar, Star, Info } from 'lucide-react';
+import { Play, Star } from 'lucide-react';
 import { Media, Movie, TVShow } from '@/types/tmdb';
 import { getImageUrl } from '@/lib/tmdb';
 import { cn } from '@/lib/utils';
-import { motion } from 'motion/react';
 
 interface MovieCardProps {
   media: Media;
@@ -24,12 +23,8 @@ export function MovieCard({ media, className, priority = false }: MovieCardProps
   const linkPath = `/${isMovie ? 'movie' : 'tv'}/${media.id}`;
 
   return (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className={cn('group relative flex flex-col gap-2 rounded-xl overflow-hidden', className)}
-    >
-      <Link href={linkPath} className="block relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-neutral-800">
+    <div className={cn('group relative w-full rounded-xl overflow-hidden bg-neutral-900', className)}>
+      <Link href={linkPath} className="block relative aspect-[2/3] w-full h-full">
         <Image
           src={getImageUrl(media.poster_path, 'w500')}
           alt={title}
@@ -39,27 +34,31 @@ export function MovieCard({ media, className, priority = false }: MovieCardProps
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col justify-end p-4">
-           <div className="flex items-center gap-2 mb-2">
-              <span className="flex items-center gap-1 text-xs font-semibold bg-white/20 backdrop-blur-md px-2 py-1 rounded-md text-white">
-                <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
-                {media.vote_average ? media.vote_average.toFixed(1) : 'NR'}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col justify-end p-4">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white/20 backdrop-blur-md p-4 rounded-full transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+              <Play className="w-6 h-6 text-white fill-white ml-0.5" />
+            </div>
+          </div>
+          <div className="relative z-10 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-75">
+            <h3 className="font-bold text-white text-sm md:text-base line-clamp-1">{title}</h3>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs font-medium text-neutral-300">
+                {releaseDate ? new Date(releaseDate).getFullYear() : ''}
               </span>
-           </div>
-           <div className="flex items-center gap-2 group/btn cursor-pointer bg-white text-black px-3 py-1.5 rounded-full font-medium text-sm transition-colors hover:bg-neutral-200">
-             <Play className="w-4 h-4 fill-black" />
-             View Details
-           </div>
+              {'vote_average' in media && media.vote_average > 0 && (
+                <>
+                  <span className="text-neutral-500 text-xs">&bull;</span>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-3 h-3 text-red-500 fill-red-500" />
+                    <span className="text-xs font-medium text-white">{media.vote_average.toFixed(1)}</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </Link>
-      <div className="px-1">
-        <h3 className="font-medium text-sm md:text-base text-neutral-100 line-clamp-1 group-hover:text-white transition-colors">
-          {title}
-        </h3>
-        <p className="text-xs text-neutral-400 mt-0.5">
-          {releaseDate ? new Date(releaseDate).getFullYear() : 'Unknown Year'}
-        </p>
-      </div>
-    </motion.div>
+    </div>
   );
 }
