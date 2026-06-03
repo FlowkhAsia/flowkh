@@ -83,6 +83,22 @@ export interface Crew {
   job: string;
 }
 
+export interface TMDBImage {
+  aspect_ratio: number;
+  height: number;
+  iso_639_1: string | null;
+  file_path: string;
+  vote_average: number;
+  vote_count: number;
+  width: number;
+}
+
+export interface TMDBImages {
+  backdrops: TMDBImage[];
+  logos: TMDBImage[];
+  posters: TMDBImage[];
+}
+
 export interface Credits {
   id: number;
   cast: Cast[];

@@ -1,10 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { fetchTMDB, getImageUrl } from '@/lib/tmdb';
-import { MovieDetails, Credits, TMDBResponse, Movie, Video } from '@/types/tmdb';
+import { MovieDetails, Credits, TMDBResponse, Movie, Video, TMDBImages } from '@/types/tmdb';
 import { Play, Star, Calendar, Clock, Loader2, List } from 'lucide-react';
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
+import { BackButton } from '@/components/features/back-button';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -31,19 +32,22 @@ export default async function MoviePage(props: {
      return <div className="pt-32 text-center text-red-400">API Key missing. Cannot fetch TMDB.</div>
   }
 
-  const [movie, credits, similar, videos] = await Promise.all([
+  const [movie, credits, similar, videos, images] = await Promise.all([
     fetchTMDB<MovieDetails>(`/movie/${id}`),
     fetchTMDB<Credits>(`/movie/${id}/credits`),
     fetchTMDB<TMDBResponse<Movie>>(`/movie/${id}/similar`),
-    fetchTMDB<{results: Video[]}>(`/movie/${id}/videos`)
+    fetchTMDB<{results: Video[]}>(`/movie/${id}/videos`),
+    fetchTMDB<TMDBImages>(`/movie/${id}/images`, { include_image_language: 'en,null' }).catch(() => ({} as TMDBImages))
   ]);
 
   const trailer = videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || videos.results[0];
   const mainCast = credits.cast.slice(0, 10);
   const director = credits.crew.find(c => c.job === 'Director');
+  const logo = images.logos?.length > 0 ? images.logos[0] : null;
 
   return (
     <div className="relative w-full min-h-screen bg-zinc-950 pb-20">
+      <BackButton />
       {/* Hero Banner with Player or Backdrop */}
       {isPlaying ? (
         <div className="w-full pt-16 bg-black z-20 relative">
@@ -70,9 +74,20 @@ export default async function MoviePage(props: {
            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-0" />
            
            <div className="absolute bottom-12 left-4 md:left-16 z-20 max-w-2xl space-y-4">
-              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white mb-4">
-                 {movie.title}
-              </h1>
+              {logo ? (
+                 <div className="relative w-48 md:w-80 h-24 md:h-32 mb-4">
+                    <Image 
+                       src={getImageUrl(logo.file_path, 'w500')} 
+                       alt={movie.title}
+                       fill
+                       className="object-contain object-left-bottom drop-shadow-2xl"
+                    />
+                 </div>
+              ) : (
+                 <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white mb-4">
+                    {movie.title}
+                 </h1>
+              )}
               
               <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold text-zinc-400 mb-4">
                  {movie.vote_average > 0 && (

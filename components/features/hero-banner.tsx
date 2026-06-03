@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Play, Info, Star } from 'lucide-react';
-import { Movie } from '@/types/tmdb';
+import { Movie, TMDBImage } from '@/types/tmdb';
 import { getImageUrl } from '@/lib/tmdb';
 
-export function HeroBanner({ movie }: { movie: Movie }) {
+export function HeroBanner({ movie, logo }: { movie: Movie, logo?: TMDBImage | null }) {
   if (!movie) return null;
 
   return (
@@ -23,9 +23,20 @@ export function HeroBanner({ movie }: { movie: Movie }) {
       </div>
 
       <div className="absolute bottom-[15%] left-4 md:left-16 max-w-xl z-20 space-y-4">
-        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white mb-4">
-          {movie.title}
-        </h1>
+        {logo ? (
+           <div className="relative w-48 md:w-80 h-24 md:h-32 mb-4">
+              <Image 
+                 src={getImageUrl(logo.file_path, 'w500')} 
+                 alt={movie.title}
+                 fill
+                 className="object-contain object-left-bottom drop-shadow-2xl"
+              />
+           </div>
+        ) : (
+           <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white mb-4">
+             {movie.title}
+           </h1>
+        )}
         
         <div className="flex items-center gap-3 text-xs md:text-sm font-medium text-zinc-400 mb-4">
           <div className="flex items-center gap-1">

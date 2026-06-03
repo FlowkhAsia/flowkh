@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { fetchTMDB } from '@/lib/tmdb';
-import { TMDBResponse, Movie, TVShow } from '@/types/tmdb';
+import { TMDBResponse, Movie, TVShow, TMDBImages, TMDBImage } from '@/types/tmdb';
 import { HeroBanner } from '@/components/features/hero-banner';
 import { MediaCarousel } from '@/components/features/media-carousel';
 
@@ -11,6 +11,7 @@ export default async function Home() {
   let topRatedMovies: Movie[] = [];
   let popularTvShows: TVShow[] = [];
   let upcomingMovies: Movie[] = [];
+  let heroLogo: TMDBImage | null = null;
   let errorMsg = '';
 
   try {
@@ -25,6 +26,13 @@ export default async function Home() {
     topRatedMovies = topRatedRes.results;
     popularTvShows = popularTvRes.results;
     upcomingMovies = upcomingRes.results;
+
+    if (trendingMovies?.length > 0) {
+       const images = await fetchTMDB<TMDBImages>(`/movie/${trendingMovies[0].id}/images`, { include_image_language: 'en,null' }).catch(() => null);
+       if (images && images.logos?.length > 0) {
+          heroLogo = images.logos[0];
+       }
+    }
   } catch (error) {
     if (error instanceof Error) {
       errorMsg = error.message;
@@ -58,7 +66,7 @@ export default async function Home() {
 
   return (
     <div className="pb-20">
-      <HeroBanner movie={heroMovie} />
+      <HeroBanner movie={heroMovie} logo={heroLogo} />
       <div className="-mt-12 md:-mt-20 relative z-10 space-y-8">
         <MediaCarousel title="Trending Movies" items={trendingMovies.slice(1, 11)} />
         <MediaCarousel title="Popular TV Shows" items={popularTvShows.map(t => ({...t, media_type: 'tv'}))} />
