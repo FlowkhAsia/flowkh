@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { fetchTMDB, getImageUrl } from '@/lib/tmdb';
 import { MovieDetails, Credits, TMDBResponse, Movie, Video, TMDBImages } from '@/types/tmdb';
-import { Play, Star, Calendar, Clock, Loader2, List } from 'lucide-react';
+import { Play, Star, Calendar, Clock, Loader2, List, ChevronLeft } from 'lucide-react';
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
@@ -48,20 +48,25 @@ export default async function MoviePage(props: {
   return (
     <div className="relative w-full min-h-screen bg-zinc-950 pb-20">
       <BackButton />
-      {/* Hero Banner with Player or Backdrop */}
-      {isPlaying ? (
-        <div className="w-full pt-16 bg-black z-20 relative">
-          <div className="w-full aspect-video max-w-7xl mx-auto">
-            <iframe
-              src={`https://vidkh.site/movie/${movie.id}?autoPlay=true`}
-              allowFullScreen
-              allow="autoplay; encrypted-media"
-              className="w-full h-full border-0"
-            />
-          </div>
+      {isPlaying && (
+        <div className="fixed inset-0 bg-black z-[100]">
+          <Link 
+            href={`/movie/${id}`}
+            className="absolute top-6 left-6 md:top-10 md:left-12 z-[110] w-11 h-11 rounded-full flex items-center justify-center bg-zinc-900/40 backdrop-blur-md border border-zinc-800/40 text-white hover:bg-zinc-800/60 hover:scale-105 transition-all group"
+          >
+            <ChevronLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
+          </Link>
+          <iframe
+            src={`https://vidkh.site/movie/${movie.id}?autoPlay=true`}
+            allowFullScreen
+            allow="autoplay; encrypted-media"
+            className="w-full h-full border-0 absolute inset-0"
+          />
         </div>
-      ) : (
-        <div className="relative h-[70vh] md:h-[80vh] w-full">
+      )}
+      
+      {/* Hero Banner Backdrop */}
+      <div className="relative h-[70vh] md:h-[80vh] w-full">
            <Image
               src={getImageUrl(movie.backdrop_path, 'original')}
               alt={movie.title}
@@ -133,12 +138,10 @@ export default async function MoviePage(props: {
               </p>
               
               <div className="flex items-center gap-3 pt-2">
-                {!isPlaying && (
-                  <Link href={`/movie/${id}?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
-                    <Play className="w-5 h-5 fill-black" />
-                    Play
-                  </Link>
-                )}
+                <Link href={`/movie/${id}?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
+                  <Play className="w-5 h-5 fill-black" />
+                  Play
+                </Link>
                 <WatchlistButton media={{...movie, media_type: 'movie', genre_ids: movie.genres?.map(g => g.id) || []}} className="" iconOnly />
                 
                 {similar.results.length > 0 && (
@@ -150,9 +153,7 @@ export default async function MoviePage(props: {
               </div>
            </div>
         </div>
-      )}
-
-      <div className={`w-full px-4 md:px-16 py-8 space-y-12 ${isPlaying ? 'mt-8' : 'mt-4'}`}>
+      <div className="w-full px-4 md:px-16 py-8 space-y-12 mt-4">
          <div className="max-w-screen-xl mx-auto space-y-12">
             <div>
               <h2 className="flex items-center gap-2 text-xl font-bold text-white mb-6">
