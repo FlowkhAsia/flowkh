@@ -6,7 +6,7 @@ import { Play, Star, Calendar, Loader2, ChevronDown, Search, List, ChevronLeft }
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
-import { PlayerBackButton } from '@/components/features/player-back-button';
+import { PlayerContainer } from '@/components/features/player-container';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -49,17 +49,7 @@ export default async function TVShowPage(props: {
   const logo = images.logos?.length > 0 ? images.logos[0] : null;
 
   if (isPlaying) {
-    return (
-      <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
-        <PlayerBackButton href={`/tv/${id}?season=${seasonNum}`} />
-        <iframe
-          src={`https://vidkh.site/tv/${show.id}/${seasonNum}/${episodeNum}?autoPlay=true`}
-          allowFullScreen
-          allow="autoplay; encrypted-media"
-          className="w-full h-full border-0 absolute inset-0"
-        />
-      </div>
-    );
+    return <PlayerContainer src={`https://vidkh.site/tv/${show.id}/${seasonNum}/${episodeNum}?autoPlay=true`} />;
   }
 
   return (
