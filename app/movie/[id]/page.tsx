@@ -6,7 +6,7 @@ import { Play, Star, Calendar, Clock, Loader2, List, ChevronLeft } from 'lucide-
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
-import { PlayerContainer } from '@/components/features/player-container';
+import { PlayerBackButton } from '@/components/features/player-back-button';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -47,7 +47,17 @@ export default async function MoviePage(props: {
   const logo = images.logos?.length > 0 ? images.logos[0] : null;
 
   if (isPlaying) {
-    return <PlayerContainer src={`https://vidkh.site/movie/${movie.id}?autoPlay=true`} />;
+    return (
+      <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
+        <PlayerBackButton href={`/movie/${id}`} />
+        <iframe
+          src={`https://vidkh.site/movie/${movie.id}?autoPlay=true`}
+          allowFullScreen
+          allow="autoplay; encrypted-media"
+          className="w-full h-full border-0 absolute inset-0"
+        />
+      </div>
+    );
   }
 
   return (
@@ -115,10 +125,10 @@ export default async function MoviePage(props: {
                    </>
                  )}
                  {director && (
-                   <>
+                   <span className="hidden">
                      <span>&bull;</span>
-                     <span className="text-zinc-300">Dir. {director.name}</span>
-                   </>
+                     <span>Dir. {director.name}</span>
+                   </span>
                  )}
               </div>
               

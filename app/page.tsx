@@ -11,7 +11,7 @@ export default async function Home() {
   let topRatedMovies: Movie[] = [];
   let popularTvShows: TVShow[] = [];
   let upcomingMovies: Movie[] = [];
-  let heroLogo: TMDBImage | null = null;
+  let heroLogos: Record<number, TMDBImage> = {};
   let errorMsg = '';
 
   try {
@@ -28,10 +28,15 @@ export default async function Home() {
     upcomingMovies = upcomingRes.results;
 
     if (trendingMovies?.length > 0) {
-       const images = await fetchTMDB<TMDBImages>(`/movie/${trendingMovies[0].id}/images`, { include_image_language: 'en,null' }).catch(() => null);
-       if (images && images.logos?.length > 0) {
-          heroLogo = images.logos[0];
-       }
+      const top5 = trendingMovies.slice(0, 5);
+      const imagesPromises = top5.map(m => fetchTMDB<TMDBImages>(`/movie/${m.id}/images`, { include_image_language: 'en,null' }).catch(() => null));
+      const imagesResults = await Promise.all(imagesPromises);
+      
+      imagesResults.forEach((images, index) => {
+        if (images && images.logos?.length > 0) {
+          heroLogos[top5[index].id] = images.logos[0];
+        }
+      });
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -62,13 +67,11 @@ export default async function Home() {
     );
   }
 
-  const heroMovie = trendingMovies[0];
-
   return (
     <div className="pb-20">
-      <HeroBanner movie={heroMovie} logo={heroLogo} />
+      <HeroBanner movies={trendingMovies.slice(0, 5)} logos={heroLogos} />
       <div className="-mt-12 md:-mt-20 relative z-10 space-y-8">
-        <MediaCarousel title="Trending Movies" items={trendingMovies.slice(1, 11)} />
+        <MediaCarousel title="Trending Movies" items={trendingMovies.slice(5, 15)} />
         <MediaCarousel title="Popular TV Shows" items={popularTvShows.map(t => ({...t, media_type: 'tv'}))} />
         <MediaCarousel title="Top Rated Movies" items={topRatedMovies} />
         <MediaCarousel title="Upcoming Movies" items={upcomingMovies} />
