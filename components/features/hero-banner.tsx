@@ -40,21 +40,15 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
           transition={{ duration: 1 }}
           className="absolute inset-0"
         >
-          <div className="absolute inset-0 bg-neutral-900">
-            {movie.backdrop_path ? (
-              <Image
-                src={getImageUrl(movie.backdrop_path, 'original')}
-                alt={movie.title || 'Hero Background'}
-                fill
-                priority
-                className="object-cover object-center"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-950 flex flex-col items-center justify-center p-4 text-center">
-                 <span className="text-neutral-500 font-semibold text-2xl md:text-5xl line-clamp-2 opacity-50">{movie.title}</span>
-              </div>
-            )}
+          <div className="absolute inset-0">
+            <Image
+              src={getImageUrl(movie.backdrop_path, 'original')}
+              alt={movie.title || 'Hero Background'}
+              fill
+              priority
+              className="object-cover object-center"
+              referrerPolicy="no-referrer"
+            />
             <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/60 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/30 to-transparent" />
           </div>
@@ -67,7 +61,6 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
                      alt={movie.title}
                      fill
                      className="object-contain object-left-bottom drop-shadow-2xl"
-                     referrerPolicy="no-referrer"
                   />
                </div>
             ) : (

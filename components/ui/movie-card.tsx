@@ -24,23 +24,16 @@ export function MovieCard({ media, className, priority = false }: MovieCardProps
 
   return (
     <div className={cn('group relative w-full rounded-xl overflow-hidden bg-neutral-900', className)}>
-      <Link href={linkPath} className="block relative aspect-[2/3] w-full h-full bg-neutral-900">
-        {media.poster_path ? (
-          <Image
-            src={getImageUrl(media.poster_path, 'w500')}
-            alt={title}
-            fill
-            priority={priority}
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-            referrerPolicy="no-referrer"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-950 flex flex-col items-center justify-center p-4 text-center border border-neutral-800">
-            <span className="text-neutral-500 font-semibold text-sm line-clamp-3">{title}</span>
-            <span className="text-neutral-600 text-xs mt-2 text-center uppercase tracking-widest font-bold">No Poster</span>
-          </div>
-        )}
+      <Link href={linkPath} className="block relative aspect-[2/3] w-full h-full">
+        <Image
+          src={getImageUrl(media.poster_path, 'w500')}
+          alt={title}
+          fill
+          priority={priority}
+          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          referrerPolicy="no-referrer"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col justify-end p-4">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="bg-white/20 backdrop-blur-md p-4 rounded-full transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
