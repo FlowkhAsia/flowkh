@@ -65,15 +65,21 @@ export default async function MoviePage(props: {
       <BackButton />
       
       {/* Hero Banner Backdrop */}
-      <div className="relative h-[70vh] md:h-[80vh] w-full">
-           <Image
-              src={getImageUrl(movie.backdrop_path, 'original')}
-              alt={movie.title}
-              fill
-              priority
-              className="object-cover object-center opacity-70"
-              referrerPolicy="no-referrer"
-            />
+      <div className="relative h-[70vh] md:h-[80vh] w-full bg-neutral-900">
+           {movie.backdrop_path ? (
+             <Image
+                src={getImageUrl(movie.backdrop_path, 'original')}
+                alt={movie.title}
+                fill
+                priority
+                className="object-cover object-center opacity-70"
+                referrerPolicy="no-referrer"
+              />
+           ) : (
+             <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-950 flex flex-col items-center justify-center p-4 text-center">
+                 <span className="text-neutral-500 font-semibold text-2xl md:text-5xl line-clamp-2 opacity-50">{movie.title}</span>
+             </div>
+           )}
            <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/60 to-transparent z-0" />
            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-0" />
            
@@ -85,6 +91,7 @@ export default async function MoviePage(props: {
                        alt={movie.title}
                        fill
                        className="object-contain object-left-bottom drop-shadow-2xl"
+                       referrerPolicy="no-referrer"
                     />
                  </div>
               ) : (
