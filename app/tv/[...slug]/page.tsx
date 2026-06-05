@@ -190,7 +190,7 @@ export default async function TVShowPage(props: {
 
                 {/* Episodes List */}
                 {seasonData?.episodes && (
-                  <div className="space-y-4 max-h-[800px] overflow-y-auto pr-4 scrollbar-hide">
+                  <div className="space-y-4 max-h-[800px] overflow-y-auto pr-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-zinc-700">
                     {seasonData.episodes.map((ep: any) => {
                       const isCurrent = isPlaying && seasonNum === ep.season_number.toString() && episodeNum === ep.episode_number.toString();
                       return (
