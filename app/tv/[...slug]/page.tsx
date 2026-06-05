@@ -53,7 +53,7 @@ export default async function TVShowPage(props: {
   if (isPlaying) {
     return (
       <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
-        <PlayerBackButton href={`/tv/${id}?season=${seasonNum}`} />
+        <PlayerBackButton href={`/tv/${id}/${seasonNum}`} />
         <iframe
           src={`https://vidkh.site/tv/${show.id}/${seasonNum}/${episodeNum}?autoPlay=true`}
           allowFullScreen
@@ -176,7 +176,7 @@ export default async function TVShowPage(props: {
                              {show.seasons?.filter(s => s.season_number > 0).map(s => (
                                 <Link 
                                    key={s.id} 
-                                   href={`/tv/${show.id}?season=${s.season_number}#episodes`}
+                                   href={`/tv/${show.id}/${s.season_number}#episodes`}
                                    className={`block px-4 py-2 text-sm hover:bg-zinc-800 ${seasonNum === s.season_number.toString() ? 'text-white bg-zinc-800 font-medium' : 'text-zinc-400'}`}
                                 >
                                    {s.name}
