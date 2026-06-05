@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { MovieCard } from '@/components/ui/movie-card';
 import { Media } from '@/types/tmdb';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Icons } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface MediaCarouselProps {
@@ -65,7 +65,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
           onClick={() => scroll('left')}
           className="absolute left-0 top-8 bottom-12 z-20 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-r-xl pointer-events-auto"
         >
-          <ChevronLeft className="w-8 h-8" />
+          <Icons.chevronLeft className="w-8 h-8" />
         </button>
 
         <div 
@@ -91,7 +91,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
           onClick={() => scroll('right')}
           className="absolute right-0 top-4 bottom-12 z-10 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-l-xl pointer-events-auto"
         >
-          <ChevronRight className="w-8 h-8" />
+          <Icons.chevronRight className="w-8 h-8" />
         </button>
       </div>
     </section>

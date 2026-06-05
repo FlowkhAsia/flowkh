@@ -2,7 +2,7 @@
 
 import { useWatchlist } from '@/hooks/use-watchlist';
 import { MovieCard } from '@/components/ui/movie-card';
-import { Heart, HeartCrack } from 'lucide-react';
+import { Icons } from '@/components/ui/icons';
 import { useEffect, useState } from 'react';
 
 export default function WatchlistPage() {
@@ -21,14 +21,14 @@ export default function WatchlistPage() {
   return (
     <div className="pt-24 pb-20 px-4 sm:px-8 lg:px-12 w-full min-h-screen">
       <div className="flex items-center gap-3 mb-8">
-        <Heart className="w-8 h-8 text-red-500 fill-red-500" />
+        <Icons.heart className="w-8 h-8 text-red-500 fill-red-500" />
         <h1 className="text-3xl font-bold tracking-tight">Your Watchlist</h1>
       </div>
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-center border border-dashed border-neutral-800 rounded-2xl bg-neutral-900/30 p-12">
           <div className="bg-neutral-900 p-4 rounded-full mb-4">
-             <HeartCrack className="w-8 h-8 text-neutral-500" />
+             <Icons.heartCrack className="w-8 h-8 text-neutral-500" />
           </div>
           <h2 className="text-xl font-semibold mb-2">Your watchlist is empty</h2>
           <p className="text-neutral-500 max-w-sm">

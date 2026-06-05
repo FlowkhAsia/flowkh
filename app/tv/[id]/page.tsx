@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { fetchTMDB, getImageUrl } from '@/lib/tmdb';
 import { TVShowDetails, Credits, TMDBResponse, TVShow, Video, TMDBImages } from '@/types/tmdb';
-import { Play, Star, Calendar, Loader2, ChevronDown, Search, List, ChevronLeft } from 'lucide-react';
+import { Icons } from '@/components/ui/icons';
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
@@ -98,7 +98,7 @@ export default async function TVShowPage(props: {
               <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold text-zinc-400 mb-4">
                  {show.vote_average > 0 && (
                    <div className="flex items-center gap-1">
-                     <Star className="w-4 h-4 text-red-500 fill-red-500" />
+                     <Icons.star className="w-4 h-4 text-red-500 fill-red-500" />
                      <span className="text-white">{show.vote_average.toFixed(1)}</span>
                    </div>
                  )}
@@ -130,13 +130,13 @@ export default async function TVShowPage(props: {
               
               <div className="flex items-center gap-3 pt-2">
                 <Link href={`/tv/${id}?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
-                  <Play className="w-5 h-5 fill-black" />
+                  <Icons.play className="w-5 h-5 fill-black" />
                   Play
                 </Link>
                 <WatchlistButton media={{...show, media_type: 'tv', genre_ids: show.genres?.map(g => g.id) || []}} className="" iconOnly />
                 
                 <a href="#episodes" className="bg-zinc-800/60 border border-zinc-700/50 text-white font-medium text-sm px-5 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-700 transition">
-                   <List className="w-4 h-4" />
+                   <Icons.list className="w-4 h-4" />
                    Episodes
                 </a>
               </div>
@@ -155,7 +155,7 @@ export default async function TVShowPage(props: {
                   <div className="flex flex-wrap items-center gap-4">
                      {/* Search Input */}
                      <div className="relative flex items-center bg-zinc-900/60 border border-zinc-800 px-4 py-2 rounded-lg w-full md:w-64 transition-colors focus-within:border-zinc-500">
-                        <Search className="w-4 h-4 text-zinc-500 absolute left-3" />
+                        <Icons.search className="w-4 h-4 text-zinc-500 absolute left-3" />
                         <input 
                            type="text" 
                            placeholder="Search episodes..." 
@@ -167,7 +167,7 @@ export default async function TVShowPage(props: {
                      <div className="relative group/dropdown">
                        <button className="bg-zinc-900/60 border border-zinc-800 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-zinc-800 transition">
                           Season {seasonNum}
-                          <ChevronDown className="w-4 h-4 text-zinc-400" />
+                          <Icons.chevronDown className="w-4 h-4 text-zinc-400" />
                        </button>
                        <div className="absolute right-0 top-full mt-2 w-48 bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-50 overflow-hidden">
                           <div className="max-h-60 overflow-y-auto">
@@ -212,7 +212,7 @@ export default async function TVShowPage(props: {
                              <div className="w-full h-full flex items-center justify-center text-neutral-600">No Image</div>
                            )}
                            <div className="absolute inset-0 bg-black/20 group-hover/ep:bg-black/40 transition-colors flex items-center justify-center">
-                             <Play className="w-8 h-8 text-white fill-white opacity-0 group-hover/ep:opacity-100 transition-opacity drop-shadow-lg" />
+                             <Icons.play className="w-8 h-8 text-white fill-white opacity-0 group-hover/ep:opacity-100 transition-opacity drop-shadow-lg" />
                            </div>
                            {ep.runtime && (
                               <div className="absolute bottom-2 right-2 bg-black/80 px-1.5 py-0.5 rounded text-xs text-white font-medium">

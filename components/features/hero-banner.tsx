@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Play, Info, Star } from 'lucide-react';
+import { Icons } from '@/components/ui/icons';
 import { Movie, TMDBImage } from '@/types/tmdb';
 import { getImageUrl } from '@/lib/tmdb';
 import { motion, AnimatePresence } from 'motion/react';
@@ -71,7 +71,7 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
             
             <div className="flex items-center gap-3 text-xs md:text-sm font-medium text-zinc-400 mb-4">
               <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-red-500 fill-red-500" />
+                <Icons.star className="w-4 h-4 text-red-500 fill-red-500" />
                 <span className="text-white">{movie.vote_average?.toFixed(1)}</span>
               </div>
               <span>&bull;</span>
@@ -87,14 +87,14 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
                 href={`/movie/${movie.id}?play=true`}
                 className="bg-white text-black px-6 md:px-8 py-2.5 rounded-full font-bold text-sm md:text-base flex items-center gap-2 hover:bg-zinc-200 transition"
               >
-                <Play className="w-5 h-5 fill-black" />
+                <Icons.play className="w-5 h-5 fill-black" />
                 Play
               </Link>
               <Link 
                 href={`/movie/${movie.id}`}
                 className="bg-zinc-800/60 backdrop-blur-sm text-white border border-zinc-700/50 px-6 md:px-8 py-2.5 rounded-full font-semibold text-sm md:text-base flex items-center gap-2 hover:bg-zinc-700 transition"
               >
-                <Info className="w-5 h-5" />
+                <Icons.info className="w-5 h-5" />
                 See More
               </Link>
             </div>

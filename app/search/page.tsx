@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search as SearchIcon, Loader2 } from 'lucide-react';
+import { Icons } from '@/components/ui/icons';
 import { Media, TMDBResponse } from '@/types/tmdb';
 import { MovieCard } from '@/components/ui/movie-card';
 import { useDebounce } from '@/hooks/use-debounce';
@@ -54,7 +54,7 @@ function SearchContent() {
       <div className="mb-8 max-w-2xl mx-auto">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <SearchIcon className="h-5 w-5 text-neutral-400" />
+            <Icons.search className="h-5 w-5 text-neutral-400" />
           </div>
           <input
             type="text"
@@ -65,7 +65,7 @@ function SearchContent() {
           />
           {isLoading && (
             <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-              <Loader2 className="h-5 w-5 text-neutral-400 animate-spin" />
+              <Icons.spinner className="h-5 w-5 text-neutral-400 animate-spin" />
             </div>
           )}
         </div>
@@ -73,7 +73,7 @@ function SearchContent() {
 
       {query.trim() === '' ? (
         <div className="text-center text-neutral-500 mt-20">
-          <SearchIcon className="h-12 w-12 mx-auto mb-4 opacity-20" />
+          <Icons.search className="h-12 w-12 mx-auto mb-4 opacity-20" />
           <p className="text-lg">Type something to search...</p>
         </div>
       ) : results.length > 0 ? (
@@ -100,7 +100,7 @@ function SearchContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="pt-32 text-center text-neutral-500"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></div>}>
+    <Suspense fallback={<div className="pt-32 text-center text-neutral-500"><Icons.spinner className="w-8 h-8 animate-spin mx-auto" /></div>}>
       <SearchContent />
     </Suspense>
   );

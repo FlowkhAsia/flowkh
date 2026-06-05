@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { fetchTMDB, getImageUrl } from '@/lib/tmdb';
 import { MovieDetails, Credits, TMDBResponse, Movie, Video, TMDBImages } from '@/types/tmdb';
-import { Play, Star, Calendar, Clock, Loader2, List, ChevronLeft } from 'lucide-react';
+import { Icons } from '@/components/ui/icons';
 import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
@@ -96,7 +96,7 @@ export default async function MoviePage(props: {
               <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold text-zinc-400 mb-4">
                  {movie.vote_average > 0 && (
                    <div className="flex items-center gap-1">
-                     <Star className="w-4 h-4 text-red-500 fill-red-500" />
+                     <Icons.star className="w-4 h-4 text-red-500 fill-red-500" />
                      <span className="text-white">{movie.vote_average.toFixed(1)}</span>
                    </div>
                  )}
@@ -138,14 +138,14 @@ export default async function MoviePage(props: {
               
               <div className="flex items-center gap-3 pt-2">
                 <Link href={`/movie/${id}?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
-                  <Play className="w-5 h-5 fill-black" />
+                  <Icons.play className="w-5 h-5 fill-black" />
                   Play
                 </Link>
                 <WatchlistButton media={{...movie, media_type: 'movie', genre_ids: movie.genres?.map(g => g.id) || []}} className="" iconOnly />
                 
                 {similar.results.length > 0 && (
                   <a href="#similar" className="bg-zinc-800/60 border border-zinc-700/50 text-white font-medium text-sm px-5 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-700 transition">
-                     <List className="w-4 h-4" />
+                     <Icons.list className="w-4 h-4" />
                      Similars
                   </a>
                 )}

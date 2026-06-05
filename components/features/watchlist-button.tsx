@@ -2,7 +2,7 @@
 
 import { useWatchlist } from '@/hooks/use-watchlist';
 import { Media } from '@/types/tmdb';
-import { Heart, Check } from 'lucide-react';
+import { Icons } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 
@@ -22,7 +22,7 @@ export function WatchlistButton({ media, className, iconOnly }: { media: Media, 
         : "flex flex-col items-center gap-1 opacity-50", 
        className
      )}>
-       <Heart className={iconOnly ? "w-5 h-5" : "w-6 h-6"} />
+       <Icons.heart className={iconOnly ? "w-5 h-5" : "w-6 h-6"} />
        {!iconOnly && <span className="text-xs">Save</span>}
      </button>
   );
@@ -48,7 +48,7 @@ export function WatchlistButton({ media, className, iconOnly }: { media: Media, 
           className
         )}
       >
-        {inList ? <Check className="w-5 h-5" /> : <Heart className="w-5 h-5" />}
+        {inList ? <Icons.check className="w-5 h-5" /> : <Icons.heart className="w-5 h-5" />}
       </button>
     );
   }
@@ -67,7 +67,7 @@ export function WatchlistButton({ media, className, iconOnly }: { media: Media, 
           ? "bg-red-500 border-red-500 text-white" 
           : "bg-black/40 border-neutral-600 text-white group-hover:border-white hover:bg-neutral-800"
       )}>
-        {inList ? <Check className="w-5 h-5" /> : <Heart className="w-5 h-5" />}
+        {inList ? <Icons.check className="w-5 h-5" /> : <Icons.heart className="w-5 h-5" />}
       </div>
       <span className="text-sm font-medium text-neutral-300 group-hover:text-white transition-colors">
         {inList ? 'Saved' : 'Watchlist'}
