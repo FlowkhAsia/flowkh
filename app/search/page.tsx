@@ -21,7 +21,7 @@ function SearchContent() {
     if (debouncedQuery.trim() === '') {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([]);
-      router.replace('/search', { scroll: false });
+      router.replace('/search');
       return;
     }
 
@@ -35,9 +35,9 @@ function SearchContent() {
           setResults(data.results.filter(r => (r as any).media_type !== 'person' && r.poster_path));
           
           // Update URL without refresh
-          const params = new URLSearchParams(window.location.search);
+          const params = new URLSearchParams(searchParams);
           params.set('q', debouncedQuery);
-          router.replace(`/search?${params.toString()}`, { scroll: false });
+          router.replace(`/search?${params.toString()}`);
         }
       } catch (error) {
         console.error('Search failed:', error);
@@ -47,8 +47,7 @@ function SearchContent() {
     };
 
     fetchResults();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery]);
+  }, [debouncedQuery, router, searchParams]);
 
   return (
     <div className="pt-24 pb-20 px-4 sm:px-8 lg:px-12 w-full min-h-screen">
