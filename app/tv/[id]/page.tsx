@@ -8,9 +8,8 @@ import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
 import { PlayerBackButton } from '@/components/features/player-back-button';
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }) {
-  const { slug } = await params;
-  const id = slug[0];
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     const show = await fetchTMDB<TVShowDetails>(`/tv/${id}`);
     return {
@@ -23,15 +22,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function TVShowPage(props: { 
-  params: Promise<{ slug: string[] }>;
+  params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const { slug } = await props.params;
-  const id = slug[0];
+  const { id } = await props.params;
   const searchParams = await props.searchParams;
   const isPlaying = searchParams.play === 'true';
-  const seasonNum = slug[1] || searchParams.season || '1';
-  const episodeNum = slug[2] || searchParams.episode || '1';
+  const seasonNum = searchParams.season || '1';
+  const episodeNum = searchParams.episode || '1';
   
   if (!process.env.TMDB_API_KEY) {
      return <div className="pt-32 text-center text-red-400">API Key missing. Cannot fetch TMDB.</div>
@@ -53,7 +51,7 @@ export default async function TVShowPage(props: {
   if (isPlaying) {
     return (
       <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
-        <PlayerBackButton href={`/tv/${id}/${seasonNum}`} />
+        <PlayerBackButton href={`/tv/${id}?season=${seasonNum}`} />
         <iframe
           src={`https://vidkh.site/tv/${show.id}/${seasonNum}/${episodeNum}?autoPlay=true`}
           allowFullScreen
@@ -131,7 +129,7 @@ export default async function TVShowPage(props: {
               </p>
               
               <div className="flex items-center gap-3 pt-2">
-                <Link href={`/tv/${id}/${seasonNum}/1?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
+                <Link href={`/tv/${id}?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
                   <Icons.play className="w-5 h-5 fill-black" />
                   Play
                 </Link>
@@ -176,7 +174,7 @@ export default async function TVShowPage(props: {
                              {show.seasons?.filter(s => s.season_number > 0).map(s => (
                                 <Link 
                                    key={s.id} 
-                                   href={`/tv/${show.id}/${s.season_number}#episodes`}
+                                   href={`/tv/${show.id}?season=${s.season_number}#episodes`}
                                    className={`block px-4 py-2 text-sm hover:bg-zinc-800 ${seasonNum === s.season_number.toString() ? 'text-white bg-zinc-800 font-medium' : 'text-zinc-400'}`}
                                 >
                                    {s.name}
@@ -190,13 +188,13 @@ export default async function TVShowPage(props: {
 
                 {/* Episodes List */}
                 {seasonData?.episodes && (
-                  <div className="space-y-4 max-h-[800px] overflow-y-auto pr-4 custom-scrollbar">
+                  <div className="space-y-4 max-h-[800px] overflow-y-auto pr-4 scrollbar-hide">
                     {seasonData.episodes.map((ep: any) => {
                       const isCurrent = isPlaying && seasonNum === ep.season_number.toString() && episodeNum === ep.episode_number.toString();
                       return (
                         <Link
                           key={ep.id}
-                          href={`/tv/${show.id}/${ep.season_number}/${ep.episode_number}?play=true`}
+                          href={`/tv/${show.id}?play=true&season=${ep.season_number}&episode=${ep.episode_number}`}
                           className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl transition-colors ${
                             isCurrent ? 'bg-neutral-800 border border-neutral-700' : 'hover:bg-neutral-900/50 border border-transparent'
                           }`}
