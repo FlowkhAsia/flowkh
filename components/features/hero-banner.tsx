@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Icons } from '@/components/ui/icons';
 import { Movie, TMDBImage } from '@/types/tmdb';
-import { getImageUrl } from '@/lib/tmdb';
+import { getImageUrl, getGenreNames } from '@/lib/tmdb';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface HeroBannerProps {
@@ -69,13 +69,19 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
                </h1>
             )}
             
-            <div className="flex items-center gap-3 text-xs md:text-sm font-medium text-zinc-400 mb-4">
-              <div className="flex items-center gap-1">
-                <Icons.star className="w-4 h-4 text-red-500 fill-red-500" />
-                <span className="text-white">{movie.vote_average?.toFixed(1)}</span>
+            <div className="flex items-center flex-wrap gap-2 md:gap-2.5 text-xs md:text-sm font-medium text-zinc-300 mb-4">
+              <div className="flex items-center gap-1.5">
+                <Icons.star className="w-4 h-4 text-red-500 fill-red-500 mb-[1px]" />
+                <span className="text-red-400 font-semibold">{movie.vote_average?.toFixed(1)}</span>
               </div>
-              <span>&bull;</span>
+              <span className="text-zinc-600 font-bold">&middot;</span>
               <span>{movie.release_date?.substring(0, 4)}</span>
+              {getGenreNames(movie.genre_ids).slice(0, 3).map((genre) => (
+                <div key={genre} className="flex items-center gap-2 md:gap-2.5">
+                  <span className="text-zinc-600 font-bold">&middot;</span>
+                  <span>{genre}</span>
+                </div>
+              ))}
             </div>
 
             <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-lg font-normal mb-8 line-clamp-3">
@@ -102,17 +108,7 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="absolute bottom-12 right-4 md:right-12 z-30 flex gap-2">
-        {movies.slice(0, 5).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentIndex(i)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              i === currentIndex ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'
-            }`}
-          />
-        ))}
-      </div>
+
     </div>
   );
 }
