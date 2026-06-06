@@ -7,6 +7,7 @@ import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
 import { PlayerBackButton } from '@/components/features/player-back-button';
+import { PeachifyPlayer } from '@/components/features/peachify-player';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
@@ -54,11 +55,12 @@ export default async function TVShowPage(props: {
     return (
       <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
         <PlayerBackButton href={`/tv/${id}/${seasonNum}`} />
-        <iframe
-          src={`https://www.vidkh.site/tv/${show.id}/${seasonNum}/${episodeNum}?autoPlay=true`}
-          allowFullScreen
-          allow="autoplay; encrypted-media"
-          className="w-full h-full border-0 absolute inset-0"
+        <PeachifyPlayer
+          type="tv"
+          mediaId={show.id.toString()}
+          season={Number(seasonNum)}
+          episode={Number(episodeNum)}
+          autoPlay={true}
         />
       </div>
     );

@@ -7,6 +7,7 @@ import { WatchlistButton } from '@/components/features/watchlist-button';
 import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
 import { PlayerBackButton } from '@/components/features/player-back-button';
+import { PeachifyPlayer } from '@/components/features/peachify-player';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -50,11 +51,10 @@ export default async function MoviePage(props: {
     return (
       <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
         <PlayerBackButton href={`/movie/${id}`} />
-        <iframe
-          src={`https://www.vidkh.site/movie/${movie.id}?autoPlay=true`}
-          allowFullScreen
-          allow="autoplay; encrypted-media"
-          className="w-full h-full border-0 absolute inset-0"
+        <PeachifyPlayer
+          type="movie"
+          mediaId={movie.id.toString()}
+          autoPlay={true}
         />
       </div>
     );
