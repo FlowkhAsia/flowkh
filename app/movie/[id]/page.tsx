@@ -51,7 +51,7 @@ export default async function MoviePage(props: {
       <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
         <PlayerBackButton href={`/movie/${id}`} />
         <iframe
-          src={`https://vidkh.site/movie/${movie.id}?autoPlay=true`}
+          src={`https://www.vidkh.site/movie/${movie.id}?autoPlay=true`}
           allowFullScreen
           allow="autoplay; encrypted-media"
           className="w-full h-full border-0 absolute inset-0"

@@ -55,7 +55,7 @@ export default async function TVShowPage(props: {
       <div className="fixed inset-0 bg-black z-[100] w-full h-full overflow-hidden">
         <PlayerBackButton href={`/tv/${id}/${seasonNum}`} />
         <iframe
-          src={`https://vidkh.site/tv/${show.id}/${seasonNum}/${episodeNum}?autoPlay=true`}
+          src={`https://www.vidkh.site/tv/${show.id}/${seasonNum}/${episodeNum}?autoPlay=true`}
           allowFullScreen
           allow="autoplay; encrypted-media"
           className="w-full h-full border-0 absolute inset-0"
