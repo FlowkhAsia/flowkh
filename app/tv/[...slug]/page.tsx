@@ -164,26 +164,30 @@ export default async function TVShowPage(props: {
                  <div className="w-1 h-6 bg-red-600 rounded-full"></div>
                  Top Cast
               </h2>
-              <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
+              <div className="flex overflow-x-auto gap-4 pb-4 pr-8 md:pr-16 scrollbar-hide -mx-4 px-4 md:-mx-16 md:px-16">
                  {mainCast.map(actor => (
-                   <div key={actor.id} className="w-[140px] md:w-[160px] shrink-0 group relative rounded-xl overflow-hidden bg-neutral-900">
-                      <div className="aspect-[2/3] relative w-full h-full">
+                   <div key={actor.id} className="w-[120px] md:w-[140px] shrink-0 group flex flex-col">
+                      <div className="aspect-[2/3] relative w-full rounded-xl overflow-hidden bg-neutral-900 border border-zinc-800/50">
                          {actor.profile_path ? (
                            <Image 
                              src={getImageUrl(actor.profile_path)}
                              alt={actor.name}
                              fill
-                             className="object-cover transition-transform duration-500 group-hover:scale-110"
+                             className="object-cover transition-transform duration-500 group-hover:scale-105"
                              referrerPolicy="no-referrer"
                            />
                          ) : (
-                           <div className="w-full h-full flex items-center justify-center text-neutral-600 bg-neutral-800">No Image</div>
-                         )}
-                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col justify-end p-4">
-                           <div className="relative z-10 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                             <div className="font-bold text-white text-sm line-clamp-1">{actor.name}</div>
-                             <div className="text-xs font-medium text-neutral-300 mt-1 line-clamp-1">{actor.character}</div>
+                           <div className="w-full h-full flex items-center justify-center text-neutral-600 bg-neutral-800">
+                             <span className="text-xs">No Image</span>
                            </div>
+                         )}
+                      </div>
+                      <div className="mt-2 space-y-0.5 text-center md:text-left">
+                         <div className="text-sm font-semibold text-white tracking-wide truncate max-w-[120px]">
+                           {actor.name}
+                         </div>
+                         <div className="text-xs font-medium text-zinc-400 truncate max-w-[120px]">
+                           {actor.character}
                          </div>
                       </div>
                    </div>
