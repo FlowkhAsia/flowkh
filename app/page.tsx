@@ -70,7 +70,7 @@ export default async function Home() {
   return (
     <div className="pb-20">
       <HeroBanner movies={trendingMovies.slice(0, 5)} logos={heroLogos} />
-      <div className="-mt-12 md:-mt-20 relative z-10 space-y-8">
+      <div className="-mt-2 md:-mt-4 relative z-10 space-y-8">
         <MediaCarousel title="Trending Movies" items={trendingMovies.slice(5, 15)} />
         <MediaCarousel title="Popular TV Shows" items={popularTvShows.map(t => ({...t, media_type: 'tv'}))} />
         <MediaCarousel title="Top Rated Movies" items={topRatedMovies} />

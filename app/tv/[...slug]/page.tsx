@@ -8,6 +8,7 @@ import { MediaCarousel } from '@/components/features/media-carousel';
 import { BackButton } from '@/components/features/back-button';
 import { PlayerBackButton } from '@/components/features/player-back-button';
 import { PeachifyPlayer } from '@/components/features/peachify-player';
+import { EpisodesSection } from '@/components/features/episodes-section';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
@@ -149,98 +150,13 @@ export default async function TVShowPage(props: {
       <div className="w-full px-4 md:px-16 py-8 space-y-12 mt-4">
          <div className="max-w-screen-xl mx-auto space-y-12">
             {show.seasons && show.seasons.filter(s => s.season_number > 0).length > 0 && (
-              <div id="episodes" className="relative group scroll-mt-24">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                  <h2 className="flex items-center gap-2 text-xl font-bold text-white">
-                     <div className="w-1 h-6 bg-red-600 rounded-full"></div>
-                     Episodes
-                  </h2>
-
-                  <div className="flex flex-wrap items-center gap-4">
-                     {/* Search Input */}
-                     <div className="relative flex items-center bg-zinc-900/60 border border-zinc-800 px-4 py-2 rounded-lg w-full md:w-64 transition-colors focus-within:border-zinc-500">
-                        <Icons.search className="w-4 h-4 text-zinc-500 absolute left-3" />
-                        <input 
-                           type="text" 
-                           placeholder="Search episodes..." 
-                           className="bg-transparent border-none outline-none text-sm text-zinc-300 w-full pl-6 placeholder:text-zinc-500"
-                        />
-                     </div>
-
-                     {/* Season Dropdown */}
-                     <div className="relative group/dropdown">
-                       <button className="bg-zinc-900/60 border border-zinc-800 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-zinc-800 transition">
-                          Season {seasonNum}
-                          <Icons.chevronDown className="w-4 h-4 text-zinc-400" />
-                       </button>
-                       <div className="absolute right-0 top-full mt-2 w-48 bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-50 overflow-hidden">
-                          <div className="max-h-60 overflow-y-auto">
-                             {show.seasons?.filter(s => s.season_number > 0).map(s => (
-                                <Link 
-                                   key={s.id} 
-                                   href={`/tv/${show.id}/${s.season_number}#episodes`}
-                                   className={`block px-4 py-2 text-sm hover:bg-zinc-800 ${seasonNum === s.season_number.toString() ? 'text-white bg-zinc-800 font-medium' : 'text-zinc-400'}`}
-                                >
-                                   {s.name}
-                                </Link>
-                             ))}
-                          </div>
-                       </div>
-                     </div>
-                  </div>
-                </div>
-
-                {/* Episodes List */}
-                {seasonData?.episodes && (
-                  <div className="space-y-4 max-h-[800px] overflow-y-auto pr-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-zinc-700">
-                    {seasonData.episodes.map((ep: any) => {
-                      const isCurrent = isPlaying && seasonNum === ep.season_number.toString() && episodeNum === ep.episode_number.toString();
-                      return (
-                        <Link
-                          key={ep.id}
-                          href={`/tv/${show.id}/${ep.season_number}/${ep.episode_number}?play=true`}
-                          className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl transition-colors ${
-                            isCurrent ? 'bg-neutral-800 border border-neutral-700' : 'hover:bg-neutral-900/50 border border-transparent'
-                          }`}
-                        >
-                          <div className="relative w-full sm:w-48 shrink-0 aspect-video bg-neutral-900 rounded-lg overflow-hidden group/ep">
-                           {ep.still_path ? (
-                             <Image 
-                               src={getImageUrl(ep.still_path, 'w500')}
-                               alt={ep.name}
-                               fill
-                               className="object-cover transition-transform duration-300 group-hover:scale-105"
-                               referrerPolicy="no-referrer"
-                             />
-                           ) : (
-                             <div className="w-full h-full flex items-center justify-center text-neutral-600">No Image</div>
-                           )}
-                           <div className="absolute inset-0 bg-black/20 group-hover/ep:bg-black/40 transition-colors flex items-center justify-center">
-                             <Icons.play className="w-8 h-8 text-white fill-white opacity-0 group-hover/ep:opacity-100 transition-opacity drop-shadow-lg" />
-                           </div>
-                           {ep.runtime && (
-                              <div className="absolute bottom-2 right-2 bg-black/80 px-1.5 py-0.5 rounded text-xs text-white font-medium">
-                                {ep.runtime}m
-                              </div>
-                           )}
-                          </div>
-                          
-                          <div className="flex-1 min-w-0 flex flex-col justify-center">
-                            <div className="flex items-start justify-between gap-2 mb-1">
-                               <h4 className={`font-medium text-lg leading-tight truncate ${isCurrent ? 'text-white' : 'text-neutral-200'}`}>
-                                 {ep.episode_number}. {ep.name}
-                               </h4>
-                            </div>
-                            <p className="text-sm text-neutral-400 line-clamp-3 mt-1 leading-relaxed">
-                               {ep.overview || 'No description available.'}
-                            </p>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                <EpisodesSection 
+                  show={show} 
+                  seasonData={seasonData} 
+                  seasonNum={seasonNum} 
+                  episodeNum={episodeNum} 
+                  isPlaying={isPlaying} 
+                />
             )}
 
             <div className="pt-8">

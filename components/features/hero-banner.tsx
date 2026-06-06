@@ -53,7 +53,7 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/30 to-transparent" />
           </div>
 
-          <div className="absolute bottom-[15%] left-4 md:left-16 max-w-xl z-20 space-y-4">
+          <div className="absolute bottom-[20%] left-4 md:left-16 max-w-xl z-20 space-y-4">
             {displayLogo ? (
                <div className="relative w-48 md:w-80 h-24 md:h-32 mb-4">
                   <Image 

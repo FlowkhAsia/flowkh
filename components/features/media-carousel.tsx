@@ -55,7 +55,8 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
 
   return (
     <section className="relative py-4">
-      <div className="px-4 sm:px-8 lg:px-12 mb-2 z-10 relative">
+      <div className="px-4 sm:px-8 lg:px-12 mb-2 z-10 relative flex items-center gap-2.5 md:gap-3">
+        <div className="w-1 h-5 md:h-6 bg-red-600 rounded-sm"></div>
         <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white drop-shadow-md">
           {title}
         </h2>
