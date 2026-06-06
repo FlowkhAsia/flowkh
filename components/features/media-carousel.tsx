@@ -54,7 +54,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
   if (!items || items.length === 0) return null;
 
   return (
-    <section className="relative py-4">
+    <section className="relative">
       <div className="px-4 sm:px-8 lg:px-12 mb-2 z-10 relative flex items-center gap-2.5 md:gap-3">
         <div className="w-1 h-5 md:h-6 bg-red-600 rounded-sm"></div>
         <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white drop-shadow-md">
@@ -64,7 +64,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
       <div className="relative group/carousel">
         <button 
           onClick={() => scroll('left')}
-          className="absolute left-0 top-8 bottom-12 z-20 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-r-xl pointer-events-auto"
+          className="absolute left-0 top-6 bottom-6 z-20 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-r-xl pointer-events-auto"
         >
           <Icons.chevronLeft className="w-8 h-8" />
         </button>
@@ -76,7 +76,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
           className={cn(
-            "flex whitespace-nowrap overflow-x-scroll scrollbar-hide gap-4 px-4 sm:px-8 lg:px-12 pb-8 pt-4 w-full select-none transition-cursor",
+            "flex whitespace-nowrap overflow-x-scroll scrollbar-hide gap-4 px-4 sm:px-8 lg:px-12 pb-4 pt-3 w-full select-none transition-cursor",
             isDown ? "cursor-grabbing" : "cursor-grab",
             !isDown && "scroll-smooth"
           )} 
@@ -90,7 +90,7 @@ export function MediaCarousel({ title, items }: MediaCarouselProps) {
 
         <button 
           onClick={() => scroll('right')}
-          className="absolute right-0 top-4 bottom-12 z-10 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-l-xl pointer-events-auto"
+          className="absolute right-0 top-6 bottom-6 z-10 bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden md:flex items-center justify-center w-12 rounded-l-xl pointer-events-auto"
         >
           <Icons.chevronRight className="w-8 h-8" />
         </button>
