@@ -18,6 +18,7 @@ interface EpisodesSectionProps {
 export function EpisodesSection({ show, seasonData, seasonNum, episodeNum, isPlaying }: EpisodesSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortDesc, setSortDesc] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const filteredAndSortedEpisodes = useMemo(() => {
     if (!seasonData?.episodes) return [];
@@ -51,24 +52,34 @@ export function EpisodesSection({ show, seasonData, seasonNum, episodeNum, isPla
 
       <div className="flex flex-wrap items-center gap-3">
         {/* Season Dropdown */}
-        <div className="relative group/dropdown z-20">
-          <button className="bg-[#0f0f0f] border border-zinc-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl flex items-center justify-between min-w-[140px] hover:bg-zinc-800/80 transition-colors">
+        <div className="relative z-20">
+          <button 
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="bg-[#0f0f0f] border border-zinc-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl flex items-center justify-between min-w-[140px] hover:bg-zinc-800/80 transition-colors"
+          >
             Season {seasonNum}
-            <Icons.chevronDown className="w-4 h-4 text-zinc-400" />
+            <Icons.chevronDown className={`w-4 h-4 text-zinc-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
-          <div className="absolute left-0 top-full mt-2 w-full min-w-[160px] bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all overflow-hidden origin-top">
-            <div className="max-h-60 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-700 hover:[&::-webkit-scrollbar-thumb]:bg-zinc-600">
-              {validSeasons.map((s: any) => (
-                <Link 
-                  key={s.id} 
-                  href={`/tv/${show.id}/${s.season_number}#episodes`}
-                  className={`block px-4 py-2.5 text-sm hover:bg-zinc-800 transition-colors ${seasonNum === s.season_number.toString() ? 'text-white bg-zinc-800 font-medium' : 'text-zinc-400'}`}
-                >
-                  {s.name}
-                </Link>
-              ))}
-            </div>
-          </div>
+          
+          {isDropdownOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)} />
+              <div className="absolute left-0 top-full mt-2 w-full min-w-[160px] bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl overflow-hidden origin-top z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="max-h-60 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-700 hover:[&::-webkit-scrollbar-thumb]:bg-zinc-600">
+                  {validSeasons.map((s: any) => (
+                    <Link 
+                      key={s.id} 
+                      href={`/tv/${show.id}/${s.season_number}#episodes`}
+                      onClick={() => setIsDropdownOpen(false)}
+                      className={`block px-4 py-2.5 text-sm hover:bg-zinc-800 transition-colors ${seasonNum === s.season_number.toString() ? 'text-white bg-zinc-800 font-medium' : 'text-zinc-400'}`}
+                    >
+                      {s.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Search Input */}
