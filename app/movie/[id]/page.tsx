@@ -9,6 +9,8 @@ import { BackButton } from '@/components/features/back-button';
 import { PlayerBackButton } from '@/components/features/player-back-button';
 import { PeachifyPlayer } from '@/components/features/peachify-player';
 
+import { EmbeddedVideoPlayer } from '@/components/features/embedded-video-player';
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
@@ -65,19 +67,16 @@ export default async function MoviePage(props: {
       <BackButton />
       
       {/* Hero Banner Backdrop */}
-      <div className="relative h-[70vh] md:h-[80vh] w-full">
-           <Image
-              src={getImageUrl(movie.backdrop_path, 'original')}
-              alt={movie.title}
-              fill
-              priority
-              className="object-cover object-center opacity-70"
-              referrerPolicy="no-referrer"
-            />
-           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/60 to-transparent z-0" />
-           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-0" />
+      <div className="relative h-[70vh] md:h-[80vh] w-full overflow-hidden">
+           <EmbeddedVideoPlayer 
+             videoKey={trailer?.key}
+             fallbackImage={getImageUrl(movie.backdrop_path, 'original')}
+             title={movie.title}
+           />
+           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/60 to-transparent z-20 pointer-events-none" />
+           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-20 pointer-events-none" />
            
-           <div className="absolute bottom-12 left-4 md:left-16 z-20 max-w-2xl space-y-4">
+           <div className="absolute bottom-12 left-4 md:left-16 z-30 max-w-2xl space-y-4">
               {logo ? (
                  <div className="relative w-48 md:w-80 h-24 md:h-32 mb-4">
                     <Image 

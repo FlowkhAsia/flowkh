@@ -46,11 +46,11 @@ export function HeroBanner({ movies, logos }: HeroBannerProps) {
               alt={movie.title || 'Hero Background'}
               fill
               priority
-              className="object-cover object-center"
+              className="object-cover object-top"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-48 md:h-64 bg-gradient-to-t from-black via-black/80 to-transparent z-10" />
           </div>
 
           <div className="absolute bottom-[20%] left-4 md:left-16 max-w-xl z-20 space-y-4">
