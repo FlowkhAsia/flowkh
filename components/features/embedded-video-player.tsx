@@ -35,12 +35,10 @@ export function EmbeddedVideoPlayer({
       fs: 0,
       color: "white",
       iv_load_policy: 3,
-      loop: 1,
-      playlist: videoKey || undefined,
       enablejsapi: 1,
       origin: typeof window !== "undefined" ? window.location.origin : undefined,
     },
-  }), [videoKey]);
+  }), []);
 
   useEffect(() => {
     if (videoKey && !player) {
@@ -69,15 +67,15 @@ export function EmbeddedVideoPlayer({
     return () => clearInterval(interval);
   }, [player, showVideo]);
 
-  const toggleMute = () => {
+  const toggleMute = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (player) {
       if (isMuted) {
         player.unMute();
         player.setVolume(100);
-        // Many browsers pause video if unmuted via API. Explicitly tell it to play after unmuting.
-        setTimeout(() => {
-            player.playVideo();
-        }, 100);
+        player.playVideo();
       } else {
         player.mute();
       }
