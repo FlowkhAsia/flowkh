@@ -32,6 +32,8 @@ export function EmbeddedVideoPlayer({
       modestbranding: 1,
       playsinline: 1,
       disablekb: 1,
+      fs: 0,
+      color: "white",
       iv_load_policy: 3,
       loop: 1,
       playlist: videoKey || undefined,
@@ -49,6 +51,23 @@ export function EmbeddedVideoPlayer({
       return () => clearTimeout(timer);
     }
   }, [videoKey, player]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (player && showVideo) {
+      interval = setInterval(() => {
+        if (typeof player.getDuration === "function" && typeof player.getCurrentTime === "function") {
+          const duration = player.getDuration();
+          const currentTime = player.getCurrentTime();
+          // Loop back slightly before the end to avoid showing YouTube end screens
+          if (duration > 0 && currentTime >= duration - 2) {
+            player.seekTo(0);
+          }
+        }
+      }, 500);
+    }
+    return () => clearInterval(interval);
+  }, [player, showVideo]);
 
   const toggleMute = () => {
     if (player) {
@@ -109,7 +128,7 @@ export function EmbeddedVideoPlayer({
             opts={playerOpts}
             onReady={onReady}
             onStateChange={onStateChange}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none scale-[1.4] md:scale-[1.25] opacity-80"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none scale-[1.5] md:scale-[1.35]"
             style={{
               width: "100vw",
               height: "56.25vw",
