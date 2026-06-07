@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Volume2, VolumeX } from "lucide-react";
-import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 
 interface EmbeddedVideoPlayerProps {
   videoKey?: string | null;
@@ -18,86 +17,44 @@ export function EmbeddedVideoPlayer({
 }: EmbeddedVideoPlayerProps) {
   const [showVideo, setShowVideo] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const [player, setPlayer] = useState<YouTubePlayer | null>(null);
-
-  const playerOpts = React.useMemo(() => ({
-    width: "100%",
-    height: "100%",
-    playerVars: {
-      autoplay: 1,
-      mute: 1,
-      controls: 0,
-      showinfo: 0,
-      rel: 0,
-      modestbranding: 1,
-      playsinline: 1,
-      disablekb: 1,
-      fs: 0,
-      color: "white",
-      iv_load_policy: 3,
-      enablejsapi: 1,
-      origin: typeof window !== "undefined" ? window.location.origin : undefined,
-    },
-  }), []);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (videoKey && !player) {
-      // Fallback timer just in case YouTube API takes too long
+    if (videoKey) {
+      // Delay revealing the video to allow the YouTube iframe to initialize
       const timer = setTimeout(() => {
         setShowVideo(true);
       }, 3500);
       return () => clearTimeout(timer);
     }
-  }, [videoKey, player]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (player && showVideo) {
-      interval = setInterval(() => {
-        if (typeof player.getDuration === "function" && typeof player.getCurrentTime === "function") {
-          const duration = player.getDuration();
-          const currentTime = player.getCurrentTime();
-          // Loop back slightly before the end to avoid showing YouTube end screens
-          if (duration > 0 && currentTime >= duration - 2) {
-            player.seekTo(0);
-          }
-        }
-      }, 500);
-    }
-    return () => clearInterval(interval);
-  }, [player, showVideo]);
+  }, [videoKey]);
 
   const toggleMute = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    if (player) {
+
+    if (iframeRef.current && iframeRef.current.contentWindow) {
       if (isMuted) {
-        player.unMute();
-        player.setVolume(100);
-        player.playVideo();
+        iframeRef.current.contentWindow.postMessage(
+          '{"event":"command","func":"unMute","args":[]}',
+          "*",
+        );
+        iframeRef.current.contentWindow.postMessage(
+          '{"event":"command","func":"setVolume","args":[100]}',
+          "*",
+        );
+        // Many browsers pause video if unmuted programmatically. Explicitly tell it to play after unmuting.
+        iframeRef.current.contentWindow.postMessage(
+          '{"event":"command","func":"playVideo","args":[]}',
+          "*",
+        );
       } else {
-        player.mute();
+        iframeRef.current.contentWindow.postMessage(
+          '{"event":"command","func":"mute","args":[]}',
+          "*",
+        );
       }
       setIsMuted(!isMuted);
-    }
-  };
-
-  const onReady = (event: YouTubeEvent) => {
-    setPlayer(event.target);
-    event.target.mute();
-    event.target.playVideo();
-  };
-
-  const onStateChange = (event: YouTubeEvent) => {
-    // PlayerState.PLAYING is 1
-    if (event.data === 1) {
-      setShowVideo(true);
-    }
-    // PlayerState.ENDED is 0
-    if (event.data === 0 && player) {
-      player.seekTo(0);
-      player.playVideo();
     }
   };
 
@@ -121,18 +78,19 @@ export function EmbeddedVideoPlayer({
       {/* Background Video */}
       {videoKey && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <YouTube
-            videoId={videoKey}
-            opts={playerOpts}
-            onReady={onReady}
-            onStateChange={onStateChange}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none scale-[1.5] md:scale-[1.35]"
+          <iframe
+            ref={iframeRef}
+            src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1&iv_load_policy=3&loop=1&playlist=${videoKey}&enablejsapi=1`}
             style={{
               width: "100vw",
               height: "56.25vw",
               minHeight: "100vh",
               minWidth: "177.77vh",
             }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none scale-[1.5] md:scale-[1.35] opacity-80"
+            allow="autoplay; encrypted-media"
+            title="Trailer"
+            tabIndex={-1}
           />
         </div>
       )}
