@@ -9,21 +9,26 @@ import { ArrowDownAZ, ArrowUpAZ } from 'lucide-react';
 
 interface EpisodesSectionProps {
   show: any;
-  seasonData: any;
+  allSeasonsData: any[];
   seasonNum: string;
   episodeNum: string;
   isPlaying: boolean;
 }
 
-export function EpisodesSection({ show, seasonData, seasonNum, episodeNum, isPlaying }: EpisodesSectionProps) {
+export function EpisodesSection({ show, allSeasonsData, seasonNum, episodeNum, isPlaying }: EpisodesSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortDesc, setSortDesc] = useState(false);
+  const [activeSeason, setActiveSeason] = useState(Number(seasonNum) || 1);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const activeSeasonData = useMemo(() => {
+    return allSeasonsData?.find((s) => s && s.season_number === activeSeason);
+  }, [allSeasonsData, activeSeason]);
+
   const filteredAndSortedEpisodes = useMemo(() => {
-    if (!seasonData?.episodes) return [];
+    if (!activeSeasonData?.episodes) return [];
     
-    let result = [...seasonData.episodes];
+    let result = [...activeSeasonData.episodes];
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -38,7 +43,7 @@ export function EpisodesSection({ show, seasonData, seasonNum, episodeNum, isPla
     }
 
     return result;
-  }, [seasonData, searchQuery, sortDesc]);
+  }, [activeSeasonData, searchQuery, sortDesc]);
 
   // Make sure we only show valid seasons
   const validSeasons = show.seasons?.filter((s: any) => s.season_number > 0) || [];
@@ -52,12 +57,13 @@ export function EpisodesSection({ show, seasonData, seasonNum, episodeNum, isPla
 
       <div className="flex flex-wrap items-center gap-3">
         {/* Season Dropdown */}
-        <div className="relative z-20">
+        <div className="relative z-20 min-w-[140px]">
           <button 
+            type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="bg-[#0f0f0f] border border-zinc-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl flex items-center justify-between min-w-[140px] hover:bg-zinc-800/80 transition-colors"
+            className="w-full bg-[#0f0f0f] border border-zinc-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl flex items-center justify-between hover:bg-zinc-800/80 transition-colors"
           >
-            Season {seasonNum}
+            <span>Season {activeSeason}</span>
             <Icons.chevronDown className={`w-4 h-4 text-zinc-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
           
@@ -67,14 +73,16 @@ export function EpisodesSection({ show, seasonData, seasonNum, episodeNum, isPla
               <div className="absolute left-0 top-full mt-2 w-full min-w-[160px] bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl overflow-hidden origin-top z-20 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="max-h-60 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-700 hover:[&::-webkit-scrollbar-thumb]:bg-zinc-600">
                   {validSeasons.map((s: any) => (
-                    <Link 
+                    <button
                       key={s.id} 
-                      href={`/tv/${show.id}/${s.season_number}#episodes`}
-                      onClick={() => setIsDropdownOpen(false)}
-                      className={`block px-4 py-2.5 text-sm hover:bg-zinc-800 transition-colors ${seasonNum === s.season_number.toString() ? 'text-white bg-zinc-800 font-medium' : 'text-zinc-400'}`}
+                      onClick={() => {
+                        setActiveSeason(s.season_number);
+                        setIsDropdownOpen(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2.5 text-sm hover:bg-zinc-800 transition-colors ${activeSeason === s.season_number ? 'text-white bg-zinc-800 font-medium' : 'text-zinc-400'}`}
                     >
-                      {s.name}
-                    </Link>
+                      Season {s.season_number}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -117,17 +125,17 @@ export function EpisodesSection({ show, seasonData, seasonNum, episodeNum, isPla
               <Link
                 key={ep.id}
                 href={`/tv/${show.id}/${ep.season_number}/${ep.episode_number}?play=true`}
-                className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl transition-colors ${
+                className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl transition-colors group/ep ${
                   isCurrent ? 'bg-neutral-800 border border-neutral-700' : 'bg-[#0f0f0f] hover:bg-neutral-900 border border-zinc-800/50'
                 }`}
               >
-                <div className="relative w-full sm:w-48 shrink-0 aspect-video bg-neutral-900 rounded-lg overflow-hidden group/ep">
+                <div className="relative w-full sm:w-48 shrink-0 aspect-video bg-neutral-900 rounded-lg overflow-hidden">
                   {ep.still_path ? (
                     <Image 
                       src={getImageUrl(ep.still_path, 'w500')}
                       alt={ep.name}
                       fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover transition-transform duration-300 group-hover/ep:scale-105"
                       referrerPolicy="no-referrer"
                     />
                   ) : (

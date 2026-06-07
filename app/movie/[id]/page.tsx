@@ -152,14 +152,14 @@ export default async function MoviePage(props: {
               </div>
            </div>
         </div>
-      <div className="w-full px-4 md:px-16 py-8 space-y-12 mt-4">
-         <div className="max-w-screen-xl mx-auto space-y-12">
+      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 py-8 space-y-12 mt-4">
+         <div className="w-full space-y-12">
             <div>
-              <h2 className="flex items-center gap-2 text-xl font-bold text-white mb-6">
-                 <div className="w-1 h-6 bg-red-600 rounded-full"></div>
+              <h2 className="flex items-center gap-2 text-xl md:text-2xl font-bold text-white mb-6">
+                 <div className="w-1 h-5 md:h-6 bg-red-600 rounded-sm"></div>
                  Top Cast
               </h2>
-              <div className="flex overflow-x-auto gap-4 pb-4 pr-8 md:pr-16 scrollbar-hide -mx-4 px-4 md:-mx-16 md:px-16">
+              <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
                  {mainCast.map(actor => (
                    <div key={actor.id} className="w-[120px] md:w-[140px] shrink-0 group flex flex-col">
                       <div className="aspect-[2/3] relative w-full rounded-xl overflow-hidden bg-neutral-900 border border-zinc-800/50">
