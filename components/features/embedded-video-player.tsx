@@ -77,21 +77,23 @@ export function EmbeddedVideoPlayer({
 
       {/* Background Video */}
       {videoKey && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <iframe
-            ref={iframeRef}
-            src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1&iv_load_policy=3&loop=1&playlist=${videoKey}&enablejsapi=1`}
-            style={{
-              width: "100vw",
-              height: "56.25vw",
-              minHeight: "100vh",
-              minWidth: "177.77vh",
-            }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none scale-[1.5] md:scale-[1.35] opacity-80"
-            allow="autoplay; encrypted-media"
-            title="Trailer"
-            tabIndex={-1}
-          />
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <div className="absolute w-[120%] h-[120%] -top-[10%] -left-[10%] overflow-hidden pointer-events-none">
+            <iframe
+              ref={iframeRef}
+              src={`https://www.youtube.com/embed/${videoKey}?enablejsapi=1&autoplay=1&mute=1&controls=0&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&playsinline=1&loop=1&playlist=${videoKey}`}
+              style={{
+                width: "100%",
+                height: "100%",
+                minHeight: "100%",
+                minWidth: "100%",
+              }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none scale-[1.3] md:scale-[1.25] opacity-80"
+              allow="autoplay; encrypted-media"
+              title="Trailer"
+              tabIndex={-1}
+            />
+          </div>
         </div>
       )}
 
