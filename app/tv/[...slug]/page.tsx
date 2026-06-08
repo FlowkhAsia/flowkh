@@ -78,41 +78,42 @@ export default async function TVShowPage(props: {
       <BackButton />
       
       {/* Hero Banner Backdrop */}
-      <div className="relative h-[70vh] md:h-[80vh] w-full overflow-hidden">
+      <div className="relative w-full h-[75vh] md:h-[85vh] bg-zinc-950 overflow-hidden">
            <EmbeddedVideoPlayer 
              videoKey={trailer?.key}
              fallbackImage={getImageUrl(show.backdrop_path, 'original')}
              title={show.name}
            />
-           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/80 via-zinc-950/20 to-transparent z-20 pointer-events-none" />
-           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/10 to-transparent z-20 pointer-events-none" />
+           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent z-10 pointer-events-none" />
+           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/40 to-transparent z-10 pointer-events-none md:w-[75%]" />
            
-           <div className="absolute bottom-12 left-4 md:left-16 z-30 max-w-2xl space-y-4">
-              {logo ? (
-                 <div className="relative w-48 md:w-80 h-24 md:h-32 mb-4">
-                    <Image 
-                       src={getImageUrl(logo.file_path, 'w500')} 
-                       alt={show.name}
-                       fill
-                       className="object-contain object-left-bottom drop-shadow-2xl"
-                    />
-                 </div>
-              ) : (
-                 <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white mb-4">
-                    {show.name}
-                 </h1>
-              )}
-              
-              <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold text-zinc-400 mb-4">
-                 {show.vote_average > 0 && (
-                   <div className="flex items-center gap-1">
-                     <Icons.star className="w-4 h-4 text-red-500 fill-red-500" />
-                     <span className="text-white">{show.vote_average.toFixed(1)}</span>
+           <div className="absolute bottom-12 left-0 w-full px-4 sm:px-8 md:px-12 lg:px-16 z-20 space-y-4">
+              <div className="max-w-2xl">
+                {logo ? (
+                   <div className="relative w-48 md:w-80 h-24 md:h-32 mb-4">
+                      <Image 
+                         src={getImageUrl(logo.file_path, 'w500')} 
+                         alt={show.name}
+                         fill
+                         className="object-contain object-left-bottom drop-shadow-2xl"
+                      />
                    </div>
-                 )}
-                 {show.vote_average > 0 && <span>&bull;</span>}
-                 {show.first_air_date && (
-                   <>
+                ) : (
+                   <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white mb-4">
+                      {show.name}
+                   </h1>
+                )}
+                
+                <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold text-zinc-400 mb-4">
+                   {show.vote_average > 0 && (
+                     <div className="flex items-center gap-1">
+                       <Icons.star className="w-4 h-4 text-red-500 fill-red-500" />
+                       <span className="text-white">{show.vote_average.toFixed(1)}</span>
+                     </div>
+                   )}
+                   {show.vote_average > 0 && <span>&bull;</span>}
+                   {show.first_air_date && (
+                     <>
                      <span>{new Date(show.first_air_date).getFullYear()}</span>
                      <span>&bull;</span>
                    </>
@@ -148,6 +149,7 @@ export default async function TVShowPage(props: {
                    Episodes
                 </a>
               </div>
+             </div>
            </div>
         </div>
       <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 py-8 space-y-12 mt-4">

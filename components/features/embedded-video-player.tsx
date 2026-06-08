@@ -95,20 +95,16 @@ export function EmbeddedVideoPlayer({
       {/* Background Video */}
       {videoKey && (
         <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-          <div className="absolute w-[120%] h-[120%] -top-[10%] -left-[10%] overflow-hidden pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none scale-[1.35] md:scale-[1.25] z-0">
             <YouTube
               videoId={videoKey}
               opts={playerOpts}
               onReady={onReady}
               onStateChange={onStateChange}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full pointer-events-none scale-[1.3] md:scale-[1.25]"
-              iframeClassName={`w-full h-full min-h-[100%] min-w-[100%] pointer-events-none transition-opacity duration-1000 ${
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              iframeClassName={`w-full h-full pointer-events-none transition-opacity duration-1000 ${
                 isVideoReady ? "opacity-100" : "opacity-0"
               }`}
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
             />
           </div>
         </div>
@@ -116,7 +112,7 @@ export function EmbeddedVideoPlayer({
 
       {/* Fallback Image Layer (Fades out when video is ready) */}
       <div
-        className={`absolute inset-0 z-10 bg-black pointer-events-none transition-opacity duration-1000 ease-in-out ${
+        className={`absolute inset-0 z-10 bg-zinc-950 pointer-events-none transition-opacity duration-1000 ease-in-out ${
           isVideoReady ? "opacity-0" : "opacity-100"
         }`}
       >
@@ -125,7 +121,7 @@ export function EmbeddedVideoPlayer({
           alt={title}
           fill
           priority
-          className="object-cover object-center opacity-70 pointer-events-none"
+          className="object-cover object-top pointer-events-none"
           referrerPolicy="no-referrer"
         />
       </div>
