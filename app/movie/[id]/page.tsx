@@ -73,8 +73,8 @@ export default async function MoviePage(props: {
              fallbackImage={getImageUrl(movie.backdrop_path, 'original')}
              title={movie.title}
            />
-           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/40 to-transparent z-20 pointer-events-none" />
-           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/10 to-transparent z-20 pointer-events-none" />
+           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/80 via-zinc-950/20 to-transparent z-20 pointer-events-none" />
+           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/10 to-transparent z-20 pointer-events-none" />
            
            <div className="absolute bottom-12 left-4 md:left-16 z-30 max-w-2xl space-y-4">
               {logo ? (

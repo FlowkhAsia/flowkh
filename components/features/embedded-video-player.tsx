@@ -103,7 +103,7 @@ export function EmbeddedVideoPlayer({
               onStateChange={onStateChange}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full pointer-events-none scale-[1.3] md:scale-[1.25]"
               iframeClassName={`w-full h-full min-h-[100%] min-w-[100%] pointer-events-none transition-opacity duration-1000 ${
-                isVideoReady ? "opacity-45" : "opacity-0"
+                isVideoReady ? "opacity-100" : "opacity-0"
               }`}
               style={{
                 width: "100%",

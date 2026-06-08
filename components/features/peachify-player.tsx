@@ -64,7 +64,7 @@ export function PeachifyPlayer({
     if (type === 'tv' && showNextBtn === false) {
       params.set('showNextBtn', 'false');
     }
-    if (accent) params.set('accent', accent.replace('#', ''));
+    if (accent) params.set('accent', accent.replace('#E50914', ''));
     if (!autoPlay) params.set('autoPlay', 'false');
     if (hide.length > 0) {
       hide.forEach((control) => params.append('hide', control));
