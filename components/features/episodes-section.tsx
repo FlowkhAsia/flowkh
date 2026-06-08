@@ -121,31 +121,40 @@ export function EpisodesSection({ show, allSeasonsData, seasonNum, episodeNum, i
         ) : (
           filteredAndSortedEpisodes.map((ep: any) => {
             const isCurrent = isPlaying && seasonNum === ep.season_number.toString() && episodeNum === ep.episode_number.toString();
-            return (
-              <Link
-                key={ep.id}
-                href={`/tv/${show.id}/${ep.season_number}/${ep.episode_number}?play=true`}
-                className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl transition-colors group/ep ${
-                  isCurrent ? 'bg-neutral-800 border border-neutral-700' : 'bg-[#0f0f0f] hover:bg-neutral-900 border border-zinc-800/50'
-                }`}
-              >
+            
+            const todayStr = new Date().toISOString().split("T")[0];
+            const isReleased = ep.air_date ? ep.air_date <= todayStr : false;
+
+            const cardContent = (
+              <>
                 <div className="relative w-full sm:w-48 shrink-0 aspect-video bg-neutral-900 rounded-lg overflow-hidden">
-                  {ep.still_path ? (
+                  {ep.still_path || show.backdrop_path ? (
                     <Image 
-                      src={getImageUrl(ep.still_path, 'w500')}
+                      src={getImageUrl(ep.still_path || show.backdrop_path, 'w500')}
                       alt={ep.name}
                       fill
-                      className="object-cover transition-transform duration-300 group-hover/ep:scale-105"
+                      className={`object-cover transition-transform duration-300 ${isReleased ? 'group-hover/ep:scale-105' : ''}`}
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-neutral-600">No Image</div>
+                    <div className="w-full h-full flex items-center justify-center text-neutral-600 bg-zinc-800">No Image</div>
                   )}
-                  <div className="absolute inset-0 bg-black/20 group-hover/ep:bg-black/40 transition-colors flex items-center justify-center">
-                    <Icons.play className="w-8 h-8 text-white fill-white opacity-0 group-hover/ep:opacity-100 transition-opacity drop-shadow-lg" />
-                  </div>
-                  {ep.runtime && (
-                    <div className="absolute bottom-2 right-2 bg-black/80 px-1.5 py-0.5 rounded text-xs text-white font-medium">
+                  
+                  {!isReleased ? (
+                    <div className="absolute inset-0 bg-zinc-950/80 flex flex-col items-center justify-center text-center p-2 z-10 backdrop-blur-[2px]">
+                      <span className="text-white font-bold text-[11px] md:text-xs tracking-wider uppercase mb-1">Coming Soon</span>
+                      {ep.air_date && (
+                        <span className="text-red-500 font-semibold text-xs">{new Date(ep.air_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="absolute inset-0 bg-black/20 group-hover/ep:bg-black/40 transition-colors flex items-center justify-center z-10">
+                      <Icons.play className="w-8 h-8 text-white fill-white opacity-0 group-hover/ep:opacity-100 transition-opacity drop-shadow-lg" />
+                    </div>
+                  )}
+
+                  {ep.runtime > 0 && isReleased && (
+                    <div className="absolute bottom-2 right-2 bg-black/80 px-1.5 py-0.5 rounded text-xs text-white font-medium z-10">
                       {ep.runtime}m
                     </div>
                   )}
@@ -153,15 +162,35 @@ export function EpisodesSection({ show, allSeasonsData, seasonNum, episodeNum, i
                 
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <h4 className={`font-medium text-lg leading-tight truncate ${isCurrent ? 'text-white' : 'text-neutral-200'}`}>
+                    <h4 className={`font-medium text-lg leading-tight truncate ${isCurrent ? 'text-white' : (isReleased ? 'text-neutral-200' : 'text-neutral-500')}`}>
                       {ep.episode_number}. {ep.name}
                     </h4>
                   </div>
-                  <p className="text-sm text-neutral-400 line-clamp-3 mt-1 leading-relaxed">
+                  <p className={`text-sm line-clamp-3 mt-1 leading-relaxed ${isReleased ? 'text-neutral-400' : 'text-neutral-600'}`}>
                     {ep.overview || 'No description available.'}
                   </p>
                 </div>
+              </>
+            );
+
+            const cardClasses = `flex flex-col sm:flex-row gap-4 p-4 rounded-xl transition-colors group/ep ${
+              isCurrent ? 'bg-neutral-800 border border-neutral-700' : 
+              isReleased ? 'bg-[#0f0f0f] hover:bg-neutral-900 border border-zinc-800/50 cursor-pointer' : 
+              'bg-[#0a0a0a] border border-zinc-900/50 opacity-80 cursor-default'
+            }`;
+
+            return isReleased ? (
+              <Link
+                key={ep.id}
+                href={`/tv/${show.id}/${ep.season_number}/${ep.episode_number}?play=true`}
+                className={cardClasses}
+              >
+                {cardContent}
               </Link>
+            ) : (
+              <div key={ep.id} className={cardClasses}>
+                {cardContent}
+              </div>
             );
           })
         )}
