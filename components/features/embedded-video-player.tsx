@@ -29,15 +29,16 @@ export function EmbeddedVideoPlayer({
         const currentTime = await player.getCurrentTime();
         const duration = await player.getDuration();
         
-        // If we are within 10 seconds of the end, loop early
-        if (duration > 0 && duration - currentTime <= 10) {
-          player.seekTo(1);
+        // A 1.5-second threshold is the sweet spot to prevent the YouTube grid 
+        // without cutting off the trailer's final title card.
+        if (duration > 0 && duration - currentTime <= 1.5) {
+          player.seekTo(0);
           player.playVideo();
         }
       } catch (err) {
         // gracefully ignore unready state errors
       }
-    }, 200);
+    }, 100); // Increased polling frequency to 100ms for tighter precision
 
     return () => clearInterval(interval);
   }, [player]);

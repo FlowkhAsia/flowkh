@@ -25,6 +25,10 @@ export default async function Home() {
 
   try {
     const today = new Date().toISOString().split("T")[0];
+    const sevenDaysAgoDate = new Date();
+    sevenDaysAgoDate.setDate(sevenDaysAgoDate.getDate() - 7);
+    const sevenDaysAgo = sevenDaysAgoDate.toISOString().split("T")[0];
+
     const [
       trendingAllRes,
       trendingRes,
@@ -41,8 +45,10 @@ export default async function Home() {
       fetchTMDB<TMDBResponse<TVShow>>("/discover/tv", {
         with_original_language: "ko",
         with_genres: "18",
+        "air_date.gte": sevenDaysAgo,
         "air_date.lte": today,
         sort_by: "popularity.desc",
+        language: "en-US",
       }),
     ]);
 
@@ -114,7 +120,7 @@ export default async function Home() {
           items={trendingMovies.slice(5, 15)}
         />
         <MediaCarousel
-          title="Popular K-Dramas"
+          title="K-Dramas Airing This Week"
           items={kDramas.map((t) => ({ ...t, media_type: "tv" }))}
         />
         <MediaCarousel
