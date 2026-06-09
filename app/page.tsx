@@ -16,8 +16,8 @@ export const revalidate = 3600; // revalidate every hour
 export default async function Home() {
   let trendingAll: Media[] = [];
   let trendingMovies: Movie[] = [];
-  let topRatedMovies: Movie[] = [];
-  let popularTvShows: TVShow[] = [];
+  let animeShows: TVShow[] = [];
+  let cDramas: TVShow[] = [];
   let upcomingMovies: Movie[] = [];
   let heroLogos: Record<number, TMDBImage> = {};
   let kDramas: TVShow[] = [];
@@ -32,15 +32,26 @@ export default async function Home() {
     const [
       trendingAllRes,
       trendingRes,
-      topRatedRes,
-      popularTvRes,
+      animeRes,
+      cDramasRes,
       upcomingRes,
       kDramasRes,
     ] = await Promise.all([
       fetchTMDB<TMDBResponse<Media>>("/trending/all/day"),
       fetchTMDB<TMDBResponse<Movie>>("/trending/movie/day"),
-      fetchTMDB<TMDBResponse<Movie>>("/movie/top_rated"),
-      fetchTMDB<TMDBResponse<TVShow>>("/tv/popular"),
+      fetchTMDB<TMDBResponse<TVShow>>("/discover/tv", {
+        with_original_language: "ja",
+        with_genres: "16",
+        sort_by: "popularity.desc",
+      }),
+      fetchTMDB<TMDBResponse<TVShow>>("/discover/tv", {
+        with_original_language: "zh",
+        with_genres: "18",
+        without_genres: "16",
+        "air_date.gte": sevenDaysAgo,
+        "air_date.lte": today,
+        sort_by: "popularity.desc",
+      }),
       fetchTMDB<TMDBResponse<Movie>>("/movie/upcoming"),
       fetchTMDB<TMDBResponse<TVShow>>("/discover/tv", {
         with_original_language: "ko",
@@ -53,8 +64,8 @@ export default async function Home() {
 
     trendingAll = trendingAllRes.results;
     trendingMovies = trendingRes.results;
-    topRatedMovies = topRatedRes.results;
-    popularTvShows = popularTvRes.results;
+    animeShows = animeRes.results;
+    cDramas = cDramasRes.results;
     upcomingMovies = upcomingRes.results;
     kDramas = kDramasRes.results;
 
@@ -115,18 +126,17 @@ export default async function Home() {
       <div className="-mt-2 md:-mt-4 relative z-10 space-y-8 md:space-y-10">
         <MediaCarousel title="Trending Today" items={trendingAll} />
         <MediaCarousel
-          title="Trending Movies"
-          items={trendingMovies.slice(5, 15)}
-        />
-        <MediaCarousel
           title="K-Dramas Airing This Week"
           items={kDramas.map((t) => ({ ...t, media_type: "tv" }))}
         />
         <MediaCarousel
-          title="Popular TV Shows"
-          items={popularTvShows.map((t) => ({ ...t, media_type: "tv" }))}
+          title="C-Dramas Airing This Week"
+          items={cDramas.map((t) => ({ ...t, media_type: "tv" }))}
         />
-        <MediaCarousel title="Top Rated Movies" items={topRatedMovies} />
+        <MediaCarousel
+          title="Popular Anime"
+          items={animeShows.map((a) => ({ ...a, media_type: "tv" }))}
+        />
         <MediaCarousel title="Upcoming Movies" items={upcomingMovies} />
       </div>
     </div>
