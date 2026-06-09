@@ -48,7 +48,6 @@ export default async function Home() {
         "air_date.gte": sevenDaysAgo,
         "air_date.lte": today,
         sort_by: "popularity.desc",
-        language: "en-US",
       }),
     ]);
 
