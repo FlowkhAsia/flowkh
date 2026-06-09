@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Volume2, VolumeX } from "lucide-react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
@@ -19,6 +19,28 @@ export function EmbeddedVideoPlayer({
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [player, setPlayer] = useState<YouTubePlayer | null>(null);
+
+  useEffect(() => {
+    if (!player) return;
+
+    // Early Looping Strategy: continuously poll the player's time to prevent end-screen recommendation grids.
+    const interval = setInterval(async () => {
+      try {
+        const currentTime = await player.getCurrentTime();
+        const duration = await player.getDuration();
+        
+        // If we are within 10 seconds of the end, loop early
+        if (duration > 0 && duration - currentTime <= 10) {
+          player.seekTo(1);
+          player.playVideo();
+        }
+      } catch (err) {
+        // gracefully ignore unready state errors
+      }
+    }, 200);
+
+    return () => clearInterval(interval);
+  }, [player]);
 
   const onReady = (event: YouTubeEvent) => {
     const ytPlayer = event.target;
