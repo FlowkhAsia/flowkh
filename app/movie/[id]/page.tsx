@@ -103,9 +103,9 @@ export default async function MoviePage(props: {
               stats={
                  <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold text-zinc-400">
                     {movie.vote_average > 0 && (
-                      <div className="flex items-center gap-1">
-                        <Icons.star className="w-4 h-4 text-red-500 fill-red-500" />
-                        <span className="text-white">{movie.vote_average.toFixed(1)}</span>
+                      <div className="flex items-center gap-1.5">
+                        <Icons.star className="w-4 h-4 text-red-500 fill-red-500 mb-[1px]" />
+                        <span className="text-red-400 font-semibold">{movie.vote_average.toFixed(1)}</span>
                       </div>
                     )}
                     {movie.vote_average > 0 && <span>&bull;</span>}
@@ -146,16 +146,21 @@ export default async function MoviePage(props: {
                  </p>
               }
               buttons={
-                 <div className="flex items-center gap-3 pt-2">
-                   <Link href={`/movie/${id}?play=true`} className="bg-white text-black font-bold px-6 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-200 transition">
-                     <Icons.play className="w-5 h-5 fill-black" />
-                     Play
+                 <div className="flex items-center gap-2 sm:gap-3 pt-2 w-full overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                   <Link href={`/movie/${id}?play=true`} className="bg-white text-black font-bold text-[14px] md:text-[15px] w-[46px] h-[46px] sm:w-auto sm:h-auto sm:px-8 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-zinc-200 transition shrink-0">
+                     <Icons.play className="w-5 h-5 fill-black sm:ml-0 ml-1" />
+                     <span className="hidden sm:inline">Play</span>
                    </Link>
-                   <WatchlistButton media={{...movie, media_type: 'movie', genre_ids: movie.genres?.map(g => g.id) || []}} className="" iconOnly />
+                   <WatchlistButton media={{...movie, media_type: 'movie', genre_ids: movie.genres?.map(g => g.id) || []}} className="shrink-0" iconOnly />
+                   
+                   <button className="bg-zinc-800/80 border border-zinc-700/50 text-white font-medium text-[13px] md:text-[15px] h-[46px] sm:h-auto px-5 md:px-6 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-zinc-700 transition shrink-0">
+                      <Icons.download className="w-4 h-4 md:w-5 md:h-5" />
+                      Download
+                   </button>
                    
                    {moreLikeThis.length > 0 && (
-                     <a href="#similar" className="bg-zinc-800/60 border border-zinc-700/50 text-white font-medium text-sm px-5 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-700 transition">
-                        <Icons.list className="w-4 h-4" />
+                     <a href="#similar" className="bg-zinc-800/80 border border-zinc-700/50 text-white font-medium text-[13px] md:text-[15px] h-[46px] sm:h-auto px-5 md:px-6 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-zinc-700 transition shrink-0">
+                        <Icons.sparkles className="w-4 h-4 md:w-5 md:h-5" />
                         Similars
                      </a>
                    )}

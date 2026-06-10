@@ -16,6 +16,10 @@ import {
   Info,
   Check,
   Popcorn,
+  Sparkles,
+  Download,
+  Plus,
+  ListOrdered,
   type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
@@ -62,4 +66,8 @@ export const Icons = {
   info: withDefaults(Info),
   check: withDefaults(Check),
   popcorn: withDefaults(Popcorn),
+  sparkles: withDefaults(Sparkles),
+  download: withDefaults(Download),
+  plus: withDefaults(Plus),
+  listOrdered: withDefaults(ListOrdered),
 };
