@@ -42,13 +42,22 @@ export default async function TVShowPage(props: {
      return <div className="pt-32 text-center text-red-400">API Key missing. Cannot fetch TMDB.</div>
   }
 
-  const [show, credits, similar, videos, images] = await Promise.all([
+  const [show, credits, similar, recommendations, videos, images] = await Promise.all([
     fetchTMDB<TVShowDetails>(`/tv/${id}`),
     fetchTMDB<Credits>(`/tv/${id}/credits`),
     fetchTMDB<TMDBResponse<TVShow>>(`/tv/${id}/similar`),
+    fetchTMDB<TMDBResponse<TVShow>>(`/tv/${id}/recommendations`).catch(() => ({ results: [], page: 1, total_pages: 1, total_results: 0 })),
     fetchTMDB<{results: Video[]}>(`/tv/${id}/videos`),
     fetchTMDB<TMDBImages>(`/tv/${id}/images`, { include_image_language: 'en,null' }).catch(() => ({} as TMDBImages))
   ]);
+
+  const moreLikeThisMap = new Map<number, TVShow>();
+  [...recommendations.results, ...similar.results].forEach((m) => {
+    if (!moreLikeThisMap.has(m.id)) {
+      moreLikeThisMap.set(m.id, m);
+    }
+  });
+  const moreLikeThis = Array.from(moreLikeThisMap.values());
 
   const validSeasons = show.seasons?.filter(s => s.season_number > 0) || [];
   const allSeasonsData = await Promise.all(
@@ -203,9 +212,9 @@ export default async function TVShowPage(props: {
          </div>
       </div>
       
-      {similar.results.length > 0 && (
+      {moreLikeThis.length > 0 && (
         <div className="mt-8 relative z-20">
-          <MediaCarousel title="More Like This" items={similar.results.map(m => ({...m, media_type: 'tv'}))} />
+          <MediaCarousel title="More Like This" items={moreLikeThis.map(m => ({...m, media_type: 'tv'}))} />
         </div>
       )}
     </div>

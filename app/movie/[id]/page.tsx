@@ -37,13 +37,22 @@ export default async function MoviePage(props: {
      return <div className="pt-32 text-center text-red-400">API Key missing. Cannot fetch TMDB.</div>
   }
 
-  const [movie, credits, similar, videos, images] = await Promise.all([
+  const [movie, credits, similar, recommendations, videos, images] = await Promise.all([
     fetchTMDB<MovieDetails>(`/movie/${id}`),
     fetchTMDB<Credits>(`/movie/${id}/credits`),
     fetchTMDB<TMDBResponse<Movie>>(`/movie/${id}/similar`),
+    fetchTMDB<TMDBResponse<Movie>>(`/movie/${id}/recommendations`).catch(() => ({ results: [], page: 1, total_pages: 1, total_results: 0 })),
     fetchTMDB<{results: Video[]}>(`/movie/${id}/videos`),
     fetchTMDB<TMDBImages>(`/movie/${id}/images`, { include_image_language: 'en,null' }).catch(() => ({} as TMDBImages))
   ]);
+
+  const moreLikeThisMap = new Map<number, Movie>();
+  [...recommendations.results, ...similar.results].forEach((m) => {
+    if (!moreLikeThisMap.has(m.id)) {
+      moreLikeThisMap.set(m.id, m);
+    }
+  });
+  const moreLikeThis = Array.from(moreLikeThisMap.values());
 
   const trailer = videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || videos.results[0];
   const mainCast = credits.cast.slice(0, 10);
@@ -144,7 +153,7 @@ export default async function MoviePage(props: {
                    </Link>
                    <WatchlistButton media={{...movie, media_type: 'movie', genre_ids: movie.genres?.map(g => g.id) || []}} className="" iconOnly />
                    
-                   {similar.results.length > 0 && (
+                   {moreLikeThis.length > 0 && (
                      <a href="#similar" className="bg-zinc-800/60 border border-zinc-700/50 text-white font-medium text-sm px-5 py-2.5 rounded-full flex items-center gap-2 hover:bg-zinc-700 transition">
                         <Icons.list className="w-4 h-4" />
                         Similars
@@ -194,9 +203,9 @@ export default async function MoviePage(props: {
          </div>
       </div>
       
-      {similar.results.length > 0 && (
+      {moreLikeThis.length > 0 && (
         <div id="similar" className="mt-8 relative z-20 scroll-mt-24">
-          <MediaCarousel title="More Like This" items={similar.results.map(m => ({...m, media_type: 'movie'}))} />
+          <MediaCarousel title="More Like This" items={moreLikeThis.map(m => ({...m, media_type: 'movie'}))} />
         </div>
       )}
     </div>

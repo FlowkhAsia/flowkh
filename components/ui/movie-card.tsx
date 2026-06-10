@@ -42,22 +42,26 @@ export function MovieCard({ media, className, priority = false }: MovieCardProps
       </Link>
       
       <Link href={linkPath} className="flex flex-col mt-3 px-1.5">
-        <h3 className="font-semibold text-white text-[15px] line-clamp-1 transition-colors duration-200 group-hover:text-red-500">
+        <h3 className="font-semibold text-white text-[13px] sm:text-sm md:text-[15px] line-clamp-1 transition-colors duration-200 group-hover:text-red-500">
           {title}
         </h3>
-        <div className="flex items-center gap-1.5 mt-1 text-[13px] text-zinc-400 font-medium">
+        <div className="flex items-center gap-1 sm:gap-1.5 mt-1 text-[11px] sm:text-xs md:text-[13px] text-zinc-400 font-medium whitespace-nowrap">
           {'vote_average' in media && media.vote_average > 0 && (
             <>
-              <div className="flex items-center gap-1.5">
-                <Icons.star className="w-3.5 h-3.5 text-red-600 fill-red-600 mb-[1px]" />
-                <span className="text-zinc-300">{media.vote_average.toFixed(1)}</span>
+              <div className="flex items-center gap-1 shrink-0">
+                <Icons.star className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-red-600 fill-red-600" />
+                <span>{media.vote_average.toFixed(1)}</span>
               </div>
-              <span className="text-zinc-500">&middot;</span>
+              <span className="text-zinc-600 shrink-0">&middot;</span>
             </>
           )}
-          <span>{releaseDate ? new Date(releaseDate).getFullYear() : 'N/A'}</span>
-          <span className="text-zinc-500">&middot;</span>
-          <span>{isMovie ? 'Movie' : 'TV'}</span>
+          {releaseDate && (
+            <>
+              <span className="shrink-0">{new Date(releaseDate).getFullYear()}</span>
+              <span className="text-zinc-600 shrink-0">&middot;</span>
+            </>
+          )}
+          <span>{isMovie ? 'Movie' : 'TV Show'}</span>
         </div>
       </Link>
     </div>
