@@ -50,6 +50,7 @@ export default async function Home() {
         without_genres: "16",
         "air_date.gte": sevenDaysAgo,
         "air_date.lte": today,
+        "vote_count.gte": "1",
         sort_by: "popularity.desc",
       }),
       fetchTMDB<TMDBResponse<Movie>>("/movie/upcoming"),
@@ -58,6 +59,7 @@ export default async function Home() {
         with_genres: "18",
         "air_date.gte": sevenDaysAgo,
         "air_date.lte": today,
+        "vote_count.gte": "1",
         sort_by: "popularity.desc",
       }),
     ]);
