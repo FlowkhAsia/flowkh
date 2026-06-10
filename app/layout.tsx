@@ -7,7 +7,7 @@ import NextTopLoader from 'nextjs-toploader';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Cinemate | Discover Movies & TV Shows',
+  title: 'KFLIX | Discover Movies & TV Shows',
   description: 'A fully functional streaming and discovery web application for movies and TV shows.',
 };
 

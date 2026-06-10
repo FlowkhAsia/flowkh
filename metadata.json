@@ -1,5 +1,5 @@
 {
-  "name": "Cinemate",
+  "name": "KFLIX",
   "description": "A fully functional streaming and discovery web application for movies and TV shows.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

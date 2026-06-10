@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   try {
     const movie = await fetchTMDB<MovieDetails>(`/movie/${id}`);
     return {
-      title: `${movie.title} - Cinemate`,
+      title: `${movie.title} - KFLIX`,
       description: movie.overview,
     };
   } catch {
