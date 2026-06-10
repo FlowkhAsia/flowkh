@@ -48,16 +48,14 @@ export function EmbeddedVideoPlayer({
     setPlayer(ytPlayer);
     ytPlayer.mute();
     ytPlayer.playVideo();
+
+    // The 3-Second Opacity Mask to hide YouTube initial UI flashes
+    setTimeout(() => {
+      setIsVideoReady(true);
+    }, 3000);
   };
 
   const onStateChange = (event: YouTubeEvent) => {
-    // When video actually starts playing, wait 3.5 seconds for YouTube UI (title gradient, progress bar) to completely fade out
-    if (event.data === 1 && !isVideoReady) {
-      setTimeout(() => {
-        setIsVideoReady(true);
-      }, 3500);
-    }
-
     // Permanent End-Screen Blocking
     // PlayerState.ENDED is 0
     if (event.data === 0) {
@@ -127,7 +125,7 @@ export function EmbeddedVideoPlayer({
               onReady={onReady}
               onStateChange={onStateChange}
               className="absolute inset-0 w-full h-full pointer-events-none"
-              iframeClassName={`w-full h-full pointer-events-none border-0 outline-none ring-0 transition-opacity duration-1000 ${
+              iframeClassName={`w-full h-full pointer-events-none transition-opacity duration-1000 ${
                 isVideoReady ? "opacity-100" : "opacity-0"
               }`}
             />
