@@ -98,7 +98,7 @@ export default async function Home() {
   if (errorMsg || trendingMovies.length === 0) {
     return (
       <div className="pt-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[50vh] flex flex-col items-center justify-center text-center">
-        <h1 className="text-3xl font-bold mb-4">Welcome to KFLIX</h1>
+        <h1 className="text-3xl font-bold mb-4">Welcome to Kflix</h1>
         <p className="text-neutral-400 max-w-lg mx-auto mb-8">
           {errorMsg || "We couldn't connect to TMDB to load content."}
         </p>
